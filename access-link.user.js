@@ -1,5 +1,5 @@
 // ==UserScript==
-// @name         access-link
+// @name         跳转链接修复
 // @namespace    https://github.com/maomao1996/access-link
 // @version      0.1
 // @description  为知乎、微信拦截页面增加跳转按钮
