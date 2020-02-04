@@ -1,10 +1,11 @@
 // ==UserScript==
 // @name         跳转链接修复
 // @namespace    https://github.com/maomao1996/access-link
-// @version      0.1
-// @description  为知乎、微信拦截页面增加跳转按钮
+// @version      0.2.0
+// @description  为知乎、微信拦截页面增加跳转按钮（支持3秒后自动跳转）
 // @author       maomao1996
 // @include      *://weixin110.qq.com/cgi-bin/mmspamsupport-bin/*
+// @include      *://support.weixin.qq.com/cgi-bin/mmsupport-bin/*
 // @include      *://link.zhihu.com/*
 // @grant        none
 // @require		 https://cdn.jsdelivr.net/npm/jquery@v3.4.1
@@ -37,26 +38,36 @@
   }
 
   var params = getQueryStringArgs(location.search)
-  var hostname = location.hostname
-  var html = ''
   var target = ''
-  switch (hostname) {
-    case 'weixin110.qq.com':
-      html =
-        "<div class='weui-msg__text-area weui-btn-area'><a class='weui-btn weui-btn_plain-primary' href='" +
-        params.url +
-        "'>继续访问 - mm<a/></div>"
-      target = '.weui-msg'
-      break
-    case 'link.zhihu.com':
-      html = "<a href='" + params.target + "'>继续访问 - mm<a/>"
-      target = '.link'
-      break
-    default:
-      break
+  var url = ''
+
+  function initParams(u, t) {
+    url = u
+    target = t
+    return "<a href='" + u + "'>继续访问 - mm (3 秒后自动跳转)<a/>"
   }
 
-  if (target) {
+  var fn = {
+    'weixin110.qq.com'() {
+      return (
+        "<div class='weui-msg__text-area weui-btn-area weui-btn weui-btn_plain-primary'>" +
+        initParams(params.url, '.weui-msg') +
+        '</div>'
+      )
+    },
+    'support.weixin.qq.com'() {
+      return initParams(params.url, '#url')
+    },
+    'link.zhihu.com'() {
+      return initParams(params.target, '.link')
+    }
+  }[location.hostname]
+  var html = typeof fn === 'function' ? fn() : ''
+
+  if (target && html && url) {
     $(target).after(html)
+    setTimeout(function() {
+      location.href = url
+    }, 3000)
   }
 })()
