@@ -13,3 +13,9 @@
 请确保已先安装 [Tampermonkey](https://chrome.google.com/webstore/detail/tampermonkey/dhdgffkkebhmkfjojejmpbldmpobfkfo)
 
 [access-link 插件安装地址](https://greasyfork.org/zh-CN/scripts/395970)
+
+## 效果图
+
+![微信](https://raw.githubusercontent.com/maomao1996/access-link/master/screenshots/1.png)
+
+![微信](https://raw.githubusercontent.com/maomao1996/access-link/master/screenshots/2.png)
