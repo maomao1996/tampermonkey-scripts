@@ -10,18 +10,25 @@
 // @grant        none
 // @require		 https://cdn.jsdelivr.net/npm/jquery@v3.4.1
 // ==/UserScript==
-;(function() {
+
+interface Params {
+  url?: string
+  target?: string
+  [key: string]: any
+}
+
+;(() => {
   'use strict'
-  function getQueryStringArgs(url) {
+  function getQueryStringArgs(url: string): Params {
     if (url && url.indexOf('?') > -1) {
-      var arr = url.split('?')
-      var qs = arr[1]
-      var args = {}
-      var items = qs.length ? qs.split('&') : []
-      for (var i = 0; i < items.length; i++) {
-        var item = items[i].split('=')
-        var key = decodeURIComponent(item[0])
-        var value = decodeURIComponent(item[1])
+      const arr = url.split('?')
+      const qs = arr[1]
+      const args: Params = {}
+      const items: string[] = qs.length ? qs.split('&') : []
+      for (let i = 0; i < items.length; i++) {
+        const item = items[i].split('=')
+        const key = decodeURIComponent(item[0])
+        const value = decodeURIComponent(item[1])
         if (key.length) {
           args[key] = value
         }
@@ -30,34 +37,39 @@
     }
     return {}
   }
-  var params = getQueryStringArgs(location.search)
-  var target = ''
-  var url = ''
-  function initParams(u, t) {
+
+  const params = getQueryStringArgs(location.search)
+  let target: string = ''
+  let url: string = ''
+
+  function initParams(u: string, t: string): string {
     url = u
     target = t
     return "<a href='" + u + "'>继续访问 - mm (3 秒后自动跳转)<a/>"
   }
-  var fns = {
-    'weixin110.qq.com': function() {
+
+  const fns = {
+    'weixin110.qq.com'() {
       return (
         "<div class='weui-msg__text-area weui-btn-area weui-btn weui-btn_plain-primary'>" +
-        initParams(params.url, '.weui-msg') +
+        initParams(params.url!, '.weui-msg') +
         '</div>'
       )
     },
-    'support.weixin.qq.com': function() {
-      return initParams(params.url, '#url')
+    'support.weixin.qq.com'() {
+      return initParams(params.url!, '#url')
     },
-    'link.zhihu.com': function() {
-      return initParams(params.target, '.link')
+    'link.zhihu.com'() {
+      return initParams(params.target!, '.link')
     }
   }
-  var fn = fns[location.hostname]
-  var html = typeof fn === 'function' ? fn() : ''
+
+  const fn = fns[location.hostname]
+  const html: string = typeof fn === 'function' ? fn() : ''
+
   if (target && html && url) {
     $(target).after(html)
-    setTimeout(function() {
+    setTimeout(() => {
       location.href = url
     }, 3000)
   }
