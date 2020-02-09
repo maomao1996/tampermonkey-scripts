@@ -4,9 +4,9 @@
 
 ## 🔧 插件功能
 
- - [x] 手动点击跳转、3秒后自动跳转
- - [x] 微信拦截页面跳转
- - [x] 知乎拦截页面跳转
+- [x] 手动点击跳转、3 秒后自动跳转
+- [x] 微信拦截页面跳转
+- [x] 知乎拦截页面跳转
 
 ## 💽 安装插件
 
@@ -16,6 +16,7 @@
 
 ## 效果图
 
-![微信](https://raw.githubusercontent.com/maomao1996/access-link/master/screenshots/1.png)
-
-![微信](https://raw.githubusercontent.com/maomao1996/access-link/master/screenshots/2.png)
+<img src="https://raw.githubusercontent.com/maomao1996/access-link/master/screenshots/1.png" width="520" alt="微信" align="center" />
+<img src="https://raw.githubusercontent.com/maomao1996/access-link/master/screenshots/2.png" width="520" alt="微信" align="center" />
+<img src="https://raw.githubusercontent.com/maomao1996/access-link/master/screenshots/3.png" width="520" alt="微信" align="center" />
+<img src="https://raw.githubusercontent.com/maomao1996/access-link/master/screenshots/4.png" width="520" alt="知乎" align="center" />

@@ -1,6 +1,6 @@
 {
   "name": "access-link",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "油猴插件：在拦截页面增加跳转按钮，暂只支持微信和知乎",
   "author": "maomao1996 <1714487678@qq.com>",
   "scripts": {
@@ -10,7 +10,6 @@
     "type": "git",
     "url": "git+https://github.com/maomao1996/access-link.git"
   },
-  "author": "",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/maomao1996/access-link/issues"

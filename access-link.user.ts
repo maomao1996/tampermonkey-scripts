@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         跳转链接修复
 // @namespace    https://github.com/maomao1996/access-link
-// @version      0.2.0
+// @version      0.3.0
 // @description  为知乎、微信拦截页面增加跳转按钮（支持3秒后自动跳转）
 // @author       maomao1996
 // @include      *://weixin110.qq.com/cgi-bin/mmspamsupport-bin/*
@@ -41,18 +41,29 @@ interface Params {
   const params = getQueryStringArgs(location.search)
   let target: string = ''
   let url: string = ''
+  let insertion: string = 'after'
 
-  function initParams(u: string, t: string): string {
+  function initParams(u: string, t: string, cls: string = 'button'): string {
     url = u
     target = t
-    return "<a href='" + u + "'>继续访问 - mm (3 秒后自动跳转)<a/>"
+    return (
+      '<a href="' +
+      u +
+      '" class="' +
+      cls +
+      '">继续访问 - mm (3 秒后自动跳转)<a/>'
+    )
   }
 
   const fns = {
     'weixin110.qq.com'() {
       return (
-        "<div class='weui-msg__text-area weui-btn-area weui-btn weui-btn_plain-primary'>" +
-        initParams(params.url!, '.weui-msg') +
+        '<div class="weui-btn-area">' +
+        initParams(
+          params.url!,
+          '.weui-msg',
+          'weui-btn weui-btn_plain-primary'
+        ) +
         '</div>'
       )
     },
@@ -60,15 +71,19 @@ interface Params {
       return initParams(params.url!, '#url')
     },
     'link.zhihu.com'() {
-      return initParams(params.target!, '.link')
+      insertion = 'html'
+      return initParams(params.target!, '.actions')
     }
   }
 
   const fn = fns[location.hostname]
   const html: string = typeof fn === 'function' ? fn() : ''
+  const isUrl: boolean = /^(https|http):\/\/[A-Za-z0-9-_]+\.[A-Za-z0-9]+[\/=\?%\-&_~`@[\]\':+!]*([^<>\"\"])*$/.test(
+    url
+  )
 
-  if (target && html && url) {
-    $(target).after(html)
+  if (target && html && isUrl) {
+    $(target)[insertion](html)
     setTimeout(() => {
       location.href = url
     }, 3000)
