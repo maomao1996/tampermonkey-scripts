@@ -1,20 +1,20 @@
 {
-  "name": "access-link",
-  "version": "0.3.0",
-  "description": "油猴插件：在拦截页面增加跳转按钮，暂只支持微信和知乎",
+  "name": "tampermonkey-scripts",
+  "version": "1.0.0",
+  "description": "油猴插件库",
   "author": "maomao1996 <1714487678@qq.com>",
   "scripts": {
     "build": "tsc"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/maomao1996/access-link.git"
+    "url": "git+https://github.com/maomao1996/tampermonkey-scripts.git"
   },
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/maomao1996/access-link/issues"
+    "url": "https://github.com/maomao1996/tampermonkey-scripts/issues"
   },
-  "homepage": "https://github.com/maomao1996/access-link#readme",
+  "homepage": "https://github.com/maomao1996/tampermonkey-scripts#readme",
   "devDependencies": {
     "typescript": "^3.7.5"
   },
