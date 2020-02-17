@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         慕课小助手
 // @namespace    https://github.com/maomao1996/tampermonkey-scripts
-// @version      0.1.0
+// @version      0.2.0
 // @description  慕课网问答区快速查看问答详情
 // @author       maomao1996
 // @include      *://coding.imooc.com/learn/qa/*
@@ -40,10 +40,11 @@
   .mm-modal-x {
     position: absolute;
     left: 50%;
-    top: 20%;
+    top: 15%;
     z-index: 2;
-    padding-top: 10px;
-    padding-bottom: 20px;
+    margin-bottom: 15%;
+    border-radius: 20px;
+    padding: 25px;
     width: 800px;
     background: #fff;
     transform: translateX(-50%);
@@ -60,6 +61,9 @@
   }
   .mm-modal .layout {
     padding: 0;
+  }
+  .mm-modal pre {
+    white-space: pre-line;
   }
 `)
 
@@ -86,7 +90,9 @@
       url: `http://coding.imooc.com/learn/questiondetail/${id}.html`,
       dataType: 'html',
       success(html: string) {
-        $('#mm-modal').show()
+        $('#mm-modal')
+          .show()
+          .scrollTop(0)
         $('#mm-content').html(html)
       }
     })
