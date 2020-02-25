@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         慕课小助手
 // @namespace    https://github.com/maomao1996/tampermonkey-scripts
-// @version      0.2.0
+// @version      0.2.1
 // @description  慕课网问答区快速查看问答详情
 // @author       maomao1996
 // @include      *://coding.imooc.com/learn/qa/*
@@ -87,7 +87,7 @@
     const id: string = $(this).data('id')
     $.ajax({
       type: 'get',
-      url: `http://coding.imooc.com/learn/questiondetail/${id}.html`,
+      url: `//coding.imooc.com/learn/questiondetail/${id}.html`,
       dataType: 'html',
       success(html: string) {
         $('#mm-modal')
