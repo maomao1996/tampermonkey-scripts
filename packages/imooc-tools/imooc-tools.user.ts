@@ -1,12 +1,13 @@
 // ==UserScript==
 // @name         慕课小助手
 // @namespace    https://github.com/maomao1996/tampermonkey-scripts
-// @version      0.2.1
-// @description  慕课网问答区快速查看问答详情
+// @version      0.3.0
+// @description  慕课网问答区快速查看问答详情、自动播放下一节视频
 // @author       maomao1996
 // @include      *://coding.imooc.com/learn/qa/*
+// @include      *://coding.imooc.com/lesson/*
 // @grant        none
-// @require		   https://cdn.jsdelivr.net/npm/jquery@v3.4.1
+// @require		   https://cdn.jsdelivr.net/npm/jquery@v1.11.3
 // ==/UserScript==
 
 ;(() => {
@@ -67,6 +68,10 @@
   }
 `)
 
+  /**
+   * 问答区
+   */
+
   // 获取按钮 html
   function getBntHtml(id: string): string {
     return (
@@ -77,13 +82,13 @@
   }
 
   // 插入弹窗 dom
-  function appendModal() {
+  function appendModal(): void {
     const modalHtml = `<div class="mm-modal" id="mm-modal"><div class="mm-mask"></div><div class="mm-modal-x" id="mm-content"></div></div>`
     $('body').append(modalHtml)
   }
 
   // 点击事件
-  function handleClick() {
+  function handleClick(): void {
     const id: string = $(this).data('id')
     $.ajax({
       type: 'get',
@@ -98,8 +103,8 @@
     })
   }
 
-  // 初始化操作
-  window.onload = () => {
+  // 问答区初始化
+  function qaInit(): void {
     $('.qa-item-title').each(function() {
       const id = $(this)
         .find('a')
@@ -113,5 +118,40 @@
       $('#mm-modal').hide()
     })
     $('#qa-list').on('click', '.mm-btn', handleClick)
+  }
+
+  /**
+   * 视频详情
+   */
+  // 初始化
+  function videoInit(): void {
+    setTimeout(() => {
+      $('video').on('ended', function() {
+        console.log('当前视频播放完毕，即将播放下一节')
+        $('.next-btn.js-next-media')[0]?.click()
+      })
+    }, 1e3)
+  }
+
+  // 初始化操作
+  window.onload = () => {
+    const { pathname } = location
+    const TYPE = pathname.substr(1, pathname.lastIndexOf('/') - 1)
+
+    switch (TYPE) {
+      // 问答区
+      case 'learn/qa':
+        console.log('问答区')
+        qaInit()
+        break
+      // 视频详情
+      case 'lesson':
+        console.log('视频详情')
+        videoInit()
+        $(window).on('hashchange', videoInit)
+        break
+      default:
+        break
+    }
   }
 })()
