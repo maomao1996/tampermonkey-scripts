@@ -1,21 +1,19 @@
 // ==UserScript==
 // @name         慕课小助手
 // @namespace    https://github.com/maomao1996/tampermonkey-scripts
-// @version      0.3.1
+// @version      0.3.2
 // @description  慕课网问答区快速查看问答详情、自动播放下一节视频
 // @author       maomao1996
 // @include      *://coding.imooc.com/learn/qa/*
 // @include      *://coding.imooc.com/lesson/*
 // @grant        none
-// @require		   https://cdn.jsdelivr.net/npm/jquery@v1.11.3
 // ==/UserScript==
 ;
 (function () {
     'use strict';
     // 问答区样式
     var STYLE_MAP = {
-        'learn/qa': ".mm-modal {\n      position: fixed;\n      top: 0;\n      right: 0;\n      bottom: 0;\n      left: 0;\n      z-index: 1996;\n      display: none;\n      overflow-y: auto;\n    }\n    .mm-mask {\n      position: fixed;\n      top: 0;\n      right: 0;\n      bottom: 0;\n      left: 0;\n      z-index: 1;\n      background-color: rgba(0, 0, 0, 0.5);\n    }\n    .mm-modal-x {\n      position: absolute;\n      left: 50%;\n      top: 15%;\n      z-index: 2;\n      margin-bottom: 15%;\n      border-radius: 20px;\n      padding: 25px;\n      width: 800px;\n      background: #fff;\n      transform: translateX(-50%);\n    }\n    .wrap,\n    #new_header .new-header,\n    .wenda-top-intro-box .wenda-top-intro-wrap {\n      width: 100%!important;\n    }\n    .layout .col-aside.wenda-col-aside,\n    .mm-model .elevator,\n    .mm-modal #footer {\n      display: none!important;\n    }\n    .mm-modal .layout {\n      padding: 0;\n    }\n    .mm-modal pre {\n      white-space: pre-line;\n    }",
-        lesson: "#chapter-scrollbar { overflow-y: auto; }"
+        'learn/qa': ".mm-modal {\n      position: fixed;\n      top: 0;\n      right: 0;\n      bottom: 0;\n      left: 0;\n      z-index: 1996;\n      display: none;\n      overflow-y: auto;\n    }\n    .mm-mask {\n      position: fixed;\n      top: 0;\n      right: 0;\n      bottom: 0;\n      left: 0;\n      z-index: 1;\n      background-color: rgba(0, 0, 0, 0.5);\n    }\n    .mm-modal-x {\n      position: absolute;\n      left: 50%;\n      top: 15%;\n      z-index: 2;\n      margin-bottom: 10%;\n      border-radius: 20px;\n      padding: 25px;\n      width: 780px;\n      min-height: 520px;\n      background: #fff;\n      transform: translateX(-50%);\n    }\n    .mm-modal-x::before {\n      position: absolute;\n      z-index: -1;\n      width: 100%;\n      content: '\u6570\u636E\u52A0\u8F7D\u4E2D...';\n      font-size: 24px;\n      text-align: center;\n      line-height: 520px;\n    }"
     };
     function addStyle(type) {
         var rules = STYLE_MAP[type];
@@ -31,40 +29,38 @@
     function getBntHtml(id) {
         return ('<a class="mm-btn" href="javascript:void(0)" data-id="' +
             id +
-            '">查看详情</a>');
+            '">弹窗查看</a>');
     }
     // 插入弹窗 dom
     function appendModal() {
-        var modalHtml = "<div class=\"mm-modal\" id=\"mm-modal\"><div class=\"mm-mask\"></div><div class=\"mm-modal-x\" id=\"mm-content\"></div></div>";
+        var modalHtml = '<div class="mm-modal" id="mm-modal"><div class="mm-mask"></div><div class="mm-modal-x"><iframe id="mm-content" width="100%" height="520" frameborder="0"></firame></div></div>';
         $('body').append(modalHtml);
     }
     // 点击事件
     function handleClick() {
         var id = $(this).data('id');
-        $.ajax({
-            type: 'get',
-            url: "//coding.imooc.com/learn/questiondetail/" + id + ".html",
-            dataType: 'html',
-            success: function (html) {
-                $('#mm-modal')
-                    .show()
-                    .scrollTop(0);
-                $('#mm-content').html(html);
-            }
+        $('#mm-modal').show().scrollTop(0);
+        var $content = $('iframe#mm-content');
+        $content
+            .attr('src', "//coding.imooc.com/learn/questiondetail/" + id + ".html")
+            .on('load', function () {
+            var iframeCtx = $(this).contents();
+            var style = "<style id=\"mm-style\">html {width: 780px!important;min-width: 780px!important;overflow-x:hidden} html .wrap {margin: 0 2px!important;}html .col-aside.wenda-col-aside {display: none}</style>";
+            iframeCtx.find('head').append(style);
+            var h = iframeCtx.height();
+            $content.attr('height', h);
         });
     }
     // 问答区初始化
     function qaInit() {
         $('.qa-item-title').each(function () {
-            var id = $(this)
-                .find('a')
-                .attr('href')
-                .replace(/\D/g, '');
+            var id = $(this).find('a').attr('href').replace(/\D/g, '');
             $(this).append(getBntHtml(id));
         });
         appendModal();
         $(document).on('click', '.mm-mask', function () {
             $('#mm-modal').hide();
+            $('#mm-content').attr({ src: '', height: 0 });
         });
         $('#qa-list').on('click', '.mm-btn', handleClick);
     }
@@ -82,7 +78,7 @@
         }, 2e3);
     }
     // 初始化操作
-    window.onload = function () {
+    $(window).on('load', function () {
         var pathname = location.pathname;
         var TYPE = pathname.substr(1, pathname.lastIndexOf('/') - 1);
         // 重置样式
@@ -102,5 +98,5 @@
             default:
                 break;
         }
-    };
+    });
 })();

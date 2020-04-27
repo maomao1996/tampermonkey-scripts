@@ -1,18 +1,16 @@
 // ==UserScript==
 // @name         慕课小助手
 // @namespace    https://github.com/maomao1996/tampermonkey-scripts
-// @version      0.3.1
+// @version      0.3.2
 // @description  慕课网问答区快速查看问答详情、自动播放下一节视频
 // @author       maomao1996
 // @include      *://coding.imooc.com/learn/qa/*
 // @include      *://coding.imooc.com/lesson/*
 // @grant        none
-// @require		   https://cdn.jsdelivr.net/npm/jquery@v1.11.3
 // ==/UserScript==
 
 interface StyleMap {
   'learn/qa': string
-  lesson: string
 }
 
 ;(() => {
@@ -44,30 +42,23 @@ interface StyleMap {
       left: 50%;
       top: 15%;
       z-index: 2;
-      margin-bottom: 15%;
+      margin-bottom: 10%;
       border-radius: 20px;
       padding: 25px;
-      width: 800px;
+      width: 780px;
+      min-height: 520px;
       background: #fff;
       transform: translateX(-50%);
     }
-    .wrap,
-    #new_header .new-header,
-    .wenda-top-intro-box .wenda-top-intro-wrap {
-      width: 100%!important;
-    }
-    .layout .col-aside.wenda-col-aside,
-    .mm-model .elevator,
-    .mm-modal #footer {
-      display: none!important;
-    }
-    .mm-modal .layout {
-      padding: 0;
-    }
-    .mm-modal pre {
-      white-space: pre-line;
-    }`,
-    lesson: `#chapter-scrollbar { overflow-y: auto; }`
+    .mm-modal-x::before {
+      position: absolute;
+      z-index: -1;
+      width: 100%;
+      content: '数据加载中...';
+      font-size: 24px;
+      text-align: center;
+      line-height: 520px;
+    }`
   }
 
   function addStyle(type: string): void {
@@ -87,45 +78,44 @@ interface StyleMap {
     return (
       '<a class="mm-btn" href="javascript:void(0)" data-id="' +
       id +
-      '">查看详情</a>'
+      '">弹窗查看</a>'
     )
   }
 
   // 插入弹窗 dom
   function appendModal(): void {
-    const modalHtml = `<div class="mm-modal" id="mm-modal"><div class="mm-mask"></div><div class="mm-modal-x" id="mm-content"></div></div>`
+    const modalHtml =
+      '<div class="mm-modal" id="mm-modal"><div class="mm-mask"></div><div class="mm-modal-x"><iframe id="mm-content" width="100%" height="520" frameborder="0"></firame></div></div>'
     $('body').append(modalHtml)
   }
 
   // 点击事件
   function handleClick(): void {
     const id: string = $(this).data('id')
-    $.ajax({
-      type: 'get',
-      url: `//coding.imooc.com/learn/questiondetail/${id}.html`,
-      dataType: 'html',
-      success(html: string) {
-        $('#mm-modal')
-          .show()
-          .scrollTop(0)
-        $('#mm-content').html(html)
-      }
-    })
+    $('#mm-modal').show().scrollTop(0)
+    const $content = $('iframe#mm-content')
+    $content
+      .attr('src', `//coding.imooc.com/learn/questiondetail/${id}.html`)
+      .on('load', function () {
+        const iframeCtx = $(this).contents()
+        const style: string = `<style id="mm-style">html {width: 780px!important;min-width: 780px!important;overflow-x:hidden} html .wrap {margin: 0 2px!important;}html .col-aside.wenda-col-aside {display: none}</style>`
+        iframeCtx.find('head').append(style)
+        const h: number = iframeCtx.height()
+        $content.attr('height', h)
+      })
   }
 
   // 问答区初始化
   function qaInit(): void {
-    $('.qa-item-title').each(function() {
-      const id = $(this)
-        .find('a')
-        .attr('href')
-        .replace(/\D/g, '')
+    $('.qa-item-title').each(function () {
+      const id = $(this).find('a').attr('href').replace(/\D/g, '')
       $(this).append(getBntHtml(id))
     })
 
     appendModal()
     $(document).on('click', '.mm-mask', () => {
       $('#mm-modal').hide()
+      $('#mm-content').attr({ src: '', height: 0 })
     })
     $('#qa-list').on('click', '.mm-btn', handleClick)
   }
@@ -136,7 +126,7 @@ interface StyleMap {
   // 初始化
   function videoInit(): void {
     setTimeout(() => {
-      $('video').on('ended', function() {
+      $('video').on('ended', function () {
         console.log('当前视频播放完毕，即将播放下一节')
         $('.next-btn.js-next-media')[0]?.click()
       })
@@ -144,7 +134,7 @@ interface StyleMap {
   }
 
   // 初始化操作
-  window.onload = () => {
+  $(window).on('load', () => {
     const { pathname } = location
     const TYPE = pathname.substr(1, pathname.lastIndexOf('/') - 1)
 
@@ -166,5 +156,5 @@ interface StyleMap {
       default:
         break
     }
-  }
+  })
 })()
