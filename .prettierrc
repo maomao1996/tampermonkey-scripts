@@ -1,5 +1,7 @@
 {
-  "semi": false,
   "singleQuote": true,
-  "spaceBeforeFunctionParen": true
+  "semi": false,
+  "trailingComma": "none",
+  "spaceBeforeFunctionParen": true,
+  "printWidth": 80
 }
