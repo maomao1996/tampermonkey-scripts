@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         慕课小助手
 // @namespace    https://github.com/maomao1996/tampermonkey-scripts
-// @version      0.3.2
+// @version      0.3.3
 // @description  慕课网问答区快速查看问答详情、自动播放下一节视频
 // @author       maomao1996
 // @include      *://coding.imooc.com/learn/qa/*
@@ -38,26 +38,29 @@ interface StyleMap {
       background-color: rgba(0, 0, 0, 0.5);
     }
     .mm-modal-x {
+      overflow: hidden;
       position: absolute;
+      top: 10%;
+      bottom: 5%;
       left: 50%;
-      top: 15%;
       z-index: 2;
-      margin-bottom: 10%;
       border-radius: 20px;
       padding: 25px;
       width: 780px;
-      min-height: 520px;
+      min-height: 480px;
       background: #fff;
       transform: translateX(-50%);
     }
     .mm-modal-x::before {
       position: absolute;
+      top: 0;
+      left: 0;
       z-index: -1;
       width: 100%;
       content: '数据加载中...';
       font-size: 24px;
       text-align: center;
-      line-height: 520px;
+      line-height: 480px;
     }`
   }
 
@@ -85,7 +88,7 @@ interface StyleMap {
   // 插入弹窗 dom
   function appendModal(): void {
     const modalHtml =
-      '<div class="mm-modal" id="mm-modal"><div class="mm-mask"></div><div class="mm-modal-x"><iframe id="mm-content" width="100%" height="520" frameborder="0"></firame></div></div>'
+      '<div class="mm-modal" id="mm-modal"><div class="mm-mask"></div><div class="mm-modal-x"><iframe id="mm-content" width="100%" height="100%" frameborder="0"></firame></div></div>'
     $('body').append(modalHtml)
   }
 
@@ -98,10 +101,8 @@ interface StyleMap {
       .attr('src', `//coding.imooc.com/learn/questiondetail/${id}.html`)
       .on('load', function () {
         const iframeCtx = $(this).contents()
-        const style: string = `<style id="mm-style">html {width: 780px!important;min-width: 780px!important;overflow-x:hidden} html .wrap {margin: 0 2px!important;}html .col-aside.wenda-col-aside {display: none}</style>`
+        const style: string = `<style id="mm-style">html {width: 780px!important;min-width: 780px!important;overflow-x:hidden} html .wrap {margin: 0 2px!important;}#new_header,#footer,html .col-aside.wenda-col-aside {display: none!important;}.layout{padding-bottom: 2px;}</style>`
         iframeCtx.find('head').append(style)
-        const h: number = iframeCtx.height()
-        $content.attr('height', h)
       })
   }
 
@@ -115,7 +116,7 @@ interface StyleMap {
     appendModal()
     $(document).on('click', '.mm-mask', () => {
       $('#mm-modal').hide()
-      $('#mm-content').attr({ src: '', height: 0 })
+      $('#mm-content').attr({ src: '' })
     })
     $('#qa-list').on('click', '.mm-btn', handleClick)
   }
