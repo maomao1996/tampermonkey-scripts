@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         慕课小助手
 // @namespace    https://github.com/maomao1996/tampermonkey-scripts
-// @version      0.3.3
+// @version      0.3.4
 // @description  慕课网问答区快速查看问答详情、自动播放下一节视频
 // @author       maomao1996
 // @include      *://coding.imooc.com/learn/qa/*
@@ -101,7 +101,7 @@ interface StyleMap {
       .attr('src', `//coding.imooc.com/learn/questiondetail/${id}.html`)
       .on('load', function () {
         const iframeCtx = $(this).contents()
-        const style: string = `<style id="mm-style">html {width: 780px!important;min-width: 780px!important;overflow-x:hidden} html .wrap {margin: 0 2px!important;}#new_header,#footer,html .col-aside.wenda-col-aside {display: none!important;}.layout{padding-bottom: 2px;}</style>`
+        const style: string = `<style id="mm-style">html {width: 780px!important;min-width: 780px!important;overflow-x:hidden} html .wrap {margin: 0 2px!important;}#new_header,#footer,html .col-aside.wenda-col-aside {display: none!important;}.layout{padding-bottom: 2px;} html .wenda-top-intro-box .wenda-top-intro-wrap {width: auto}</style>`
         iframeCtx.find('head').append(style)
       })
   }
