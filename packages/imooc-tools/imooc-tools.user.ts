@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         慕课小助手
 // @namespace    https://github.com/maomao1996/tampermonkey-scripts
-// @version      0.3.4
+// @version      0.3.5
 // @description  慕课网问答区快速查看问答详情、自动播放下一节视频
 // @author       maomao1996
 // @include      *://coding.imooc.com/learn/qa/*
@@ -127,11 +127,14 @@ interface StyleMap {
   // 初始化
   function videoInit(): void {
     setTimeout(() => {
-      $('video').on('ended', function () {
-        console.log('当前视频播放完毕，即将播放下一节')
-        $('.next-btn.js-next-media')[0]?.click()
-      })
-    }, 2e3)
+      $('#video-container-mocoplayer-hls-video_html5_api').on(
+        'ended',
+        function () {
+          console.log('当前视频播放完毕，即将播放下一节')
+          $('.next-btn.js-next-media')[0]?.click()
+        }
+      )
+    }, 3e3)
   }
 
   // 初始化操作
