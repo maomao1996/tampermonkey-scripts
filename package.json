@@ -4,7 +4,8 @@
   "description": "油猴插件库",
   "author": "maomao1996 <1714487678@qq.com>",
   "scripts": {
-    "build": "tsc"
+    "build": "tsc",
+    "c": "node bin/create.js"
   },
   "repository": {
     "type": "git",
@@ -16,6 +17,8 @@
   },
   "homepage": "https://github.com/maomao1996/tampermonkey-scripts#readme",
   "devDependencies": {
+    "chalk": "^4.1.0",
+    "inquirer": "^7.3.3",
     "typescript": "^3.7.5"
   },
   "dependencies": {
