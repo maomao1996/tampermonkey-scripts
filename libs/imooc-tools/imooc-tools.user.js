@@ -3,6 +3,7 @@
 // @namespace    https://github.com/maomao1996/tampermonkey-scripts
 // @version      0.3.5
 // @description  慕课网问答区快速查看问答详情、自动播放下一节视频
+// @icon         https://coding.m.imooc.com/static/wap/static/favicon.ico
 // @author       maomao1996
 // @include      *://coding.imooc.com/learn/qa/*
 // @include      *://coding.imooc.com/lesson/*
