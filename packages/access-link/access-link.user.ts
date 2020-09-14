@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         跳转链接修复
 // @namespace    https://github.com/maomao1996/tampermonkey-scripts
-// @version      0.3.1
+// @version      0.3.2
 // @description  为知乎、微信拦截页面增加跳转按钮（支持3秒后自动跳转）
 // @author       maomao1996
 // @include      *://weixin110.qq.com/cgi-bin/mmspamsupport-bin/*
@@ -47,11 +47,7 @@ interface Params {
     url = u
     target = t
     return (
-      '<a href="' +
-      u +
-      '" class="' +
-      cls +
-      '">继续访问 (3 秒后自动跳转)<a/>'
+      '<a href="' + u + '" class="' + cls + '">继续访问 (3 秒后自动跳转)<a/>'
     )
   }
 
@@ -60,7 +56,7 @@ interface Params {
       return (
         '<div class="weui-btn-area">' +
         initParams(
-          params.url!,
+          $('.weui-msg .weui-msg__desc').text(),
           '.weui-msg',
           'weui-btn weui-btn_plain-primary'
         ) +
