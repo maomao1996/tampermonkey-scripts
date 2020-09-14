@@ -1,13 +1,13 @@
 // ==UserScript==
 // @name         慕课小助手
 // @namespace    https://github.com/maomao1996/tampermonkey-scripts
-// @version      0.3.5
+// @version      0.3.6
 // @description  慕课网问答区快速查看问答详情、自动播放下一节视频
 // @icon         https://coding.m.imooc.com/static/wap/static/favicon.ico
 // @author       maomao1996
 // @include      *://coding.imooc.com/learn/qa/*
 // @include      *://coding.imooc.com/lesson/*
-// @grant        none
+// @grant        GM_addStyle
 // ==/UserScript==
 
 interface StyleMap {
@@ -70,7 +70,7 @@ interface StyleMap {
     if (!rules) {
       return
     }
-    $('head').append(`<style>${rules}</style>`)
+    GM_addStyle(rules)
   }
 
   /**
