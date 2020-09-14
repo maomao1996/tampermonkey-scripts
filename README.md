@@ -13,6 +13,7 @@
     - [🔧 插件功能](#-插件功能-1)
     - [💽 安装插件](#-安装插件-1)
     - [效果图](#效果图-1)
+  - [油猴 API 文档](#油猴-api-文档)
 
 ## access-link 跳转链接修复
 
@@ -47,3 +48,7 @@
 ### 效果图
 
 <img src="https://cdn.jsdelivr.net/gh/maomao1996/tampermonkey-scripts/screenshots/imooc-tools/1.png" width="520" alt="慕课网" align="center" />
+
+## 油猴 API 文档
+
+<https://www.tampermonkey.net/documentation.php?ext=dhdg&locale=zh>
