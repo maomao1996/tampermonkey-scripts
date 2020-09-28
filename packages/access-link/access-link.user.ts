@@ -1,11 +1,10 @@
 // ==UserScript==
 // @name         跳转链接修复
 // @namespace    https://github.com/maomao1996/tampermonkey-scripts
-// @version      0.3.2
+// @version      0.3.3
 // @description  为知乎、微信拦截页面增加跳转按钮（支持3秒后自动跳转）
 // @author       maomao1996
 // @include      *://weixin110.qq.com/cgi-bin/mmspamsupport-bin/*
-// @include      *://support.weixin.qq.com/cgi-bin/mmsupport-bin/*
 // @include      *://link.zhihu.com/*
 // @grant        none
 // @require		 https://cdn.jsdelivr.net/npm/jquery@v3.4.1
@@ -47,24 +46,17 @@ interface Params {
     url = u
     target = t
     return (
-      '<a href="' + u + '" class="' + cls + '">继续访问 (3 秒后自动跳转)<a/>'
+      '<a href="' + u + '" class="' + cls + '">继续访问 (3 秒后自动跳转)</a>'
     )
   }
 
   const fns = {
     'weixin110.qq.com'() {
-      return (
-        '<div class="weui-btn-area">' +
-        initParams(
-          $('.weui-msg .weui-msg__desc').text(),
-          '.weui-msg',
-          'weui-btn weui-btn_plain-primary'
-        ) +
-        '</div>'
+      return initParams(
+        $('.weui-msg .weui-msg__desc').text(),
+        '.weui-msg',
+        'weui-btn_cell weui-btn_cell-primary'
       )
-    },
-    'support.weixin.qq.com'() {
-      return initParams(params.url!, '#url')
     },
     'link.zhihu.com'() {
       insertion = 'html'
