@@ -9,7 +9,7 @@
     - [🔧 插件功能](#-插件功能)
     - [💽 安装插件](#-安装插件)
     - [效果图](#效果图)
-  - [imooc-tools 慕课小助手](#imooc-tools-慕课小助手)
+  - [imooc-helper 慕课小助手](#imooc-helper-慕课小助手)
     - [🔧 插件功能](#-插件功能-1)
     - [💽 安装插件](#-安装插件-1)
     - [效果图](#效果图-1)
@@ -34,7 +34,7 @@
 <img src="https://cdn.jsdelivr.net/gh/maomao1996/tampermonkey-scripts/screenshots/access-link/3.png" width="520" alt="微信" align="center" />
 <img src="https://cdn.jsdelivr.net/gh/maomao1996/tampermonkey-scripts/screenshots/access-link/4.png" width="520" alt="知乎" align="center" />
 
-## imooc-tools 慕课小助手
+## imooc-helper 慕课小助手
 
 ### 🔧 插件功能
 
@@ -43,11 +43,11 @@
 
 ### 💽 安装插件
 
-[imooc-tools 插件安装地址](https://greasyfork.org/zh-CN/scripts/396378)
+[imooc-helper 插件安装地址](https://greasyfork.org/zh-CN/scripts/396378)
 
 ### 效果图
 
-<img src="https://cdn.jsdelivr.net/gh/maomao1996/tampermonkey-scripts/screenshots/imooc-tools/1.png" width="520" alt="慕课网" align="center" />
+<img src="https://cdn.jsdelivr.net/gh/maomao1996/tampermonkey-scripts/screenshots/imooc-helper/1.png" width="520" alt="慕课网" align="center" />
 
 ## 油猴 API 文档
 
