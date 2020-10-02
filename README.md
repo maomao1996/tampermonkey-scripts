@@ -13,6 +13,9 @@
     - [🔧 插件功能](#-插件功能-1)
     - [💽 安装插件](#-安装插件-1)
     - [效果图](#效果图-1)
+  - [115-helper 115 小助手](#115-helper-115-小助手)
+    - [🔧 插件功能](#-插件功能-2)
+    - [💽 安装插件](#-安装插件-2)
   - [油猴 API 文档](#油猴-api-文档)
 
 ## access-link 跳转链接修复
@@ -48,6 +51,16 @@
 ### 效果图
 
 <img src="https://cdn.jsdelivr.net/gh/maomao1996/tampermonkey-scripts/screenshots/imooc-helper/1.png" width="520" alt="慕课网" align="center" />
+
+## 115-helper 115 小助手
+
+### 🔧 插件功能
+
+- [x] 顶部链接任务入口还原
+
+### 💽 安装插件
+
+[115-helper 插件安装地址](https://greasyfork.org/zh-CN/scripts/412317)
 
 ## 油猴 API 文档
 
