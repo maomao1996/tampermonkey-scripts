@@ -56,11 +56,11 @@
 
 ### 🔧 插件功能
 
-- [x] 顶部链接任务入口还原
+- [x] 还原顶部菜单栏链接任务入口
 
 ### 💽 安装插件
 
-[115-helper 插件安装地址](https://greasyfork.org/zh-CN/scripts/412317)
+[115-helper 插件安装地址](https://greasyfork.org/zh-CN/scripts/413142)
 
 ## 油猴 API 文档
 
