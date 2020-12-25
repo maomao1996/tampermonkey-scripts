@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name          贴吧小助手
 // @namespace     https://github.com/maomao1996/tampermonkey-scripts
-// @version       0.1.0
+// @version       0.1.1
 // @description   自动顶贴回复
 // @author        maomao1996
 // @include       *://tieba.baidu.com/p/*
@@ -29,11 +29,11 @@
         // 当前顶贴状态
         STATUS: false,
         // 顶帖最小间隔（分钟）
-        TIME_MIN: 2,
+        TIME_MIN: 1,
         // 顶帖最大间隔（分钟）
-        TIME_MAX: 10,
+        TIME_MAX: 30,
         // 顶贴回复内容
-        TEXT: ['1', '2', '3', '顶', '顶', '顶', '4', '5', '6'],
+        TEXT: ['顶', '顶', '顶'],
         // 定时器
         timer: null
     };
