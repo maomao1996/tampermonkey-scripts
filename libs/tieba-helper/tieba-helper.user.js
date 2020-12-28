@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name          贴吧小助手
 // @namespace     https://github.com/maomao1996/tampermonkey-scripts
-// @version       0.1.1
+// @version       0.1.2
 // @description   自动顶贴回复
 // @author        maomao1996
 // @include       *://tieba.baidu.com/p/*
@@ -49,13 +49,17 @@
                 submit: '.lzl_panel_submit.j_lzl_p_sb'
             };
             if (!$('#j_editor_for_container:visible').length) {
-                // 判断帖子是否存在一条回复
-                if ($('a.lzl_link_unfold').length) {
-                    // 打开楼中楼回复
+                var lzlPSelector = '.j_lzl_p.btn-sub.pull-right:visible';
+                // 是否存在一条打开的回复
+                if ($(lzlPSelector).length) {
+                    $(lzlPSelector).trigger('click');
+                }
+                // 是否打开楼中楼回复
+                else if ($('a.lzl_link_unfold:visible').length) {
                     $($('.lzl_link_unfold')[0]).trigger('click');
                 }
+                // 打开回复楼主
                 else {
-                    // 打开回复楼主
                     $('#quick_reply').trigger('click');
                     selectors.editor = '#ueditor_replace';
                     selectors.submit = '.j_submit.poster_submit';
