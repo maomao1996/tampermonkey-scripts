@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name          贴吧小助手
 // @namespace     https://github.com/maomao1996/tampermonkey-scripts
-// @version       0.2.0
+// @version       0.3.0
 // @description   自动顶贴回复、移除贴吧列表和帖子内部广告
 // @author        maomao1996
 // @include       *://tieba.baidu.com/p/*
@@ -11,6 +11,11 @@
 
 ;(() => {
   'use strict'
+  // 顶贴模式选项
+  const MODE_MAP = {
+    CUSTOMIZE: '自定义模式',
+    SENTENCE: '网络语句模式'
+  }
   /**
    * 插件配置
    **/
@@ -22,8 +27,10 @@
     TIME_MIN: 1,
     // 顶帖最大间隔（分钟）
     TIME_MAX: 30,
-    // 顶贴回复内容
+    // 自定义顶贴回复内容
     TEXT: ['顶', '顶~'],
+    // 顶贴模式（自定义模式、网络语句模式）
+    MODE: MODE_MAP.SENTENCE,
     // 定时器
     timer: null,
 
@@ -99,15 +106,38 @@
         }
       }
 
-      const index = random(0, CONFIG.TEXT.length - 1)
-      $(selectors.editor).text(CONFIG.TEXT[index])
-      $(selectors.submit).trigger('click')
+      // 提交回复
+      const submit = (text: string): void => {
+        $(selectors.editor).text(text)
+        $(selectors.submit).trigger('click')
 
-      const time = random(CONFIG.TIME_MIN, CONFIG.TIME_MAX, true) * 6e4
-      console.log(`${time / 1000}秒后自动顶贴回复`)
-      CONFIG.timer = setTimeout(() => {
-        runResponse()
-      }, time)
+        const time = random(CONFIG.TIME_MIN, CONFIG.TIME_MAX, true) * 6e4
+        console.log(`${time / 1000}秒后自动顶贴回复`)
+        CONFIG.timer = setTimeout(() => {
+          runResponse()
+        }, time)
+      }
+
+      // 语句模式
+      if (CONFIG.MODE === MODE_MAP.SENTENCE) {
+        // 调用一言 API 获取随机语句
+        $.ajax({
+          type: 'GET',
+          url: 'https://v1.hitokoto.cn',
+          dataType: 'json',
+          success(data) {
+            submit(data.hitokoto)
+          },
+          error(_jqXHR, textStatus, errorThrown) {
+            console.error(textStatus, errorThrown)
+          }
+        })
+      }
+      // 自定义模式
+      else {
+        const index = random(0, CONFIG.TEXT.length - 1)
+        submit(CONFIG.TEXT[index])
+      }
     }
 
     // 默认是否执行
