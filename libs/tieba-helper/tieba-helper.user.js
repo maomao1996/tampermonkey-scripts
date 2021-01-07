@@ -1,12 +1,13 @@
 // ==UserScript==
 // @name          贴吧小助手
 // @namespace     https://github.com/maomao1996/tampermonkey-scripts
-// @version       0.3.0
-// @description   自动顶贴回复、移除贴吧列表和帖子内部广告
+// @version       0.4.0
+// @description   自动顶贴回复、移除贴吧列表和帖子内部广告、移除碍眼模块
 // @author        maomao1996
 // @include       *://tieba.baidu.com/p/*
 // @include       *://tieba.baidu.com/f*
 // @grant         GM_notification
+// @grant         GM_addStyle
 // ==/UserScript==
 ;
 (function () {
@@ -38,7 +39,13 @@
         REMOVE_REFRESH_TIME: 1000
     };
     /**
-     * 随机函数
+     * 工具方法 - 消息通知
+     */
+    var message = function (text) {
+        GM_notification({ timeout: 2e3, text: text });
+    };
+    /**
+     * 工具方法 - 随机函数
      * https://github.com/lodash/lodash/blob/master/random.js
      */
     var random = function (lower, upper, floating) {
@@ -50,13 +57,27 @@
         return lower + Math.floor(Math.random() * (upper - lower + 1));
     };
     /**
-     * 移除元素
+     * 工具方法 - 移除元素
      */
     var removeHtmlElement = function (selector) {
         selector.each(function () {
             $(this).remove();
         });
     };
+    /**
+     * 移除碍眼模块
+     */
+    var moduleSelector = [
+        // 顶部会员按钮
+        '.u_member',
+        // 右侧会员模块
+        '.celebrity',
+        // 右侧 app 下载
+        '.app_download_box',
+        // 悬浮栏 app 下载
+        '.tbui_aside_fbar_button.tbui_fbar_down'
+    ];
+    GM_addStyle(moduleSelector.join(',') + '{display: none !important;}');
     /**
      * 顶帖模块
      **/
@@ -96,7 +117,7 @@
                 $(selectors.editor).text(text);
                 $(selectors.submit).trigger('click');
                 var time = random(CONFIG.TIME_MIN, CONFIG.TIME_MAX, true) * 6e4;
-                console.log(time / 1000 + "\u79D2\u540E\u81EA\u52A8\u9876\u8D34\u56DE\u590D");
+                console.log(time / 1e3 + "\u79D2\u540E\u81EA\u52A8\u9876\u8D34\u56DE\u590D");
                 CONFIG.timer = setTimeout(function () {
                     runResponse();
                 }, time);
@@ -126,11 +147,8 @@
         if (CONFIG.STATUS) {
             setTimeout(function () {
                 runResponse();
-                GM_notification({
-                    text: '已开启自动顶贴回复',
-                    timeout: 2000
-                });
-            }, 1000);
+                message('已开启自动顶贴回复');
+            }, 1e3);
         }
         // 顶贴控制函数
         $('#ding_btn').on('click', function () {
@@ -140,19 +158,13 @@
                 clearTimeout(CONFIG.timer);
                 CONFIG.timer = null;
                 $(this).text('开启自动顶贴回复');
-                GM_notification({
-                    text: '已关闭自动顶贴回复',
-                    timeout: 2000
-                });
+                message('已关闭自动顶贴回复');
             }
             else {
                 // 开启
                 CONFIG.STATUS = true;
                 $(this).text('关闭自动顶贴回复');
-                GM_notification({
-                    text: '已开启自动顶贴回复',
-                    timeout: 2000
-                });
+                message('已开启自动顶贴回复');
                 runResponse();
             }
         });
