@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         慕课小助手
 // @namespace    https://github.com/maomao1996/tampermonkey-scripts
-// @version      0.3.6
+// @version      0.3.7
 // @description  慕课网问答区快速查看问答详情、自动播放下一节视频
 // @icon         https://coding.m.imooc.com/static/wap/static/favicon.ico
 // @author       maomao1996
@@ -89,7 +89,7 @@ interface StyleMap {
   // 插入弹窗 dom
   function appendModal(): void {
     const modalHtml =
-      '<div class="mm-modal" id="mm-modal"><div class="mm-mask"></div><div class="mm-modal-x"><iframe id="mm-content" width="100%" height="100%" frameborder="0"></firame></div></div>'
+      '<div class="mm-modal" id="mm-modal"><div class="mm-mask"></div><div class="mm-modal-x"><iframe id="mm-content" width="100%" height="100%" frameborder="0"></iframe></div></div>'
     $('body').append(modalHtml)
   }
 
@@ -128,13 +128,10 @@ interface StyleMap {
   // 初始化
   function videoInit(): void {
     setTimeout(() => {
-      $('#video-container-mocoplayer-hls-video_html5_api').on(
-        'ended',
-        function () {
-          console.log('当前视频播放完毕，即将播放下一节')
-          $('.next-btn.js-next-media')[0]?.click()
-        }
-      )
+      $('#video-container-mocoplayer-hls-video_html5_api').on('ended', () => {
+        console.log('当前视频播放完毕，即将播放下一节')
+        $('.next-btn.js-next-media')[0]?.click()
+      })
     }, 3e3)
   }
 
