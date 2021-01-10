@@ -1,8 +1,9 @@
 // ==UserScript==
 // @name          贴吧小助手
 // @namespace     https://github.com/maomao1996/tampermonkey-scripts
-// @version       0.4.0
+// @version       0.4.1
 // @description   自动顶贴回复、移除贴吧列表和帖子内部广告、移除碍眼模块
+// @icon          https://tb1.bdstatic.com/tb/favicon.ico
 // @author        maomao1996
 // @include       *://tieba.baidu.com/p/*
 // @include       *://tieba.baidu.com/f*
@@ -21,23 +22,19 @@
    * 插件配置
    **/
   const CONFIG = {
-    /* 顶帖模块配置项 */
     // 当前顶贴状态（为 true 时默认执行）
     STATUS: false,
     // 顶帖最小间隔（分钟）
     TIME_MIN: 1,
     // 顶帖最大间隔（分钟）
     TIME_MAX: 30,
-    // 自定义顶贴回复内容
-    TEXT: ['顶', '顶~'],
     // 顶贴模式（自定义模式、网络语句模式）
     MODE: MODE_MAP.SENTENCE,
+    // 自定义顶贴回复内容 仅在顶贴模式为 MODE_MAP.CUSTOMIZE 时可用
+    TEXT: ['顶', '顶~'],
+    // ===== 非配置项 =====
     // 定时器
-    timer: null,
-
-    /* 广告模块配置项 */
-    // 广告移除刷新时间
-    REMOVE_REFRESH_TIME: 1000
+    timer: null
   }
 
   /**
@@ -210,9 +207,18 @@
       console.log('进入贴吧列表')
 
       // 移除贴吧列表广告
-      setInterval(function () {
-        removeHtmlElement($('#thread_list>li').not('.j_thread_list'))
-      }, CONFIG.REMOVE_REFRESH_TIME)
+      removeHtmlElement($('#thread_list>li').not('.j_thread_list'))
+      const adObserver = new MutationObserver((mutationsList) => {
+        mutationsList.forEach((mutation) => {
+          if (
+            mutation.type === 'childList' &&
+            $('li.clearfix .pull_right.label_text').length
+          ) {
+            removeHtmlElement($('#thread_list>li').not('.j_thread_list'))
+          }
+        })
+      })
+      adObserver.observe($('body')[0], { childList: true })
     }
   })
 })()
