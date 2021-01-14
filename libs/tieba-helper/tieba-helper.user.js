@@ -1,8 +1,8 @@
 // ==UserScript==
 // @name          贴吧小助手
 // @namespace     https://github.com/maomao1996/tampermonkey-scripts
-// @version       0.4.1
-// @description   自动顶贴回复、移除贴吧列表和帖子内部广告、移除碍眼模块
+// @version       0.5.0
+// @description   自动顶贴回复(立即回复)、移除贴吧列表和帖子内部广告、移除碍眼模块
 // @icon          https://tb1.bdstatic.com/tb/favicon.ico
 // @author        maomao1996
 // @include       *://tieba.baidu.com/p/*
@@ -36,6 +36,7 @@
         // 定时器
         timer: null
     };
+    var pathname = location.pathname;
     /**
      * 工具方法 - 消息通知
      */
@@ -80,8 +81,30 @@
      * 顶帖模块
      **/
     var autoResponse = function () {
+        if (!$('.core_title_btns.pull-right').length) {
+            return;
+        }
+        var appendResponseBtn = function () {
+            if (!$('#ding_btn').length) {
+                $('#quick_reply').after("<a id=\"ding_btn\" rel=\"noopener\" class=\"btn-sub btn-small\">" + (CONFIG.STATUS ? '关闭' : '开启') + "\u81EA\u52A8\u9876\u8D34\u56DE\u590D</a>");
+            }
+            if (CONFIG.STATUS && !$('#reply_immediate').length) {
+                $('#ding_btn').after('<a id="reply_immediate" rel="noopener" class="btn-sub btn-small">立即回复(重新计时)</a>');
+            }
+        };
         // 插入控制按钮
-        $('#quick_reply').after("<a id=\"ding_btn\" rel=\"noopener\" class=\"btn-sub btn-small\">" + (CONFIG.STATUS ? '关闭' : '开启') + "\u81EA\u52A8\u9876\u8D34\u56DE\u590D</a>");
+        appendResponseBtn();
+        // 监听控制按钮状态
+        var responseObserver = new MutationObserver(function (mutationsList) {
+            mutationsList.forEach(function (mutation) {
+                if (mutation.type === 'childList') {
+                    appendResponseBtn();
+                }
+            });
+        });
+        responseObserver.observe($('.core_title_btns.pull-right')[0], {
+            childList: true
+        });
         // 执行顶贴回复
         var runResponse = function () {
             if (!CONFIG.STATUS) {
@@ -141,6 +164,11 @@
                 submit(CONFIG.TEXT[index]);
             }
         };
+        // 清除定时器
+        var clearTimer = function () {
+            clearTimeout(CONFIG.timer);
+            CONFIG.timer = null;
+        };
         // 默认是否执行
         if (CONFIG.STATUS) {
             setTimeout(function () {
@@ -149,29 +177,33 @@
             }, 1e3);
         }
         // 顶贴控制函数
-        $('#ding_btn').on('click', function () {
+        $(document).on('click', '#ding_btn', function () {
             if (CONFIG.STATUS) {
                 // 关闭
                 CONFIG.STATUS = false;
-                clearTimeout(CONFIG.timer);
-                CONFIG.timer = null;
                 $(this).text('开启自动顶贴回复');
+                $('#reply_immediate').remove();
+                clearTimer();
                 message('已关闭自动顶贴回复');
             }
             else {
                 // 开启
                 CONFIG.STATUS = true;
                 $(this).text('关闭自动顶贴回复');
-                message('已开启自动顶贴回复');
                 runResponse();
+                appendResponseBtn();
+                message('已开启自动顶贴回复');
             }
+        });
+        $(document).on('click', '#reply_immediate', function () {
+            clearTimer();
+            runResponse();
         });
     };
     /**
      * 执行插件
      **/
     $(window).on('load', function () {
-        var pathname = location.pathname;
         // 贴子详情
         if (/^\/p\/\d{1,}$/.test(pathname)) {
             console.log('进入贴子详情');
