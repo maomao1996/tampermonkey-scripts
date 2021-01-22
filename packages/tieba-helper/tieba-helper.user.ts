@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name          贴吧小助手
 // @namespace     https://github.com/maomao1996/tampermonkey-scripts
-// @version       0.5.0
+// @version       0.5.1
 // @description   自动顶贴回复(立即回复)、移除贴吧列表和帖子内部广告、移除碍眼模块
 // @icon          https://tb1.bdstatic.com/tb/favicon.ico
 // @author        maomao1996
@@ -81,8 +81,20 @@
     '.celebrity',
     // 右侧 app 下载
     '.app_download_box',
-    // 悬浮栏 app 下载
-    '.tbui_aside_fbar_button.tbui_fbar_down'
+    // 悬浮栏 - app 下载
+    '.tbui_aside_fbar_button.tbui_fbar_down',
+    // 悬浮栏 - 魔法道具
+    'tbui_fbar_props',
+    // 悬浮栏 - 神来一句
+    '.tbui_fbar_tsukkomi',
+    // 勋章
+    '.icon_wrap.icon_wrap_theme1',
+    // ===== 贴子列表 =====
+    // ===== 贴子详情 =====
+    // 导航栏游戏按钮
+    '#j_navtab_game',
+    // 送TA礼物按钮
+    '.post-foot-send-gift-btn'
   ]
   GM_addStyle(moduleSelector.join(',') + '{display: none !important;}')
 
