@@ -40,3 +40,13 @@ declare function GM_notification(details: {
    **/
   onclick?(): void
 }): void
+
+/**
+ * 115 相关
+ **/
+declare const TOP: Window
+
+interface Window {
+  Core: any
+  UA$: any
+}
