@@ -4,7 +4,8 @@
   "description": "油猴插件库",
   "author": "maomao1996 <1714487678@qq.com>",
   "scripts": {
-    "build": "tsc",
+    "build": "rimraf libs && tsc",
+    "clean": "rimraf libs",
     "c": "node bin/create.js"
   },
   "repository": {
@@ -19,6 +20,7 @@
   "devDependencies": {
     "chalk": "^4.1.0",
     "inquirer": "^7.3.3",
+    "rimraf": "^3.0.2",
     "typescript": "^3.7.5"
   },
   "dependencies": {
