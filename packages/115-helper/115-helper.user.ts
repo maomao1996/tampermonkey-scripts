@@ -1,8 +1,8 @@
 // ==UserScript==
 // @name          115小助手
 // @namespace     https://github.com/maomao1996/tampermonkey-scripts
-// @version       0.2.0
-// @description   顶部链接任务入口还原、SHA1 快速查重（新页面打开）
+// @version       0.3.0
+// @description   顶部链接任务入口还原、SHA1 快速查重（新页面打开）、SHA1 查重列表支持选中第一个元素
 // @author        maomao1996
 // @include       *://115.com/*
 // @grant         none
@@ -16,6 +16,13 @@
     return
   }
 
+  const { search } = location
+
+  /**
+   * 工具方法 - url 中是否存在某个字符串
+   */
+  const urlHasString = (str: string): boolean => search.indexOf(str) > -1
+
   /**
    * 在顶部菜单添加链接任务按钮
    */
@@ -26,27 +33,25 @@
   }
 
   /**
-   * SHA1 查重
+   * 网盘列表 SHA1 查重
    */
   const initRepeatSha1 = (): void => {
     const addRepeatSha1Btn = () => {
       $('li[file_type="1"]').each(function () {
         if (!$(this).find('.repeat-sha1-btn').length) {
           $(this)
-            .find('a[menu_btn="more"]')
-            .before('<a class="repeat-sha1-btn"><span>SHA1查重</span></a>')
+            .find('a[menu="public_share"]')
+            .after('<a class="repeat-sha1-btn"><span>SHA1查重</span></a>')
         }
       })
     }
 
-    const observer = new MutationObserver((mutationsList) => {
+    const listObserver = new MutationObserver((mutationsList) => {
       mutationsList.forEach(({ type }) => {
         type === 'childList' && addRepeatSha1Btn()
       })
     })
-    observer.observe($('#js_data_list')[0], {
-      childList: true
-    })
+    listObserver.observe($('#js_data_list')[0], { childList: true })
 
     const handleRepeatSha1 = (file_id: string): void => {
       TOP.Core.MinMessage.Show({
@@ -64,7 +69,7 @@
           TOP.Core.MinMessage.Hide()
           if (state && data.length > 1) {
             window.open(
-              `//115.com/?tab=sha1_repeat&select=1&file_id=${file_id}&mode=wangpan`
+              `//115.com/?tab=sha1_repeat&file_id=${file_id}&mode=wangpan`
             )
           } else {
             TOP.Core.MinMessage.Show({
@@ -83,12 +88,40 @@
     })
   }
 
+  /**
+   * SHA1 查重列表（支持选中第一个元素）
+   */
+  const initRepeatSha1List = (): void => {
+    const listObserver = new MutationObserver((mutationsList) => {
+      mutationsList.forEach(({ type }) => {
+        if (type === 'childList') {
+          const $first = $('#js-list li:first-child')
+          if (!$first.attr('item')) {
+            $first.attr('item', 'file')
+            $first.find('i.file-type').removeProp('style')
+            $first
+              .children('.file-name-wrap')
+              .prepend('<b class="checkbox"></b>')
+          }
+        }
+      })
+    })
+    listObserver.observe($('#js-list')[0], { childList: true })
+  }
+
   // 初始化
   $(() => {
-    // 添加链接任务入口
-    addLinkTaskBtn()
+    // 网盘列表模块
+    if (urlHasString('cid=')) {
+      // 添加链接任务入口
+      addLinkTaskBtn()
 
-    // SHA1 查重
-    initRepeatSha1()
+      // SHA1 查重
+      initRepeatSha1()
+    }
+    // SHA1 查重列表模块
+    else if (urlHasString('tab=sha1_repeat')) {
+      initRepeatSha1List()
+    }
   })
 })()
