@@ -42,6 +42,34 @@ declare function GM_notification(details: {
 }): void
 
 /**
+ * 打开一个新的浏览器标签页
+ **/
+declare function GM_openInTab(
+  /**
+   * 打开指定的页面的URL
+   **/
+  url: string,
+  options?: {
+    /**
+     * 是否聚焦到新标签页(默认 false)
+     **/
+    active?: boolean
+    /**
+     * 是否在当前标签页之后插入(默认 true)
+     **/
+    insert?: boolean
+    /**
+     * 使浏览器将当前标签重新聚焦在关闭位置上
+     **/
+    setParent?: boolean
+    /**
+     * 使标签页在无痕模式下打开
+     **/
+    incognito?: boolean
+  }
+): void
+
+/**
  * 115 相关
  **/
 declare const TOP: Window
