@@ -1,8 +1,8 @@
 // ==UserScript==
 // @name          115小助手
 // @namespace     https://github.com/maomao1996/tampermonkey-scripts
-// @version       0.4.0
-// @description   顶部链接任务入口还原、SHA1 快速查重（新页面打开）、一键 SHA1 查重
+// @version       0.4.1
+// @description   顶部链接任务入口还原、SHA1 快速查重（新页面打开）、SHA1 查重列表支持选中第一个元素、SHA1 自动查重
 // @icon      	  https://115.com/favicon.ico
 // @author        maomao1996
 // @include       *://115.com/*
@@ -16,6 +16,7 @@
         return;
     }
     var search = location.search;
+    var MinMessage = TOP.Core.MinMessage;
     /**
      * 工具方法 - url 中是否存在某个字符串
      */
@@ -30,8 +31,10 @@
      * 网盘列表 SHA1 查重
      */
     var initRepeatSha1 = function () {
-        if (!$('#repeat-all-sha1-btn').length) {
-            $('#js_path_add_dir').after('<a id="repeat-all-sha1-btn" href="javascript:;" class="button btn-line" style="margin-left: 10px;"><span>一键SHA1查重</span></a>');
+        // 防止重复点击自动查重
+        var autoCheckDisabled = false;
+        if (!$('#auto-check-sha1-btn').length) {
+            $('#js_path_add_dir').after('<a id="auto-check-sha1-btn" href="javascript:;" class="button btn-line" style="margin-left: 10px;" title="只查询当前页码目录中的文件"><span>SHA1自动查重</span></a>');
         }
         var addRepeatSha1Btn = function () {
             $('li[file_type="1"]').each(function () {
@@ -45,21 +48,20 @@
         var listObserver = new MutationObserver(function (mutationsList) {
             mutationsList.forEach(function (_a) {
                 var type = _a.type;
-                type === 'childList' && addRepeatSha1Btn();
+                if (type === 'childList') {
+                    autoCheckDisabled = false;
+                    addRepeatSha1Btn();
+                }
             });
         });
         if ($('#js_data_list').length) {
             listObserver.observe($('#js_data_list')[0], { childList: true });
         }
-        var handleRepeatSha1 = function (file_id, isPrompt) {
-            if (isPrompt === void 0) { isPrompt = true; }
+        var handleRepeatSha1 = function (file_id, isAll) {
+            if (isAll === void 0) { isAll = false; }
             return new Promise(function (resolve) {
-                isPrompt &&
-                    TOP.Core.MinMessage.Show({
-                        text: '正在查找',
-                        type: 'load',
-                        timeout: 2e4
-                    });
+                !isAll &&
+                    MinMessage.Show({ text: '正在查找', type: 'load', timeout: 2e4 });
                 TOP.UA$.ajax({
                     url: '//webapi.115.com/files/get_repeat_sha',
                     data: { file_id: file_id },
@@ -68,14 +70,16 @@
                     type: 'GET',
                     success: function (_a) {
                         var state = _a.state, data = _a.data;
-                        isPrompt && TOP.Core.MinMessage.Hide();
+                        !isAll && MinMessage.Hide();
                         if (state && data.length > 1) {
-                            GM_openInTab("//115.com/?tab=sha1_repeat&file_id=" + file_id + "&mode=wangpan");
+                            GM_openInTab("//115.com/?tab=sha1_repeat&file_id=" + file_id + "&mode=wangpan", {
+                                active: !isAll
+                            });
                             resolve(true);
                         }
                         else {
-                            isPrompt &&
-                                TOP.Core.MinMessage.Show({
+                            !isAll &&
+                                MinMessage.Show({
                                     text: '没有重复文件',
                                     type: 'war',
                                     timeout: 2e3
@@ -92,29 +96,41 @@
         });
         // 一键 SHA1 查重
         var SHA1_MAP = {};
-        $(document).on('click', '#repeat-all-sha1-btn', function () {
+        $(document).on('click', '#auto-check-sha1-btn', function () {
+            if (autoCheckDisabled) {
+                MinMessage.Show({
+                    text: '已查询过当前页码所有文件，需再次查询请刷新页面',
+                    type: 'war',
+                    timeout: 2e3
+                });
+                return;
+            }
+            autoCheckDisabled = true;
             var $li = $('li[file_type="1"]');
             if (!$li.length || Object.keys(SHA1_MAP).length === $li.length) {
-                TOP.Core.MinMessage.Show({
+                MinMessage.Show({
                     text: '当前文件夹下没有可查重文件',
                     type: 'war',
                     timeout: 2e3
                 });
                 return;
             }
-            TOP.Core.MinMessage.Show({
-                text: '正在查找',
-                type: 'load',
-                timeout: 2e4
-            });
+            MinMessage.Show({ text: '正在查找', type: 'load', timeout: 2e4 });
             var index = 0;
+            // 重复数统计
+            var repeatCount = 0;
             var findRepeat = function () {
                 if (index >= $li.length) {
-                    TOP.Core.MinMessage.Show({
-                        text: '当前文件夹下没有可查重文件',
-                        type: 'war',
-                        timeout: 2e3
-                    });
+                    var options = { text: '', type: '', timeout: 2e3 };
+                    if (repeatCount) {
+                        options.text = "\u67E5\u8BE2\u5230 " + repeatCount + " \u4E2A\u91CD\u590D\u6587\u4EF6";
+                        options.type = 'suc';
+                    }
+                    else {
+                        options.text = '当前分页下没有可查重文件';
+                        options.type = 'war';
+                    }
+                    MinMessage.Show(options);
                     return;
                 }
                 var $currentLi = $li.eq(index);
@@ -123,15 +139,11 @@
                 index++;
                 if (fileId && sha1 && !SHA1_MAP[sha1]) {
                     SHA1_MAP[sha1] = 1;
-                    return handleRepeatSha1(fileId, false).then(function (flag) {
-                        if (!flag) {
-                            return findRepeat();
+                    return handleRepeatSha1(fileId, true).then(function (flag) {
+                        if (flag) {
+                            repeatCount++;
                         }
-                        TOP.Core.MinMessage.Show({
-                            text: "\u5DF2\u627E\u5230\u3010" + $currentLi.attr('title') + "\u3011\u7684\u91CD\u590D\u6587\u4EF6",
-                            type: 'suc',
-                            timeout: 2e3
-                        });
+                        return findRepeat();
                     });
                 }
                 return findRepeat();

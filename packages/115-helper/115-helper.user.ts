@@ -1,8 +1,8 @@
 // ==UserScript==
 // @name          115小助手
 // @namespace     https://github.com/maomao1996/tampermonkey-scripts
-// @version       0.4.0
-// @description   顶部链接任务入口还原、SHA1 快速查重（新页面打开）、一键 SHA1 查重
+// @version       0.4.1
+// @description   顶部链接任务入口还原、SHA1 快速查重（新页面打开）、SHA1 查重列表支持选中第一个元素、SHA1 自动查重
 // @icon      	  https://115.com/favicon.ico
 // @author        maomao1996
 // @include       *://115.com/*
@@ -18,6 +18,7 @@
   }
 
   const { search } = location
+  const { MinMessage } = TOP.Core
 
   /**
    * 工具方法 - url 中是否存在某个字符串
@@ -37,9 +38,12 @@
    * 网盘列表 SHA1 查重
    */
   const initRepeatSha1 = (): void => {
-    if (!$('#repeat-all-sha1-btn').length) {
+    // 防止重复点击自动查重
+    let autoCheckDisabled = false
+
+    if (!$('#auto-check-sha1-btn').length) {
       $('#js_path_add_dir').after(
-        '<a id="repeat-all-sha1-btn" href="javascript:;" class="button btn-line" style="margin-left: 10px;"><span>一键SHA1查重</span></a>'
+        '<a id="auto-check-sha1-btn" href="javascript:;" class="button btn-line" style="margin-left: 10px;" title="只查询当前页码目录中的文件"><span>SHA1自动查重</span></a>'
       )
     }
 
@@ -55,7 +59,10 @@
 
     const listObserver = new MutationObserver((mutationsList) => {
       mutationsList.forEach(({ type }) => {
-        type === 'childList' && addRepeatSha1Btn()
+        if (type === 'childList') {
+          autoCheckDisabled = false
+          addRepeatSha1Btn()
+        }
       })
     })
     if ($('#js_data_list').length) {
@@ -64,15 +71,11 @@
 
     const handleRepeatSha1 = (
       file_id: string,
-      isPrompt = true
+      isAll = false
     ): Promise<boolean> => {
       return new Promise((resolve) => {
-        isPrompt &&
-          TOP.Core.MinMessage.Show({
-            text: '正在查找',
-            type: 'load',
-            timeout: 2e4
-          })
+        !isAll &&
+          MinMessage.Show({ text: '正在查找', type: 'load', timeout: 2e4 })
         TOP.UA$.ajax({
           url: '//webapi.115.com/files/get_repeat_sha',
           data: { file_id },
@@ -80,15 +83,18 @@
           dataType: 'json',
           type: 'GET',
           success({ state, data }) {
-            isPrompt && TOP.Core.MinMessage.Hide()
+            !isAll && MinMessage.Hide()
             if (state && data.length > 1) {
               GM_openInTab(
-                `//115.com/?tab=sha1_repeat&file_id=${file_id}&mode=wangpan`
+                `//115.com/?tab=sha1_repeat&file_id=${file_id}&mode=wangpan`,
+                {
+                  active: !isAll
+                }
               )
               resolve(true)
             } else {
-              isPrompt &&
-                TOP.Core.MinMessage.Show({
+              !isAll &&
+                MinMessage.Show({
                   text: '没有重复文件',
                   type: 'war',
                   timeout: 2e3
@@ -107,11 +113,21 @@
 
     // 一键 SHA1 查重
     const SHA1_MAP = {}
-    $(document).on('click', '#repeat-all-sha1-btn', () => {
+    $(document).on('click', '#auto-check-sha1-btn', () => {
+      if (autoCheckDisabled) {
+        MinMessage.Show({
+          text: '已查询过当前页码所有文件，需再次查询请刷新页面',
+          type: 'war',
+          timeout: 2e3
+        })
+        return
+      }
+      autoCheckDisabled = true
+
       const $li = $('li[file_type="1"]')
 
       if (!$li.length || Object.keys(SHA1_MAP).length === $li.length) {
-        TOP.Core.MinMessage.Show({
+        MinMessage.Show({
           text: '当前文件夹下没有可查重文件',
           type: 'war',
           timeout: 2e3
@@ -119,21 +135,23 @@
         return
       }
 
-      TOP.Core.MinMessage.Show({
-        text: '正在查找',
-        type: 'load',
-        timeout: 2e4
-      })
+      MinMessage.Show({ text: '正在查找', type: 'load', timeout: 2e4 })
 
       let index = 0
+      // 重复数统计
+      let repeatCount = 0
 
       const findRepeat = () => {
         if (index >= $li.length) {
-          TOP.Core.MinMessage.Show({
-            text: '当前文件夹下没有可查重文件',
-            type: 'war',
-            timeout: 2e3
-          })
+          const options = { text: '', type: '', timeout: 2e3 }
+          if (repeatCount) {
+            options.text = `查询到 ${repeatCount} 个重复文件`
+            options.type = 'suc'
+          } else {
+            options.text = '当前分页下没有可查重文件'
+            options.type = 'war'
+          }
+          MinMessage.Show(options)
           return
         }
         const $currentLi = $li.eq(index)
@@ -142,15 +160,11 @@
         index++
         if (fileId && sha1 && !SHA1_MAP[sha1]) {
           SHA1_MAP[sha1] = 1
-          return handleRepeatSha1(fileId, false).then((flag) => {
-            if (!flag) {
-              return findRepeat()
+          return handleRepeatSha1(fileId, true).then((flag) => {
+            if (flag) {
+              repeatCount++
             }
-            TOP.Core.MinMessage.Show({
-              text: `已找到【${$currentLi.attr('title')}】的重复文件`,
-              type: 'suc',
-              timeout: 2e3
-            })
+            return findRepeat()
           })
         }
         return findRepeat()
