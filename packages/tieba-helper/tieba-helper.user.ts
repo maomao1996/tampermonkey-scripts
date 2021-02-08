@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name          贴吧小助手
 // @namespace     https://github.com/maomao1996/tampermonkey-scripts
-// @version       0.5.1
+// @version       0.5.2
 // @description   自动顶贴回复(立即回复)、移除贴吧列表和帖子内部广告、移除碍眼模块
 // @icon          https://tb1.bdstatic.com/tb/favicon.ico
 // @author        maomao1996
@@ -94,7 +94,9 @@
     // 导航栏游戏按钮
     '#j_navtab_game',
     // 送TA礼物按钮
-    '.post-foot-send-gift-btn'
+    '.post-foot-send-gift-btn',
+    // 开通超级会员发贴6倍经验
+    '.tb_poster_placeholder'
   ]
   GM_addStyle(moduleSelector.join(',') + '{display: none !important;}')
 
