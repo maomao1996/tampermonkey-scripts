@@ -70,6 +70,30 @@ declare function GM_openInTab(
 ): void
 
 /**
+ * 注册要显示在 Tampermonkey 菜单上的菜单
+ **/
+declare function GM_registerMenuCommand(
+  /**
+   * 菜单名称
+   **/
+  name: string,
+  /**
+   * 点击菜单的回调
+   **/
+  fn?: () => void,
+  accessKey?: string
+): number
+
+interface GMConfig {
+  get(key: string): any
+  [key: string]: any
+}
+/**
+ * 脚本设置
+ **/
+declare const GM_config: GMConfig
+
+/**
  * 115 相关
  **/
 declare const TOP: Window
@@ -77,4 +101,5 @@ declare const TOP: Window
 interface Window {
   Core: any
   UA$: any
+  Ext: any
 }

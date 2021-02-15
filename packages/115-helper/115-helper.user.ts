@@ -1,12 +1,14 @@
 // ==UserScript==
 // @name          115小助手
 // @namespace     https://github.com/maomao1996/tampermonkey-scripts
-// @version       0.5.0
-// @description   顶部链接任务入口还原、SHA1 快速查重（新页面打开）、SHA1 查重列表支持选中第一个元素、SHA1 自动查重、删除空文件夹
+// @version       0.6.0
+// @description   顶部链接任务入口还原、SHA1 快速查重（新页面打开）、SHA1 查重列表支持选中第一个元素、SHA1 自动查重、删除空文件夹、一键搜
 // @icon      	  https://115.com/favicon.ico
 // @author        maomao1996
 // @include       *://115.com/*
+// @grant         GM_registerMenuCommand
 // @grant         GM_openInTab
+// @require       https://greasyfork.org/scripts/398240-gm-config-zh-cn/code/G_zh-CN.js
 // ==/UserScript==
 
 ;(() => {
@@ -17,22 +19,116 @@
     return
   }
 
+  /**
+   * 脚本内部全局变量
+   */
   const { search } = location
   const { MinMessage } = TOP.Core
+
+  /**
+   * 脚本设置相关
+   */
+  const GMConfigOptions = {
+    id: 'Helper_Cfg',
+    title: '115 小助手',
+    css:
+      '#Helper_Cfg .config_var textarea{width: 310px; height: 50px;} #Helper_Cfg .inline {padding-bottom:0px;}#Helper_Cfg .config_var {margin-left: 20px;margin-right: 20px;} #Helper_Cfg input[type="checkbox"] {margin-left: 0px;vertical-align: top;} #Helper_Cfg input[type="text"] {width: 53px;} #Helper_Cfg {background-color: lightblue;} #Helper_Cfg .reset_holder {float: left; position: relative; bottom: -1.2em;}',
+    frameStyle: {
+      height: '520px',
+      width: '400px',
+      zIndex: '1314520'
+    },
+    fields: {
+      addTaskBtn: {
+        section: ['', '网盘顶部菜单相关设置'],
+        label: '网盘顶部菜单增加链接任务按钮',
+        labelPos: 'right',
+        type: 'checkbox',
+        default: true
+      },
+      addAutoSha1Btn: {
+        section: ['', '网盘路径栏相关设置'],
+        label: '网盘路径栏增加SHA1自动查重按钮',
+        labelPos: 'right',
+        type: 'checkbox',
+        default: true
+      },
+      addDeleteEmptyBtn: {
+        label: '网盘路径栏增加删除空文件夹按钮',
+        labelPos: 'right',
+        type: 'checkbox',
+        default: true
+      },
+      addSha1Btn: {
+        section: ['', '网盘列表悬浮菜单相关设置'],
+        label: '悬浮菜单增加SHA1查重按钮',
+        labelPos: 'right',
+        type: 'checkbox',
+        default: true
+      },
+      addSearchBtn: {
+        label: '悬浮菜单增加一键搜按钮',
+        labelPos: 'right',
+        type: 'checkbox',
+        default: true,
+        line: 'start'
+      },
+      searchMode: {
+        label: '一键搜打开编辑弹窗',
+        labelPos: 'right',
+        type: 'checkbox',
+        default: false,
+        line: 'end'
+      },
+      reminder: {
+        label: '温馨提示',
+        labelPos: 'right',
+        type: 'button',
+        click() {
+          alert(
+            `1. 为保证账号安全 SHA1 自动查重 功能使用了缓存机制（每个页码目录下的文件只会查询一次，如需再次查询请使用具体文件的 SHA1查重 按钮或刷新页面后再使用）
+2. 脚本设置保存后将会自动刷新页面
+3. 脚本加载有条件限制会造成设置弹窗不居中
+`
+          )
+        }
+      }
+    },
+    events: {
+      save() {
+        location.reload()
+        G.close()
+      }
+    }
+  }
+
+  type GetKey = keyof typeof GMConfigOptions['fields']
+  interface MGMConfig extends GMConfig {
+    get(key: GetKey): any
+  }
+
+  const G: MGMConfig = GM_config
+  G.init(GMConfigOptions)
+  GM_registerMenuCommand('设置', () => G.open())
 
   /**
    * 工具方法 - url 中是否存在某个字符串
    */
   const urlHasString = (str: string): boolean => search.indexOf(str) > -1
 
+  const getAidCid = (): any => {
+    try {
+      var main = TOP.Ext.CACHE.FileMain
+      return main.Setting.GetActive()
+    } catch (e) {
+      return { cid: 0 }
+    }
+  }
+
   /**
    * 在顶部菜单添加链接任务按钮
    */
   const addLinkTaskBtn = (): void => {
-    // 避免和其他插件冲突，只添加一次
-    if ($('a.btn-upload[menu="offline_task"]').length) {
-      return
-    }
     $('#js_top_panel_box .button[menu="upload"]').after(
       '<a href="javascript:;" class="button btn-line btn-upload" menu="offline_task"><i class="icon-operate ifo-linktask"></i><span>链接任务</span><em style="display:none;" class="num-dot"></em></a>'
     )
@@ -49,9 +145,16 @@
 
     // 顶部添加快捷操作按钮
     if (!$('.mm-quick-operation').length) {
-      $('#js_path_add_dir').after(
-        '<a href="javascript:;" class="button btn-line mm-quick-operation" type="auto-sha1" style="margin-left: 10px;" title="只查询当前页码目录中的文件"><span>SHA1自动查重</span></a><a href="javascript:;" class="button btn-line mm-quick-operation" type="delete-empty" style="margin-left: 10px;" title="只删除当前页码目录中的文件夹"><span>删除空文件夹</span></a>'
-      )
+      let operations = ''
+      if (G.get('addAutoSha1Btn')) {
+        operations +=
+          '<a href="javascript:;" class="button btn-line mm-quick-operation" type="auto-sha1" style="margin-left: 10px;" title="只查询当前页码目录中的文件"><span>SHA1自动查重</span></a>'
+      }
+      if (G.get('addDeleteEmptyBtn')) {
+        operations +=
+          '<a href="javascript:;" class="button btn-line mm-quick-operation" type="delete-empty" style="margin-left: 10px;" title="只删除当前页码目录中的文件夹"><span>删除空文件夹</span></a>'
+      }
+      $('#js_path_add_dir').after(operations)
     }
 
     const listObserver = new MutationObserver((mutationsList) => {
@@ -62,13 +165,18 @@
           if (!isList) {
             return
           }
-          $('li[file_type="1"]').each(function () {
+          $('li[rel="item"]').each(function () {
             if (!$(this).find('.mm-operation').length) {
-              $(this)
-                .find('a[menu="public_share"]')
-                .after(
+              let operations = ''
+              if (G.get('addSearchBtn')) {
+                operations +=
+                  '<a href="javascript:;" class="mm-operation" type="search"><span>一键搜</span></a>'
+              }
+              if (G.get('addSha1Btn') && $(this).attr('file_type') === '1') {
+                operations +=
                   '<a href="javascript:;" class="mm-operation" type="sha1"><span>SHA1查重</span></a>'
-                )
+              }
+              $(this).find('a[menu="public_share"]').after(operations)
             }
           })
         }
@@ -121,6 +229,52 @@
       })
     }
 
+    const handleSearch = (keyword: string): void => {
+      const { aid, cid, name } = getAidCid()
+
+      const openSearch = (value: string) => {
+        GM_openInTab(
+          `//115.com/?mode=search&submode=wangpan&url=${encodeURIComponent(
+            `/?aid=${aid}&cid=${cid}&old_cid=${cid}&old_cid_name=${name}&search_value=${value}&ct=file&ac=search&is_wl_tpl=1`
+          )}`,
+          { active: true }
+        )
+      }
+
+      if (!G.get('searchMode')) {
+        openSearch(keyword)
+        return
+      }
+
+      const content = $(
+        '<div class="dialog-input"><textarea rel="txt"></textarea></div><div class="dialog-action"><a href="javascript:;" class="dgac-confirm" btn="confirm">搜索</a></div>'
+      )
+      const $input = content.find("[rel='txt']")
+
+      $input.val(keyword)
+
+      const $dialog = new TOP.Core.DialogBase({
+        title: '115 小助手(编辑一键搜)',
+        content
+      })
+      const confirm = () => {
+        openSearch(($input.val() as string).trim())
+        $dialog.Close()
+      }
+
+      $input.on('keydown', function (e) {
+        switch (e.keyCode) {
+          case 13:
+            return confirm()
+          case 27:
+            return $dialog.Close()
+        }
+      })
+      content.find('[btn="confirm"]').on('click', confirm)
+      $dialog.Open()
+      $input.focus()
+    }
+
     // 单文件操作
     $(document).on('click', '.mm-operation', function () {
       const type = $(this).attr('type')
@@ -131,6 +285,10 @@
       switch (type) {
         case 'sha1':
           return handleRepeatSha1($li.attr('file_id'))
+        case 'search':
+          const ico = $li.attr('ico')
+          const title = $li.attr('title')
+          return handleSearch(title.replace(`.${ico}`, ''))
       }
     })
 
@@ -282,7 +440,7 @@
     // 网盘列表模块
     if (urlHasString('cid=')) {
       // 添加链接任务入口
-      addLinkTaskBtn()
+      G.get('addTaskBtn') && addLinkTaskBtn()
 
       // 快捷操作初始化
       initQuickOperation()
