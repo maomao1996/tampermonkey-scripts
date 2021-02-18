@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name          115小助手
 // @namespace     https://github.com/maomao1996/tampermonkey-scripts
-// @version       0.6.0
+// @version       0.6.1
 // @description   顶部链接任务入口还原、SHA1 快速查重（新页面打开）、SHA1 查重列表支持选中第一个元素、SHA1 自动查重、删除空文件夹、一键搜
 // @icon      	  https://115.com/favicon.ico
 // @author        maomao1996
@@ -221,11 +221,9 @@
       })
     }
 
-    const handleGetDetail = (aid: string, cid: string): Promise<boolean> => {
+    const handleGetDetail = (aid: string, cid: string): Promise<any> => {
       return new Promise((resolve) => {
-        TOP.Core.DataAccess.Dir.GetDetail(aid, cid, ({ size }) =>
-          resolve(size === '0B')
-        )
+        TOP.Core.DataAccess.Dir.GetDetail(aid, cid, (res) => resolve(res))
       })
     }
 
@@ -376,10 +374,12 @@
       Promise.all(files).then(function (result) {
         let emptyFolderCount = 0
         result.forEach((item, index) => {
-          if (item) {
+          const $current = $li.eq(index)
+          if (item.size === '0B') {
             emptyFolderCount++
-            $li.eq(index).find('[menu="file_check_one"]').trigger('click')
+            $current.find('[menu="file_check_one"]').trigger('click')
           }
+          $current.find('.file-size span').text(item.size)
         })
 
         if (emptyFolderCount === 0) {

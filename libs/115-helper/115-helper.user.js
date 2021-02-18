@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name          115小助手
 // @namespace     https://github.com/maomao1996/tampermonkey-scripts
-// @version       0.6.0
+// @version       0.6.1
 // @description   顶部链接任务入口还原、SHA1 快速查重（新页面打开）、SHA1 查重列表支持选中第一个元素、SHA1 自动查重、删除空文件夹、一键搜
 // @icon      	  https://115.com/favicon.ico
 // @author        maomao1996
@@ -197,10 +197,7 @@
         };
         var handleGetDetail = function (aid, cid) {
             return new Promise(function (resolve) {
-                TOP.Core.DataAccess.Dir.GetDetail(aid, cid, function (_a) {
-                    var size = _a.size;
-                    return resolve(size === '0B');
-                });
+                TOP.Core.DataAccess.Dir.GetDetail(aid, cid, function (res) { return resolve(res); });
             });
         };
         var handleSearch = function (keyword) {
@@ -326,10 +323,12 @@
             Promise.all(files).then(function (result) {
                 var emptyFolderCount = 0;
                 result.forEach(function (item, index) {
-                    if (item) {
+                    var $current = $li.eq(index);
+                    if (item.size === '0B') {
                         emptyFolderCount++;
-                        $li.eq(index).find('[menu="file_check_one"]').trigger('click');
+                        $current.find('[menu="file_check_one"]').trigger('click');
                     }
+                    $current.find('.file-size span').text(item.size);
                 });
                 if (emptyFolderCount === 0) {
                     MinMessage.Show({
