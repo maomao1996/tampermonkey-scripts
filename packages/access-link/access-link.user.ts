@@ -1,3 +1,4 @@
+/*!
 // ==UserScript==
 // @name         跳转链接修复
 // @namespace    https://github.com/maomao1996/tampermonkey-scripts
@@ -9,6 +10,7 @@
 // @grant        GM_notification
 // @require		   https://cdn.jsdelivr.net/npm/jquery@v3.4.1
 // ==/UserScript==
+*/
 
 interface Params {
   url?: string

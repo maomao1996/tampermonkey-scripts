@@ -7,7 +7,8 @@ const fs = require('fs')
 const _log = console.log
 
 // 脚本初始模板
-const getTemplate = (name) => `// ==UserScript==
+const getTemplate = (name) => `/*!
+// ==UserScript==
 // @name          ${name}
 // @namespace     https://github.com/maomao1996/tampermonkey-scripts
 // @version       0.0.1
@@ -16,6 +17,7 @@ const getTemplate = (name) => `// ==UserScript==
 // @include       *
 // @grant         none
 // ==/UserScript==
+*/
 
 ;(() => {
   'use strict'

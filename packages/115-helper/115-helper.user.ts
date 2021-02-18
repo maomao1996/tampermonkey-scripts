@@ -1,3 +1,4 @@
+/*!
 // ==UserScript==
 // @name          115小助手
 // @namespace     https://github.com/maomao1996/tampermonkey-scripts
@@ -10,6 +11,7 @@
 // @grant         GM_openInTab
 // @require       https://greasyfork.org/scripts/398240-gm-config-zh-cn/code/G_zh-CN.js
 // ==/UserScript==
+*/
 
 ;(() => {
   'use strict'

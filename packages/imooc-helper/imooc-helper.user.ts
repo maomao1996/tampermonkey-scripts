@@ -1,3 +1,4 @@
+/*!
 // ==UserScript==
 // @name         慕课小助手
 // @namespace    https://github.com/maomao1996/tampermonkey-scripts
@@ -9,6 +10,7 @@
 // @include      *://coding.imooc.com/lesson/*
 // @grant        GM_addStyle
 // ==/UserScript==
+*/
 
 interface StyleMap {
   'learn/qa': string

@@ -1,3 +1,4 @@
+/*!
 // ==UserScript==
 // @name          贴吧小助手
 // @namespace     https://github.com/maomao1996/tampermonkey-scripts
@@ -10,6 +11,7 @@
 // @grant         GM_notification
 // @grant         GM_addStyle
 // ==/UserScript==
+*/
 
 ;(() => {
   'use strict'
