@@ -2,24 +2,91 @@
 // ==UserScript==
 // @name          贴吧小助手
 // @namespace     https://github.com/maomao1996/tampermonkey-scripts
-// @version       0.5.2
+// @version       0.6.0
 // @description   自动顶贴回复(立即回复)、移除贴吧列表和帖子内部广告、移除碍眼模块
 // @icon          https://tb1.bdstatic.com/tb/favicon.ico
 // @author        maomao1996
-// @include       *://tieba.baidu.com/p/*
-// @include       *://tieba.baidu.com/f*
+// @include       *://tieba.baidu.com/*
+// @grant         GM_registerMenuCommand
 // @grant         GM_notification
 // @grant         GM_addStyle
+// @require       https://greasyfork.org/scripts/398240-gm-config-zh-cn/code/G_zh-CN.js
 // ==/UserScript==
 */
 
 ;(() => {
   'use strict'
-  // 顶贴模式选项
-  const MODE_MAP = {
-    CUSTOMIZE: '自定义模式',
-    SENTENCE: '网络语句模式'
+  /**
+   * 脚本设置相关
+   */
+  const GMConfigOptions = {
+    id: 'Helper_Cfg',
+    title: '贴吧小助手',
+    css:
+      '#Helper_Cfg .config_var textarea{max-width: 100%; width: 100%; min-height: 120px;} #Helper_Cfg .inline {padding-bottom:0px;}#Helper_Cfg .config_var {margin-left: 20px;margin-right: 20px;} #Helper_Cfg input[type="checkbox"] {margin-left: 0px;vertical-align: top;} #Helper_Cfg input[type="text"] {width: 60px;} #Helper_Cfg {background-color: lightblue;} #Helper_Cfg .reset_holder {float: left; position: relative; bottom: -1.2em;}',
+    frameStyle: {
+      zIndex: '1314520',
+      width: '400px',
+      height: '420px'
+    },
+    fields: {
+      removeAd: {
+        section: ['', '全局设置'],
+        label: '移除列表和详情页广告',
+        labelPos: 'right',
+        type: 'checkbox',
+        default: true
+      },
+      removeEyesore: {
+        label: '移除碍眼模块（app下载、勋章、送礼物、游戏按钮等）',
+        labelPos: 'right',
+        type: 'checkbox',
+        default: true
+      },
+      responseTimeMin: {
+        section: ['', '自动顶贴相关设置'],
+        label: '顶帖最小间隔（分钟）',
+        labelPos: 'left',
+        type: 'unsigned int',
+        default: '1'
+      },
+      responseTimeMax: {
+        label: '顶帖最大间隔（分钟）',
+        type: 'unsigned int',
+        default: '30'
+      },
+      responseMode: {
+        label: '顶贴模式选择',
+        labelPos: 'left',
+        type: 'select',
+        options: ['自定义模式', '网络语句模式'],
+        default: '网络语句模式'
+      },
+      customResponseText: {
+        label: '自定义模式回复内容（请按如下格式输入）',
+        type: 'textarea',
+        default: `沙发
+顶
+顶~`
+      }
+    },
+    events: {
+      save() {
+        location.reload()
+        G.close()
+      }
+    }
   }
+
+  type GetKey = keyof typeof GMConfigOptions['fields']
+  interface MGMConfig extends GMConfig {
+    get(key: GetKey): any
+  }
+
+  const G: MGMConfig = GM_config
+  G.init(GMConfigOptions)
+  GM_registerMenuCommand('设置', () => G.open())
+
   /**
    * 插件配置
    **/
@@ -27,13 +94,11 @@
     // 当前顶贴状态（为 true 时默认执行）
     STATUS: false,
     // 顶帖最小间隔（分钟）
-    TIME_MIN: 1,
+    TIME_MIN: Number(G.get('responseTimeMin')),
     // 顶帖最大间隔（分钟）
-    TIME_MAX: 30,
-    // 顶贴模式（自定义模式、网络语句模式）
-    MODE: MODE_MAP.SENTENCE,
-    // 自定义顶贴回复内容 仅在顶贴模式为 MODE_MAP.CUSTOMIZE 时可用
-    TEXT: ['顶', '顶~'],
+    TIME_MAX: Number(G.get('responseTimeMax')),
+    // 自定义顶贴回复内容 仅在顶贴模式为 自定义模式 时可用
+    TEXT: G.get('customResponseText').split('\n'),
     // ===== 非配置项 =====
     // 定时器
     timer: null
@@ -100,7 +165,8 @@
     // 开通超级会员发贴6倍经验
     '.tb_poster_placeholder'
   ]
-  GM_addStyle(moduleSelector.join(',') + '{display: none !important;}')
+  G.get('removeEyesore') &&
+    GM_addStyle(moduleSelector.join(',') + '{display:none !important;}')
 
   /**
    * 顶帖模块
@@ -151,22 +217,27 @@
         submit: '.lzl_panel_submit.j_lzl_p_sb'
       }
 
-      if (!$('#j_editor_for_container:visible').length) {
-        const lzlPSelector = '.j_lzl_p.btn-sub.pull-right:visible'
-        // 是否存在一条打开的回复
-        if ($(lzlPSelector).length) {
-          $(lzlPSelector).eq(0).trigger('click')
+      try {
+        if (!$('#j_editor_for_container:visible').length) {
+          const lzlPSelector = '.j_lzl_p.btn-sub.pull-right:visible'
+          // 是否存在一条打开的回复
+          if ($(lzlPSelector).length) {
+            $(lzlPSelector).eq(0).trigger('click')
+          }
+          // 是否打开楼中楼回复
+          else if ($('a.lzl_link_unfold:visible').length) {
+            $('a.lzl_link_unfold:visible').eq(0).trigger('click')
+          }
+          // 打开回复楼主
+          else {
+            $('#quick_reply').trigger('click')
+            selectors.editor = '#ueditor_replace'
+            selectors.submit = '.j_submit.poster_submit'
+          }
         }
-        // 是否打开楼中楼回复
-        else if ($('a.lzl_link_unfold:visible').length) {
-          $('a.lzl_link_unfold:visible').eq(0).trigger('click')
-        }
-        // 打开回复楼主
-        else {
-          $('#quick_reply').trigger('click')
-          selectors.editor = '#ueditor_replace'
-          selectors.submit = '.j_submit.poster_submit'
-        }
+      } catch (error) {
+        message('自动回复出错，请刷新页面后重试！')
+        console.log('runResponse', error)
       }
 
       // 提交回复
@@ -182,7 +253,7 @@
       }
 
       // 语句模式
-      if (CONFIG.MODE === MODE_MAP.SENTENCE) {
+      if (G.get('responseMode') === '网络语句模式') {
         // 调用一言 API 获取随机语句
         $.ajax({
           type: 'GET',
@@ -253,13 +324,16 @@
       autoResponse()
 
       // 移除帖子内部广告
-      removeHtmlElement($('div[ad-dom-img="true"]'))
+      G.get('removeAd') && removeHtmlElement($('div[ad-dom-img="true"]'))
     }
     // 贴吧列表
     else if (pathname === '/f') {
       console.log('进入贴吧列表')
 
       // 移除贴吧列表广告
+      if (!G.get('removeAd')) {
+        return
+      }
       removeHtmlElement($('#thread_list>li').not('.j_thread_list'))
       const adObserver = new MutationObserver((mutationsList) => {
         mutationsList.forEach((mutation) => {
