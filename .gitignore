@@ -13,4 +13,4 @@ yarn-error.log*
 *.njsproj
 *.sln
 
-packages/*/*.js
+packages/**/*.js
