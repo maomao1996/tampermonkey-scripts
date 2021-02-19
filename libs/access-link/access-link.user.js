@@ -1,7 +1,8 @@
+/*!
 // ==UserScript==
 // @name         跳转链接修复
 // @namespace    https://github.com/maomao1996/tampermonkey-scripts
-// @version      0.3.6
+// @version      0.3.7
 // @description  为知乎、微信拦截页面增加跳转按钮（支持3秒后自动跳转）
 // @author       maomao1996
 // @include      *://weixin110.qq.com/cgi-bin/mmspamsupport-bin/*
@@ -9,6 +10,7 @@
 // @grant        GM_notification
 // @require		   https://cdn.jsdelivr.net/npm/jquery@v3.4.1
 // ==/UserScript==
+*/
 ;
 (function () {
     'use strict';

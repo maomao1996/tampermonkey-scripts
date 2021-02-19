@@ -1,7 +1,8 @@
+/*!
 // ==UserScript==
 // @name          115小助手
 // @namespace     https://github.com/maomao1996/tampermonkey-scripts
-// @version       0.6.1
+// @version       0.6.2
 // @description   顶部链接任务入口还原、SHA1 快速查重（新页面打开）、SHA1 查重列表支持选中第一个元素、SHA1 自动查重、删除空文件夹、一键搜
 // @icon      	  https://115.com/favicon.ico
 // @author        maomao1996
@@ -10,21 +11,15 @@
 // @grant         GM_openInTab
 // @require       https://greasyfork.org/scripts/398240-gm-config-zh-cn/code/G_zh-CN.js
 // ==/UserScript==
+*/
 ;
 (function () {
     'use strict';
-    // 过滤非 iframe 和 iframe 套娃场景 场景
     if (window.self === window.top || typeof TOP === 'undefined') {
         return;
     }
-    /**
-     * 脚本内部全局变量
-     */
     var search = location.search;
     var MinMessage = TOP.Core.MinMessage;
-    /**
-     * 脚本设置相关
-     */
     var GMConfigOptions = {
         id: 'Helper_Cfg',
         title: '115 小助手',
@@ -95,9 +90,6 @@
     var G = GM_config;
     G.init(GMConfigOptions);
     GM_registerMenuCommand('设置', function () { return G.open(); });
-    /**
-     * 工具方法 - url 中是否存在某个字符串
-     */
     var urlHasString = function (str) { return search.indexOf(str) > -1; };
     var getAidCid = function () {
         try {
@@ -108,21 +100,11 @@
             return { cid: 0 };
         }
     };
-    /**
-     * 在顶部菜单添加链接任务按钮
-     */
     var addLinkTaskBtn = function () {
         $('#js_top_panel_box .button[menu="upload"]').after('<a href="javascript:;" class="button btn-line btn-upload" menu="offline_task"><i class="icon-operate ifo-linktask"></i><span>链接任务</span><em style="display:none;" class="num-dot"></em></a>');
     };
-    /**
-     * 快捷操作增强
-     *  - SHA1查重
-     *  - 删除空文件夹
-     */
     var initQuickOperation = function () {
-        // 防止重复点击自动查重
         var autoCheckDisabled = false;
-        // 顶部添加快捷操作按钮
         if (!$('.mm-quick-operation').length) {
             var operations = '';
             if (G.get('addAutoSha1Btn')) {
@@ -232,7 +214,6 @@
             $dialog.Open();
             $input.focus();
         };
-        // 单文件操作
         $(document).on('click', '.mm-operation', function () {
             var type = $(this).attr('type');
             var $li = $(this).parents('li');
@@ -248,7 +229,6 @@
                     return handleSearch(title.replace("." + ico, ''));
             }
         });
-        // SHA1 自动查重
         var SHA1_MAP = {};
         var handleAutoCheckSha1 = function () {
             if (autoCheckDisabled) {
@@ -271,7 +251,6 @@
             }
             MinMessage.Show({ text: '正在查找', type: 'load', timeout: 2e5 });
             var index = 0;
-            // 重复数统计
             var repeatCount = 0;
             var findRepeat = function () {
                 if (index >= $li.length) {
@@ -304,7 +283,6 @@
             };
             findRepeat();
         };
-        // 删除空文件夹
         var handleDeleteEmptyFolder = function () {
             var $li = $('li[file_type="0"]');
             if (!$li.length) {
@@ -345,25 +323,19 @@
                 }
             });
         };
-        // 快捷操作
         $(document).on('click', '.mm-quick-operation', function () {
             var type = $(this).attr('type');
             if (!type) {
                 return;
             }
             switch (type) {
-                // SHA1 自动查重
                 case 'auto-sha1':
                     return handleAutoCheckSha1();
-                // 删除空文件夹
                 case 'delete-empty':
                     return handleDeleteEmptyFolder();
             }
         });
     };
-    /**
-     * SHA1 查重列表（支持选中第一个元素）
-     */
     var initRepeatSha1List = function () {
         var listObserver = new MutationObserver(function (mutationsList) {
             mutationsList.forEach(function (_a) {
@@ -382,16 +354,11 @@
         });
         listObserver.observe($('#js-list')[0], { childList: true });
     };
-    // 初始化
     $(function () {
-        // 网盘列表模块
         if (urlHasString('cid=')) {
-            // 添加链接任务入口
             G.get('addTaskBtn') && addLinkTaskBtn();
-            // 快捷操作初始化
             initQuickOperation();
         }
-        // SHA1 查重列表模块
         else if (urlHasString('tab=sha1_repeat')) {
             initRepeatSha1List();
         }
