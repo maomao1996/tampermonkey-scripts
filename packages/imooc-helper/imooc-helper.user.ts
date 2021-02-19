@@ -2,7 +2,7 @@
 // ==UserScript==
 // @name         慕课小助手
 // @namespace    https://github.com/maomao1996/tampermonkey-scripts
-// @version      0.3.7
+// @version      0.3.8
 // @description  慕课网问答区快速查看问答详情、自动播放下一节视频
 // @icon         https://coding.m.imooc.com/static/wap/static/favicon.ico
 // @author       maomao1996
