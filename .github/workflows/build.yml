@@ -1,0 +1,29 @@
+name: GitHub Actions Build
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  bot:
+    runs-on: ubuntu-latest
+    steps:
+      # 拉取代码
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          persist-credentials: false
+      # 编译代码
+      - name: Run Script
+        run: yarn && yarn build
+      # 提交代码
+      - name: Push
+        uses: github-actions-x/commit@v2.7
+        with:
+          github-token: ${{ secrets.ACCESS_TOKEN }}
+          push-branch: master
+          commit-message: 'Update libs by Github Actions'
+          files: libs/
+          name: maomao1996
+          email: 1714487678@qq.com
