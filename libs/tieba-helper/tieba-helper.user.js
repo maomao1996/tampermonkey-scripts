@@ -2,7 +2,7 @@
 // ==UserScript==
 // @name          贴吧小助手
 // @namespace     https://github.com/maomao1996/tampermonkey-scripts
-// @version       0.6.0
+// @version       0.6.1
 // @description   自动顶贴回复(立即回复)、移除贴吧列表和帖子内部广告、移除碍眼模块
 // @icon          https://tb1.bdstatic.com/tb/favicon.ico
 // @author        maomao1996
@@ -23,7 +23,7 @@
         frameStyle: {
             zIndex: '1314520',
             width: '400px',
-            height: '420px'
+            height: '520px'
         },
         fields: {
             removeAd: {
@@ -232,7 +232,9 @@
             if (!G.get('removeAd')) {
                 return;
             }
-            removeHtmlElement($('#thread_list>li').not('.j_thread_list'));
+            removeHtmlElement($('#thread_list>li span.pull_right.label_text')
+                .parents('li.clearfix')
+                .not('.j_thread_list'));
             var adObserver = new MutationObserver(function (mutationsList) {
                 mutationsList.forEach(function (mutation) {
                     if (mutation.type === 'childList' &&
