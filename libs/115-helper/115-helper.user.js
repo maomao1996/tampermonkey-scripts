@@ -2,8 +2,8 @@
 // ==UserScript==
 // @name          115小助手
 // @namespace     https://github.com/maomao1996/tampermonkey-scripts
-// @version       0.6.2
-// @description   顶部链接任务入口还原、SHA1 快速查重（新页面打开）、SHA1 查重列表支持选中第一个元素、SHA1 自动查重、删除空文件夹、一键搜
+// @version       0.6.3
+// @description   顶部链接任务入口还原、SHA1 快速查重（新页面打开）、SHA1 查重列表支持选中第一个元素、SHA1 自动查重、删除空文件夹、一键搜（快捷搜索）
 // @icon      	  https://115.com/favicon.ico
 // @author        maomao1996
 // @include       *://115.com/*
@@ -18,8 +18,8 @@
     if (window.self === window.top || typeof TOP === 'undefined') {
         return;
     }
-    var search = location.search;
-    var MinMessage = TOP.Core.MinMessage;
+    var search = top.location.search;
+    var MinMessage = top.Core.MinMessage;
     var GMConfigOptions = {
         id: 'Helper_Cfg',
         title: '115 小助手',
@@ -57,15 +57,21 @@
                 type: 'checkbox',
                 default: true
             },
-            addSearchBtn: {
+            'quickSearch.addBtn': {
                 label: '悬浮菜单增加一键搜按钮',
                 labelPos: 'right',
                 type: 'checkbox',
                 default: true,
                 line: 'start'
             },
-            searchMode: {
-                label: '一键搜打开编辑弹窗',
+            'quickSearch.edit': {
+                label: '打开编辑弹窗再搜索',
+                labelPos: 'right',
+                type: 'checkbox',
+                default: false
+            },
+            'quickSearch.isAll': {
+                label: '默认搜索全部',
                 labelPos: 'right',
                 type: 'checkbox',
                 default: false,
@@ -93,7 +99,7 @@
     var urlHasString = function (str) { return search.indexOf(str) > -1; };
     var getAidCid = function () {
         try {
-            var main = TOP.Ext.CACHE.FileMain;
+            var main = top.Ext.CACHE.FileMain;
             return main.Setting.GetActive();
         }
         catch (e) {
@@ -108,12 +114,10 @@
         if (!$('.mm-quick-operation').length) {
             var operations = '';
             if (G.get('addAutoSha1Btn')) {
-                operations +=
-                    '<a href="javascript:;" class="button btn-line mm-quick-operation" type="auto-sha1" style="margin-left: 10px;" title="只查询当前页码目录中的文件"><span>SHA1自动查重</span></a>';
+                operations += "<a href=\"javascript:;\" class=\"button btn-line mm-quick-operation\" type=\"auto-sha1\" style=\"margin-left: 10px;\" title=\"\u53EA\u67E5\u8BE2\u5F53\u524D\u9875\u7801\u76EE\u5F55\u4E2D\u7684\u6587\u4EF6\"><span>SHA1\u81EA\u52A8\u67E5\u91CD</span></a>";
             }
             if (G.get('addDeleteEmptyBtn')) {
-                operations +=
-                    '<a href="javascript:;" class="button btn-line mm-quick-operation" type="delete-empty" style="margin-left: 10px;" title="只删除当前页码目录中的文件夹"><span>删除空文件夹</span></a>';
+                operations += "<a href=\"javascript:;\" class=\"button btn-line mm-quick-operation\" type=\"delete-empty\" style=\"margin-left: 10px;\" title=\"\u53EA\u5220\u9664\u5F53\u524D\u9875\u7801\u76EE\u5F55\u4E2D\u7684\u6587\u4EF6\u5939\"><span>\u5220\u9664\u7A7A\u6587\u4EF6\u5939</span></a>";
             }
             $('#js_path_add_dir').after(operations);
         }
@@ -129,13 +133,11 @@
                     $('li[rel="item"]').each(function () {
                         if (!$(this).find('.mm-operation').length) {
                             var operations = '';
-                            if (G.get('addSearchBtn')) {
-                                operations +=
-                                    '<a href="javascript:;" class="mm-operation" type="search"><span>一键搜</span></a>';
+                            if (G.get('quickSearch.addBtn')) {
+                                operations += "<a href=\"javascript:;\" class=\"mm-operation\" type=\"search\"><span>\u4E00\u952E\u641C</span></a>";
                             }
                             if (G.get('addSha1Btn') && $(this).attr('file_type') === '1') {
-                                operations +=
-                                    '<a href="javascript:;" class="mm-operation" type="sha1"><span>SHA1查重</span></a>';
+                                operations += "<a href=\"javascript:;\" class=\"mm-operation\" type=\"sha1\"><span>SHA1\u67E5\u91CD</span></a>";
                             }
                             $(this).find('a[menu="public_share"]').after(operations);
                         }
@@ -151,7 +153,7 @@
             return new Promise(function (resolve) {
                 !isAll &&
                     MinMessage.Show({ text: '正在查找', type: 'load', timeout: 2e5 });
-                TOP.UA$.ajax({
+                top.UA$.ajax({
                     url: '//webapi.115.com/files/get_repeat_sha',
                     data: { file_id: file_id },
                     xhrFields: { withCredentials: !0 },
@@ -179,22 +181,22 @@
         };
         var handleGetDetail = function (aid, cid) {
             return new Promise(function (resolve) {
-                TOP.Core.DataAccess.Dir.GetDetail(aid, cid, function (res) { return resolve(res); });
+                top.Core.DataAccess.Dir.GetDetail(aid, cid, function (res) { return resolve(res); });
             });
         };
         var handleSearch = function (keyword) {
             var _a = getAidCid(), aid = _a.aid, cid = _a.cid, name = _a.name;
             var openSearch = function (value) {
-                GM_openInTab("//115.com/?mode=search&submode=wangpan&url=" + encodeURIComponent("/?aid=" + aid + "&cid=" + cid + "&old_cid=" + cid + "&old_cid_name=" + name + "&search_value=" + value + "&ct=file&ac=search&is_wl_tpl=1"), { active: true });
+                GM_openInTab("//115.com/?mode=search&submode=wangpan&url=" + encodeURIComponent("/?aid=" + aid + "&cid=" + (G.get('quickSearch.isAll') ? 0 : cid) + "&old_cid=" + cid + "&old_cid_name=" + name + "&search_value=" + value + "&ct=file&ac=search&is_wl_tpl=1"), { active: true });
             };
-            if (!G.get('searchMode')) {
+            if (!G.get('quickSearch.edit')) {
                 openSearch(keyword);
                 return;
             }
             var content = $('<div class="dialog-input"><textarea rel="txt"></textarea></div><div class="dialog-action"><a href="javascript:;" class="dgac-confirm" btn="confirm">搜索</a></div>');
             var $input = content.find("[rel='txt']");
             $input.val(keyword);
-            var $dialog = new TOP.Core.DialogBase({
+            var $dialog = new top.Core.DialogBase({
                 title: '115 小助手(编辑一键搜)',
                 content: content
             });
