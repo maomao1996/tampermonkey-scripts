@@ -2,7 +2,7 @@
 // ==UserScript==
 // @name          115小助手
 // @namespace     https://github.com/maomao1996/tampermonkey-scripts
-// @version       0.6.3
+// @version       0.6.4
 // @description   顶部链接任务入口还原、SHA1 快速查重（新页面打开）、SHA1 查重列表支持选中第一个元素、SHA1 自动查重、删除空文件夹、一键搜（快捷搜索）
 // @icon      	  https://115.com/favicon.ico
 // @author        maomao1996
@@ -10,6 +10,7 @@
 // @grant         GM_registerMenuCommand
 // @grant         GM_openInTab
 // @require       https://greasyfork.org/scripts/398240-gm-config-zh-cn/code/G_zh-CN.js
+// @run-at        document-end
 // ==/UserScript==
 */
 ;
@@ -27,7 +28,7 @@
         frameStyle: {
             height: '520px',
             width: '400px',
-            zIndex: '1314520'
+            zIndex: '13145201996'
         },
         fields: {
             addTaskBtn: {
@@ -77,12 +78,20 @@
                 default: false,
                 line: 'end'
             },
+            'sha1Repeat.addCheckbox': {
+                section: ['', 'SHA1 查重列表模块(重复文件列表)'],
+                label: '增加第一个文件选中按钮',
+                labelPos: 'right',
+                type: 'checkbox',
+                default: true
+            },
             reminder: {
+                section: ['', '其他'],
                 label: '温馨提示',
                 labelPos: 'right',
                 type: 'button',
                 click: function () {
-                    alert("1. \u4E3A\u4FDD\u8BC1\u8D26\u53F7\u5B89\u5168 SHA1 \u81EA\u52A8\u67E5\u91CD \u529F\u80FD\u4F7F\u7528\u4E86\u7F13\u5B58\u673A\u5236\uFF08\u6BCF\u4E2A\u9875\u7801\u76EE\u5F55\u4E0B\u7684\u6587\u4EF6\u53EA\u4F1A\u67E5\u8BE2\u4E00\u6B21\uFF0C\u5982\u9700\u518D\u6B21\u67E5\u8BE2\u8BF7\u4F7F\u7528\u5177\u4F53\u6587\u4EF6\u7684 SHA1\u67E5\u91CD \u6309\u94AE\u6216\u5237\u65B0\u9875\u9762\u540E\u518D\u4F7F\u7528\uFF09\n2. \u811A\u672C\u8BBE\u7F6E\u4FDD\u5B58\u540E\u5C06\u4F1A\u81EA\u52A8\u5237\u65B0\u9875\u9762\n3. \u811A\u672C\u52A0\u8F7D\u6709\u6761\u4EF6\u9650\u5236\u4F1A\u9020\u6210\u8BBE\u7F6E\u5F39\u7A97\u4E0D\u5C45\u4E2D\n");
+                    alert("1. \u4E3A\u4FDD\u8BC1\u8D26\u53F7\u5B89\u5168 SHA1 \u81EA\u52A8\u67E5\u91CD \u529F\u80FD\u4F7F\u7528\u4E86\u7F13\u5B58\u673A\u5236\uFF08\u6BCF\u4E2A\u9875\u7801\u76EE\u5F55\u4E0B\u7684\u6587\u4EF6\u53EA\u4F1A\u67E5\u8BE2\u4E00\u6B21\uFF0C\u5982\u9700\u518D\u6B21\u67E5\u8BE2\u8BF7\u4F7F\u7528\u5177\u4F53\u6587\u4EF6\u7684 SHA1\u67E5\u91CD \u6309\u94AE\u6216\u5237\u65B0\u9875\u9762\u540E\u518D\u4F7F\u7528\uFF09\n2. \u811A\u672C\u8BBE\u7F6E\u4FDD\u5B58\u540E\u5C06\u4F1A\u81EA\u52A8\u5237\u65B0\u9875\u9762\n3. \u811A\u672C\u52A0\u8F7D\u6709\u6761\u4EF6\u9650\u5236\u4F1A\u9020\u6210\u8BBE\u7F6E\u5F39\u7A97\u4E0D\u5C45\u4E2D\n4. \u5982\u679C\u4F60\u6709\u529F\u80FD\u5EFA\u8BAE\u6216\u8005\u811A\u672C\u95EE\u9898\u6B22\u8FCE\u53BB\u811A\u672C\u4E3B\u9875\u6DFB\u52A0 QQ \u7FA4\u53CD\u9988\n");
                 }
             }
         },
@@ -339,7 +348,7 @@
         });
     };
     var initRepeatSha1List = function () {
-        var listObserver = new MutationObserver(function (mutationsList) {
+        new MutationObserver(function (mutationsList, observer) {
             mutationsList.forEach(function (_a) {
                 var type = _a.type;
                 if (type === 'childList') {
@@ -351,10 +360,10 @@
                             .children('.file-name-wrap')
                             .prepend('<b class="checkbox"></b>');
                     }
+                    observer.disconnect();
                 }
             });
-        });
-        listObserver.observe($('#js-list')[0], { childList: true });
+        }).observe($('#js-list')[0], { childList: true });
     };
     $(function () {
         if (urlHasString('cid=')) {
@@ -362,7 +371,7 @@
             initQuickOperation();
         }
         else if (urlHasString('tab=sha1_repeat')) {
-            initRepeatSha1List();
+            G.get('sha1Repeat.addCheckbox') && initRepeatSha1List();
         }
     });
 })();
