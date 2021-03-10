@@ -2,7 +2,7 @@
 // ==UserScript==
 // @name          115小助手
 // @namespace     https://github.com/maomao1996/tampermonkey-scripts
-// @version       0.6.3
+// @version       0.6.4
 // @description   顶部链接任务入口还原、SHA1 快速查重（新页面打开）、SHA1 查重列表支持选中第一个元素、SHA1 自动查重、删除空文件夹、一键搜（快捷搜索）
 // @icon      	  https://115.com/favicon.ico
 // @author        maomao1996
@@ -10,6 +10,7 @@
 // @grant         GM_registerMenuCommand
 // @grant         GM_openInTab
 // @require       https://greasyfork.org/scripts/398240-gm-config-zh-cn/code/G_zh-CN.js
+// @run-at        document-end
 // ==/UserScript==
 */
 
@@ -38,7 +39,7 @@
     frameStyle: {
       height: '520px',
       width: '400px',
-      zIndex: '1314520'
+      zIndex: '13145201996'
     },
     fields: {
       addTaskBtn: {
@@ -89,7 +90,15 @@
         default: false,
         line: 'end'
       },
+      'sha1Repeat.addCheckbox': {
+        section: ['', 'SHA1 查重列表模块(重复文件列表)'],
+        label: '增加第一个文件选中按钮',
+        labelPos: 'right',
+        type: 'checkbox',
+        default: true
+      },
       reminder: {
+        section: ['', '其他'],
         label: '温馨提示',
         labelPos: 'right',
         type: 'button',
@@ -98,6 +107,7 @@
             `1. 为保证账号安全 SHA1 自动查重 功能使用了缓存机制（每个页码目录下的文件只会查询一次，如需再次查询请使用具体文件的 SHA1查重 按钮或刷新页面后再使用）
 2. 脚本设置保存后将会自动刷新页面
 3. 脚本加载有条件限制会造成设置弹窗不居中
+4. 如果你有功能建议或者脚本问题欢迎去脚本主页添加 QQ 群反馈
 `
           )
         }
@@ -425,7 +435,7 @@
    * SHA1 查重列表（支持选中第一个元素）
    */
   const initRepeatSha1List = (): void => {
-    const listObserver = new MutationObserver((mutationsList) => {
+    new MutationObserver((mutationsList, observer) => {
       mutationsList.forEach(({ type }) => {
         if (type === 'childList') {
           const $first = $('#js-list li:first-child')
@@ -436,10 +446,10 @@
               .children('.file-name-wrap')
               .prepend('<b class="checkbox"></b>')
           }
+          observer.disconnect()
         }
       })
-    })
-    listObserver.observe($('#js-list')[0], { childList: true })
+    }).observe($('#js-list')[0], { childList: true })
   }
 
   // 初始化
@@ -454,7 +464,7 @@
     }
     // SHA1 查重列表模块
     else if (urlHasString('tab=sha1_repeat')) {
-      initRepeatSha1List()
+      G.get('sha1Repeat.addCheckbox') && initRepeatSha1List()
     }
   })
 })()
