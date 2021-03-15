@@ -2,12 +2,13 @@
 // ==UserScript==
 // @name          115小助手
 // @namespace     https://github.com/maomao1996/tampermonkey-scripts
-// @version       0.6.4
+// @version       0.7.0
 // @description   顶部链接任务入口还原、SHA1 快速查重（新页面打开）、SHA1 查重列表支持选中第一个元素、SHA1 自动查重、删除空文件夹、一键搜（快捷搜索）
 // @icon      	  https://115.com/favicon.ico
 // @author        maomao1996
 // @include       *://115.com/*
 // @grant         GM_registerMenuCommand
+// @grant         GM_addStyle
 // @grant         GM_openInTab
 // @require       https://greasyfork.org/scripts/398240-gm-config-zh-cn/code/G_zh-CN.js
 // @run-at        document-end
@@ -37,8 +38,8 @@
     css:
       '#Helper_Cfg .config_var textarea{width: 310px; height: 50px;} #Helper_Cfg .inline {padding-bottom:0px;}#Helper_Cfg .config_var {margin-left: 20px;margin-right: 20px;} #Helper_Cfg input[type="checkbox"] {margin-left: 0px;vertical-align: top;} #Helper_Cfg input[type="text"] {width: 53px;} #Helper_Cfg {background-color: lightblue;} #Helper_Cfg .reset_holder {float: left; position: relative; bottom: -1.2em;}',
     frameStyle: {
-      height: '520px',
-      width: '400px',
+      height: '540px',
+      width: '420px',
       zIndex: '13145201996'
     },
     fields: {
@@ -49,12 +50,21 @@
         type: 'checkbox',
         default: true
       },
-      addAutoSha1Btn: {
+      'autoSha1.addBtn': {
         section: ['', '网盘路径栏相关设置'],
         label: '网盘路径栏增加SHA1自动查重按钮',
         labelPos: 'right',
         type: 'checkbox',
-        default: true
+        default: true,
+        line: 'start'
+      },
+      'autoSha1.maxCount': {
+        label: '每次最多打开的标签页数量',
+        type: 'int',
+        min: 1,
+        max: 50,
+        default: '20',
+        line: 'end'
       },
       addDeleteEmptyBtn: {
         label: '网盘路径栏增加删除空文件夹按钮',
@@ -97,8 +107,18 @@
         type: 'checkbox',
         default: true
       },
-      reminder: {
+      joinGroup: {
         section: ['', '其他'],
+        label: '加入 QQ 群',
+        labelPos: 'right',
+        type: 'button',
+        click() {
+          GM_openInTab('https://jq.qq.com/?_wv=1027&k=ToOoVmku', {
+            active: true
+          })
+        }
+      },
+      reminder: {
         label: '温馨提示',
         labelPos: 'right',
         type: 'button',
@@ -106,9 +126,7 @@
           alert(
             `1. 为保证账号安全 SHA1 自动查重 功能使用了缓存机制（每个页码目录下的文件只会查询一次，如需再次查询请使用具体文件的 SHA1查重 按钮或刷新页面后再使用）
 2. 脚本设置保存后将会自动刷新页面
-3. 脚本加载有条件限制会造成设置弹窗不居中
-4. 如果你有功能建议或者脚本问题欢迎去脚本主页添加 QQ 群反馈
-`
+3. 脚本加载有条件限制会造成设置弹窗不居中`
           )
         }
       }
@@ -145,6 +163,18 @@
   }
 
   /**
+   * 样式调整
+   */
+  const styles = [
+    /**
+     * 小助手相关样式
+     */
+    '.mm-quick-operation{margin-left: 12px;padding: 0 6px}',
+    '.list-contents .active::before{background: rgba(199, 237, 204, 0.7)!important;}'
+  ].join('')
+  GM_addStyle(styles)
+
+  /**
    * 在顶部菜单添加链接任务按钮
    */
   const addLinkTaskBtn = (): void => {
@@ -165,11 +195,11 @@
     // 顶部添加快捷操作按钮
     if (!$('.mm-quick-operation').length) {
       let operations = ''
-      if (G.get('addAutoSha1Btn')) {
-        operations += `<a href="javascript:;" class="button btn-line mm-quick-operation" type="auto-sha1" style="margin-left: 10px;" title="只查询当前页码目录中的文件"><span>SHA1自动查重</span></a>`
+      if (G.get('autoSha1.addBtn')) {
+        operations += `<a href="javascript:;" class="button btn-line mm-quick-operation" type="auto-sha1" title="只查询当前页码目录中的文件"><span>SHA1自动查重</span></a>`
       }
       if (G.get('addDeleteEmptyBtn')) {
-        operations += `<a href="javascript:;" class="button btn-line mm-quick-operation" type="delete-empty" style="margin-left: 10px;" title="只删除当前页码目录中的文件夹"><span>删除空文件夹</span></a>`
+        operations += `<a href="javascript:;" class="button btn-line mm-quick-operation" type="delete-empty" title="只删除当前页码目录中的文件夹"><span>删除空文件夹</span></a>`
       }
       $('#js_path_add_dir').after(operations)
     }
@@ -318,7 +348,6 @@
         })
         return
       }
-      autoCheckDisabled = true
 
       const $li = $('li[file_type="1"]')
 
@@ -338,10 +367,15 @@
       let repeatCount = 0
 
       const findRepeat = () => {
-        if (index >= $li.length) {
+        const isMax = repeatCount >= G.get('autoSha1.maxCount')
+        const isEnd = index >= $li.length
+        if (isEnd || isMax) {
+          isEnd && (autoCheckDisabled = true)
           const options = { text: '', type: '', timeout: 2e3 }
           if (repeatCount) {
-            options.text = `查询到 ${repeatCount} 个重复文件`
+            options.text = isMax
+              ? `已查询到 ${repeatCount} 个重复文件`
+              : `已查询完当前分页，共 ${repeatCount} 个重复文件`
             options.type = 'suc'
           } else {
             options.text = '当前分页下没有可查重文件'
@@ -358,6 +392,7 @@
           SHA1_MAP[sha1] = 1
           return handleRepeatSha1(fileId, true).then((flag) => {
             if (flag) {
+              $currentLi.addClass('active')
               repeatCount++
             }
             return findRepeat()
