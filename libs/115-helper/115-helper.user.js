@@ -2,7 +2,7 @@
 // ==UserScript==
 // @name          115小助手
 // @namespace     https://github.com/maomao1996/tampermonkey-scripts
-// @version       0.7.0
+// @version       0.7.1
 // @description   顶部链接任务入口还原、SHA1 快速查重（新页面打开）、SHA1 查重列表支持选中第一个元素、SHA1 自动查重、删除空文件夹、一键搜（快捷搜索）
 // @icon      	  https://115.com/favicon.ico
 // @author        maomao1996
@@ -221,7 +221,7 @@
         var handleSearch = function (keyword) {
             var _a = getAidCid(), aid = _a.aid, cid = _a.cid, name = _a.name;
             var openSearch = function (value) {
-                GM_openInTab("//115.com/?mode=search&submode=wangpan&url=" + encodeURIComponent("/?aid=" + aid + "&cid=" + (G.get('quickSearch.isAll') ? 0 : cid) + "&old_cid=" + cid + "&old_cid_name=" + name + "&search_value=" + value + "&ct=file&ac=search&is_wl_tpl=1"), { active: true });
+                GM_openInTab("//115.com/?mode=search&submode=wangpan&url=" + encodeURIComponent("/?aid=" + aid + "&cid=" + (G.get('quickSearch.isAll') ? 0 : cid) + "&old_cid=" + cid + "&old_cid_name=" + encodeURIComponent(name) + "&search_value=" + encodeURIComponent(value) + "&ct=file&ac=search&is_wl_tpl=1"), { active: true });
             };
             if (!G.get('quickSearch.edit')) {
                 openSearch(keyword);
