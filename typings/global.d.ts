@@ -98,6 +98,8 @@ declare const GM_config: GMConfig
  **/
 declare const TOP: Window
 
+declare const checkRepaatApi: any
+
 interface Window {
   Core: any
   UA$: any

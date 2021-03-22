@@ -2,8 +2,8 @@
 // ==UserScript==
 // @name          115小助手
 // @namespace     https://github.com/maomao1996/tampermonkey-scripts
-// @version       0.7.1
-// @description   顶部链接任务入口还原、SHA1 快速查重（新页面打开）、SHA1 查重列表支持选中第一个元素、SHA1 自动查重、删除空文件夹、一键搜（快捷搜索）
+// @version       0.8.0
+// @description   顶部链接任务入口还原、SHA1 快速查重（新页面打开）、SHA1 自动查重、删除空文件夹、一键搜（快捷搜索）、SHA1 查重列表支持选中第一个元素和悬浮菜单展示
 // @icon      	  https://115.com/favicon.ico
 // @author        maomao1996
 // @include       *://115.com/*
@@ -107,6 +107,18 @@
         type: 'checkbox',
         default: true
       },
+      'sha1Repeat.addMenu': {
+        label: '列表增加悬浮菜单',
+        labelPos: 'right',
+        type: 'checkbox',
+        default: true
+      },
+      'sha1Repeat.select': {
+        label: '打开后默认选中',
+        labelPos: 'right',
+        type: 'checkbox',
+        default: true
+      },
       joinGroup: {
         section: ['', '其他'],
         label: '加入 QQ 群',
@@ -153,6 +165,23 @@
    */
   const urlHasString = (str: string): boolean => search.indexOf(str) > -1
 
+  /**
+   * 工具方法 - 观察子元素变化
+   */
+  const observerChildList = (
+    callback: (observer: MutationObserver) => void,
+    selector: JQuery | JQuery.Selector = '#js_data_list'
+  ): MutationObserver => {
+    const observer = new MutationObserver(([{ type }]) => {
+      type === 'childList' && callback(observer)
+    })
+    const $selector = typeof selector === 'string' ? $(selector) : selector
+    if ($selector.length) {
+      observer.observe($selector[0], { childList: true })
+    }
+    return observer
+  }
+
   const getAidCid = (): any => {
     try {
       var main = top.Ext.CACHE.FileMain
@@ -183,6 +212,39 @@
     )
   }
 
+  const MENU_MAP = {
+    move: `<a href="javascript:;" menu="move"><i class="icon-operate ifo-move" menu="move"></i><span menu="move">移动</span></a>`,
+    edit_name: `<a href="javascript:;" menu="edit_name"><i class="icon-operate ifo-rename" menu="edit_name"></i><span menu="edit_name">重命名</span></a>`,
+    delete: `<a href="javascript:;" menu="delete" btn="del"><i class="icon-operate ifo-remove" menu="delete"></i><span menu="delete">删除</span></a>`,
+    search: `<a href="javascript:;" class="mm-operation" type="search"><span>一键搜</span></a>`,
+    sha1: `<a href="javascript:;" class="mm-operation" type="sha1"><span>SHA1查重</span></a>`
+  }
+  type MenuKey = keyof typeof MENU_MAP
+  const CONTROLLED_MENU: MenuKey[] = ['search', 'sha1']
+  /**
+   * 获取悬浮菜单
+   */
+  const getFloatMenu = (
+    fileType: string,
+    menuKeys: MenuKey[] = CONTROLLED_MENU,
+    isAddWrap?: boolean
+  ): string => {
+    const menu = menuKeys.reduce((prev, key) => {
+      if (key === 'search' && G.get('quickSearch.addBtn')) {
+        prev += MENU_MAP.search
+      } else if (key === 'sha1' && G.get('addSha1Btn') && fileType === '1') {
+        prev += MENU_MAP.sha1
+      } else if (!CONTROLLED_MENU.includes(key)) {
+        prev += MENU_MAP[key]
+      }
+      return prev
+    }, '')
+    if (isAddWrap) {
+      return `<div class="file-opr" rel="menu">${menu}</div>`
+    }
+    return menu
+  }
+
   /**
    * 快捷操作增强
    *  - SHA1查重
@@ -204,32 +266,19 @@
       $('#js_path_add_dir').after(operations)
     }
 
-    const listObserver = new MutationObserver((mutationsList) => {
-      const isList = $('.list-thumb').length === 0
-      mutationsList.forEach(({ type }) => {
-        if (type === 'childList') {
-          autoCheckDisabled = false
-          if (!isList) {
-            return
-          }
-          $('li[rel="item"]').each(function () {
-            if (!$(this).find('.mm-operation').length) {
-              let operations = ''
-              if (G.get('quickSearch.addBtn')) {
-                operations += `<a href="javascript:;" class="mm-operation" type="search"><span>一键搜</span></a>`
-              }
-              if (G.get('addSha1Btn') && $(this).attr('file_type') === '1') {
-                operations += `<a href="javascript:;" class="mm-operation" type="sha1"><span>SHA1查重</span></a>`
-              }
-              $(this).find('a[menu="public_share"]').after(operations)
-            }
-          })
+    observerChildList(() => {
+      autoCheckDisabled = false
+      if ($('.list-thumb').length > 0) {
+        return
+      }
+      $('li[rel="item"]').each(function () {
+        if (!$(this).find('.mm-operation').length) {
+          $(this)
+            .find('a[menu="public_share"]')
+            .after(getFloatMenu($(this).attr('file_type')))
         }
       })
     })
-    if ($('#js_data_list').length) {
-      listObserver.observe($('#js_data_list')[0], { childList: true })
-    }
 
     const handleRepeatSha1 = (
       file_id: string,
@@ -247,10 +296,11 @@
           success({ state, data }) {
             !isAll && MinMessage.Hide()
             if (state && data.length > 1) {
-              GM_openInTab(
-                `//115.com/?tab=sha1_repeat&file_id=${file_id}&mode=wangpan`,
-                { active: !isAll }
-              )
+              let sha1RepeatUrl = `//115.com/?tab=sha1_repeat&file_id=${file_id}&mode=wangpan`
+              if (G.get('sha1Repeat.select')) {
+                sha1RepeatUrl += '&select=1'
+              }
+              GM_openInTab(sha1RepeatUrl, { active: !isAll })
               resolve(true)
             } else {
               !isAll &&
@@ -453,7 +503,7 @@
       })
     }
 
-    // 快捷操作
+    // 路径栏快捷操作
     $(document).on('click', '.mm-quick-operation', function () {
       const type = $(this).attr('type')
       if (!type) {
@@ -474,21 +524,45 @@
    * SHA1 查重列表（支持选中第一个元素）
    */
   const initRepeatSha1List = (): void => {
-    new MutationObserver((mutationsList, observer) => {
-      mutationsList.forEach(({ type }) => {
-        if (type === 'childList') {
-          const $first = $('#js-list li:first-child')
-          if (!$first.attr('item')) {
-            $first.attr('item', 'file')
-            $first.find('i.file-type').removeProp('style')
-            $first
-              .children('.file-name-wrap')
-              .prepend('<b class="checkbox"></b>')
-          }
-          observer.disconnect()
+    const $list = $('#js-list')
+    observerChildList(() => {
+      // 支持选中第一个元素
+      if (G.get('sha1Repeat.addCheckbox')) {
+        const $first = $list.find('li:first-child')
+        if (!$first.attr('item')) {
+          $first.attr('item', 'file').find('i.file-type').removeProp('style')
+          $first.children('.file-name-wrap').prepend('<b class="checkbox"></b>')
         }
-      })
-    }).observe($('#js-list')[0], { childList: true })
+        if (G.get('sha1Repeat.select')) {
+          $first.trigger('click')
+        }
+      }
+
+      // 添加悬浮菜单
+      if (G.get('sha1Repeat.addMenu')) {
+        $('li[rel="item"]').each(function () {
+          if (!$(this).find('.file-opr').length) {
+            $(this).append(
+              getFloatMenu(
+                $(this).attr('file_type'),
+                ['move', 'edit_name', 'delete'],
+                true
+              )
+            )
+          }
+        })
+      }
+    }, $list)
+
+    // 点击菜单调用对应 115 方法
+    $list.on('click', '.file-opr a', function (event) {
+      event.stopPropagation()
+      top.Core.FileMenu.DoEvent(
+        [$(this).parents('li')],
+        $(this).attr('menu'),
+        checkRepaatApi.load
+      )
+    })
   }
 
   // 初始化
@@ -503,7 +577,7 @@
     }
     // SHA1 查重列表模块
     else if (urlHasString('tab=sha1_repeat')) {
-      G.get('sha1Repeat.addCheckbox') && initRepeatSha1List()
+      initRepeatSha1List()
     }
   })
 })()
