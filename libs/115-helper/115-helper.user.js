@@ -2,8 +2,8 @@
 // ==UserScript==
 // @name          115小助手
 // @namespace     https://github.com/maomao1996/tampermonkey-scripts
-// @version       0.7.1
-// @description   顶部链接任务入口还原、SHA1 快速查重（新页面打开）、SHA1 查重列表支持选中第一个元素、SHA1 自动查重、删除空文件夹、一键搜（快捷搜索）
+// @version       0.8.0
+// @description   顶部链接任务入口还原、SHA1 快速查重（新页面打开）、SHA1 自动查重、删除空文件夹、一键搜（快捷搜索）、SHA1 查重列表支持选中第一个元素和悬浮菜单展示
 // @icon      	  https://115.com/favicon.ico
 // @author        maomao1996
 // @include       *://115.com/*
@@ -95,6 +95,18 @@
                 type: 'checkbox',
                 default: true
             },
+            'sha1Repeat.addMenu': {
+                label: '列表增加悬浮菜单',
+                labelPos: 'right',
+                type: 'checkbox',
+                default: true
+            },
+            'sha1Repeat.select': {
+                label: '打开后默认选中',
+                labelPos: 'right',
+                type: 'checkbox',
+                default: true
+            },
             joinGroup: {
                 section: ['', '其他'],
                 label: '加入 QQ 群',
@@ -126,6 +138,18 @@
     G.init(GMConfigOptions);
     GM_registerMenuCommand('设置', function () { return G.open(); });
     var urlHasString = function (str) { return search.indexOf(str) > -1; };
+    var observerChildList = function (callback, selector) {
+        if (selector === void 0) { selector = '#js_data_list'; }
+        var observer = new MutationObserver(function (_a) {
+            var type = _a[0].type;
+            type === 'childList' && callback(observer);
+        });
+        var $selector = typeof selector === 'string' ? $(selector) : selector;
+        if ($selector.length) {
+            observer.observe($selector[0], { childList: true });
+        }
+        return observer;
+    };
     var getAidCid = function () {
         try {
             var main = top.Ext.CACHE.FileMain;
@@ -143,6 +167,33 @@
     var addLinkTaskBtn = function () {
         $('#js_top_panel_box .button[menu="upload"]').after('<a href="javascript:;" class="button btn-line btn-upload" menu="offline_task"><i class="icon-operate ifo-linktask"></i><span>链接任务</span><em style="display:none;" class="num-dot"></em></a>');
     };
+    var MENU_MAP = {
+        move: "<a href=\"javascript:;\" menu=\"move\"><i class=\"icon-operate ifo-move\" menu=\"move\"></i><span menu=\"move\">\u79FB\u52A8</span></a>",
+        edit_name: "<a href=\"javascript:;\" menu=\"edit_name\"><i class=\"icon-operate ifo-rename\" menu=\"edit_name\"></i><span menu=\"edit_name\">\u91CD\u547D\u540D</span></a>",
+        delete: "<a href=\"javascript:;\" menu=\"delete\" btn=\"del\"><i class=\"icon-operate ifo-remove\" menu=\"delete\"></i><span menu=\"delete\">\u5220\u9664</span></a>",
+        search: "<a href=\"javascript:;\" class=\"mm-operation\" type=\"search\"><span>\u4E00\u952E\u641C</span></a>",
+        sha1: "<a href=\"javascript:;\" class=\"mm-operation\" type=\"sha1\"><span>SHA1\u67E5\u91CD</span></a>"
+    };
+    var CONTROLLED_MENU = ['search', 'sha1'];
+    var getFloatMenu = function (fileType, menuKeys, isAddWrap) {
+        if (menuKeys === void 0) { menuKeys = CONTROLLED_MENU; }
+        var menu = menuKeys.reduce(function (prev, key) {
+            if (key === 'search' && G.get('quickSearch.addBtn')) {
+                prev += MENU_MAP.search;
+            }
+            else if (key === 'sha1' && G.get('addSha1Btn') && fileType === '1') {
+                prev += MENU_MAP.sha1;
+            }
+            else if (!CONTROLLED_MENU.includes(key)) {
+                prev += MENU_MAP[key];
+            }
+            return prev;
+        }, '');
+        if (isAddWrap) {
+            return "<div class=\"file-opr\" rel=\"menu\">" + menu + "</div>";
+        }
+        return menu;
+    };
     var initQuickOperation = function () {
         var autoCheckDisabled = false;
         if (!$('.mm-quick-operation').length) {
@@ -155,33 +206,19 @@
             }
             $('#js_path_add_dir').after(operations);
         }
-        var listObserver = new MutationObserver(function (mutationsList) {
-            var isList = $('.list-thumb').length === 0;
-            mutationsList.forEach(function (_a) {
-                var type = _a.type;
-                if (type === 'childList') {
-                    autoCheckDisabled = false;
-                    if (!isList) {
-                        return;
-                    }
-                    $('li[rel="item"]').each(function () {
-                        if (!$(this).find('.mm-operation').length) {
-                            var operations = '';
-                            if (G.get('quickSearch.addBtn')) {
-                                operations += "<a href=\"javascript:;\" class=\"mm-operation\" type=\"search\"><span>\u4E00\u952E\u641C</span></a>";
-                            }
-                            if (G.get('addSha1Btn') && $(this).attr('file_type') === '1') {
-                                operations += "<a href=\"javascript:;\" class=\"mm-operation\" type=\"sha1\"><span>SHA1\u67E5\u91CD</span></a>";
-                            }
-                            $(this).find('a[menu="public_share"]').after(operations);
-                        }
-                    });
+        observerChildList(function () {
+            autoCheckDisabled = false;
+            if ($('.list-thumb').length > 0) {
+                return;
+            }
+            $('li[rel="item"]').each(function () {
+                if (!$(this).find('.mm-operation').length) {
+                    $(this)
+                        .find('a[menu="public_share"]')
+                        .after(getFloatMenu($(this).attr('file_type')));
                 }
             });
         });
-        if ($('#js_data_list').length) {
-            listObserver.observe($('#js_data_list')[0], { childList: true });
-        }
         var handleRepeatSha1 = function (file_id, isAll) {
             if (isAll === void 0) { isAll = false; }
             return new Promise(function (resolve) {
@@ -197,7 +234,11 @@
                         var state = _a.state, data = _a.data;
                         !isAll && MinMessage.Hide();
                         if (state && data.length > 1) {
-                            GM_openInTab("//115.com/?tab=sha1_repeat&file_id=" + file_id + "&mode=wangpan", { active: !isAll });
+                            var sha1RepeatUrl = "//115.com/?tab=sha1_repeat&file_id=" + file_id + "&mode=wangpan";
+                            if (G.get('sha1Repeat.select')) {
+                                sha1RepeatUrl += '&select=1';
+                            }
+                            GM_openInTab(sha1RepeatUrl, { active: !isAll });
                             resolve(true);
                         }
                         else {
@@ -378,22 +419,30 @@
         });
     };
     var initRepeatSha1List = function () {
-        new MutationObserver(function (mutationsList, observer) {
-            mutationsList.forEach(function (_a) {
-                var type = _a.type;
-                if (type === 'childList') {
-                    var $first = $('#js-list li:first-child');
-                    if (!$first.attr('item')) {
-                        $first.attr('item', 'file');
-                        $first.find('i.file-type').removeProp('style');
-                        $first
-                            .children('.file-name-wrap')
-                            .prepend('<b class="checkbox"></b>');
-                    }
-                    observer.disconnect();
+        var $list = $('#js-list');
+        observerChildList(function () {
+            if (G.get('sha1Repeat.addCheckbox')) {
+                var $first = $list.find('li:first-child');
+                if (!$first.attr('item')) {
+                    $first.attr('item', 'file').find('i.file-type').removeProp('style');
+                    $first.children('.file-name-wrap').prepend('<b class="checkbox"></b>');
                 }
-            });
-        }).observe($('#js-list')[0], { childList: true });
+                if (G.get('sha1Repeat.select')) {
+                    $first.trigger('click');
+                }
+            }
+            if (G.get('sha1Repeat.addMenu')) {
+                $('li[rel="item"]').each(function () {
+                    if (!$(this).find('.file-opr').length) {
+                        $(this).append(getFloatMenu($(this).attr('file_type'), ['move', 'edit_name', 'delete'], true));
+                    }
+                });
+            }
+        }, $list);
+        $list.on('click', '.file-opr a', function (event) {
+            event.stopPropagation();
+            top.Core.FileMenu.DoEvent([$(this).parents('li')], $(this).attr('menu'), checkRepaatApi.load);
+        });
     };
     $(function () {
         if (urlHasString('cid=')) {
@@ -401,7 +450,7 @@
             initQuickOperation();
         }
         else if (urlHasString('tab=sha1_repeat')) {
-            G.get('sha1Repeat.addCheckbox') && initRepeatSha1List();
+            initRepeatSha1List();
         }
     });
 })();
