@@ -2,8 +2,8 @@
 // ==UserScript==
 // @name          115小助手
 // @namespace     https://github.com/maomao1996/tampermonkey-scripts
-// @version       0.8.0
-// @description   顶部链接任务入口还原、SHA1 快速查重（新页面打开）、SHA1 自动查重、删除空文件夹、一键搜（快捷搜索）、SHA1 查重列表支持选中第一个元素和悬浮菜单展示
+// @version       0.9.0
+// @description   顶部链接任务入口还原、SHA1 快速查重（新页面打开）、SHA1 自动查重、删除空文件夹、一键搜（快捷搜索）、SHA1 查重列表支持选中第一个元素和悬浮菜单展示、搜索列表支持悬浮菜单展示
 // @icon      	  https://115.com/favicon.ico
 // @author        maomao1996
 // @include       *://115.com/*
@@ -27,7 +27,7 @@
         title: '115 小助手',
         css: '#Helper_Cfg .config_var textarea{width: 310px; height: 50px;} #Helper_Cfg .inline {padding-bottom:0px;}#Helper_Cfg .config_var {margin-left: 20px;margin-right: 20px;} #Helper_Cfg input[type="checkbox"] {margin-left: 0px;vertical-align: top;} #Helper_Cfg input[type="text"] {width: 53px;} #Helper_Cfg {background-color: lightblue;} #Helper_Cfg .reset_holder {float: left; position: relative; bottom: -1.2em;}',
         frameStyle: {
-            height: '540px',
+            height: '560px',
             width: '420px',
             zIndex: '13145201996'
         },
@@ -107,6 +107,13 @@
                 type: 'checkbox',
                 default: true
             },
+            'search.addMenu': {
+                section: ['', '网盘搜索列表模块'],
+                label: '列表增加悬浮菜单',
+                labelPos: 'right',
+                type: 'checkbox',
+                default: true
+            },
             joinGroup: {
                 section: ['', '其他'],
                 label: '加入 QQ 群',
@@ -167,6 +174,41 @@
     var addLinkTaskBtn = function () {
         $('#js_top_panel_box .button[menu="upload"]').after('<a href="javascript:;" class="button btn-line btn-upload" menu="offline_task"><i class="icon-operate ifo-linktask"></i><span>链接任务</span><em style="display:none;" class="num-dot"></em></a>');
     };
+    var handleRepeatSha1 = function (file_id, isAll) {
+        if (isAll === void 0) { isAll = false; }
+        return new Promise(function (resolve) {
+            !isAll &&
+                MinMessage.Show({ text: '正在查找', type: 'load', timeout: 2e5 });
+            top.UA$.ajax({
+                url: '//webapi.115.com/files/get_repeat_sha',
+                data: { file_id: file_id },
+                xhrFields: { withCredentials: !0 },
+                dataType: 'json',
+                type: 'GET',
+                success: function (_a) {
+                    var state = _a.state, data = _a.data;
+                    !isAll && MinMessage.Hide();
+                    if (state && data.length > 1) {
+                        var sha1RepeatUrl = "//115.com/?tab=sha1_repeat&file_id=" + file_id + "&mode=wangpan";
+                        if (G.get('sha1Repeat.select')) {
+                            sha1RepeatUrl += '&select=1';
+                        }
+                        GM_openInTab(sha1RepeatUrl, { active: !isAll });
+                        resolve(true);
+                    }
+                    else {
+                        !isAll &&
+                            MinMessage.Show({
+                                text: '没有重复文件',
+                                type: 'war',
+                                timeout: 2e3
+                            });
+                        resolve(false);
+                    }
+                }
+            });
+        });
+    };
     var MENU_MAP = {
         move: "<a href=\"javascript:;\" menu=\"move\"><i class=\"icon-operate ifo-move\" menu=\"move\"></i><span menu=\"move\">\u79FB\u52A8</span></a>",
         edit_name: "<a href=\"javascript:;\" menu=\"edit_name\"><i class=\"icon-operate ifo-rename\" menu=\"edit_name\"></i><span menu=\"edit_name\">\u91CD\u547D\u540D</span></a>",
@@ -194,72 +236,8 @@
         }
         return menu;
     };
-    var initQuickOperation = function () {
-        var autoCheckDisabled = false;
-        if (!$('.mm-quick-operation').length) {
-            var operations = '';
-            if (G.get('autoSha1.addBtn')) {
-                operations += "<a href=\"javascript:;\" class=\"button btn-line mm-quick-operation\" type=\"auto-sha1\" title=\"\u53EA\u67E5\u8BE2\u5F53\u524D\u9875\u7801\u76EE\u5F55\u4E2D\u7684\u6587\u4EF6\"><span>SHA1\u81EA\u52A8\u67E5\u91CD</span></a>";
-            }
-            if (G.get('addDeleteEmptyBtn')) {
-                operations += "<a href=\"javascript:;\" class=\"button btn-line mm-quick-operation\" type=\"delete-empty\" title=\"\u53EA\u5220\u9664\u5F53\u524D\u9875\u7801\u76EE\u5F55\u4E2D\u7684\u6587\u4EF6\u5939\"><span>\u5220\u9664\u7A7A\u6587\u4EF6\u5939</span></a>";
-            }
-            $('#js_path_add_dir').after(operations);
-        }
-        observerChildList(function () {
-            autoCheckDisabled = false;
-            if ($('.list-thumb').length > 0) {
-                return;
-            }
-            $('li[rel="item"]').each(function () {
-                if (!$(this).find('.mm-operation').length) {
-                    $(this)
-                        .find('a[menu="public_share"]')
-                        .after(getFloatMenu($(this).attr('file_type')));
-                }
-            });
-        });
-        var handleRepeatSha1 = function (file_id, isAll) {
-            if (isAll === void 0) { isAll = false; }
-            return new Promise(function (resolve) {
-                !isAll &&
-                    MinMessage.Show({ text: '正在查找', type: 'load', timeout: 2e5 });
-                top.UA$.ajax({
-                    url: '//webapi.115.com/files/get_repeat_sha',
-                    data: { file_id: file_id },
-                    xhrFields: { withCredentials: !0 },
-                    dataType: 'json',
-                    type: 'GET',
-                    success: function (_a) {
-                        var state = _a.state, data = _a.data;
-                        !isAll && MinMessage.Hide();
-                        if (state && data.length > 1) {
-                            var sha1RepeatUrl = "//115.com/?tab=sha1_repeat&file_id=" + file_id + "&mode=wangpan";
-                            if (G.get('sha1Repeat.select')) {
-                                sha1RepeatUrl += '&select=1';
-                            }
-                            GM_openInTab(sha1RepeatUrl, { active: !isAll });
-                            resolve(true);
-                        }
-                        else {
-                            !isAll &&
-                                MinMessage.Show({
-                                    text: '没有重复文件',
-                                    type: 'war',
-                                    timeout: 2e3
-                                });
-                            resolve(false);
-                        }
-                    }
-                });
-            });
-        };
-        var handleGetDetail = function (aid, cid) {
-            return new Promise(function (resolve) {
-                top.Core.DataAccess.Dir.GetDetail(aid, cid, function (res) { return resolve(res); });
-            });
-        };
-        var handleSearch = function (keyword) {
+    var initMenu = function () {
+        var handleQuickSearch = function (keyword) {
             var _a = getAidCid(), aid = _a.aid, cid = _a.cid, name = _a.name;
             var openSearch = function (value) {
                 GM_openInTab("//115.com/?mode=search&submode=wangpan&url=" + encodeURIComponent("/?aid=" + aid + "&cid=" + (G.get('quickSearch.isAll') ? 0 : cid) + "&old_cid=" + cid + "&old_cid_name=" + encodeURIComponent(name) + "&search_value=" + encodeURIComponent(value) + "&ct=file&ac=search&is_wl_tpl=1"), { active: true });
@@ -303,9 +281,40 @@
                 case 'search':
                     var ico = $li.attr('ico');
                     var title = $li.attr('title');
-                    return handleSearch(title.replace("." + ico, ''));
+                    return handleQuickSearch(title.replace("." + ico, ''));
             }
         });
+    };
+    var initQuickOperation = function () {
+        var autoCheckDisabled = false;
+        if (!$('.mm-quick-operation').length) {
+            var operations = '';
+            if (G.get('autoSha1.addBtn')) {
+                operations += "<a href=\"javascript:;\" class=\"button btn-line mm-quick-operation\" type=\"auto-sha1\" title=\"\u53EA\u67E5\u8BE2\u5F53\u524D\u9875\u7801\u76EE\u5F55\u4E2D\u7684\u6587\u4EF6\"><span>SHA1\u81EA\u52A8\u67E5\u91CD</span></a>";
+            }
+            if (G.get('addDeleteEmptyBtn')) {
+                operations += "<a href=\"javascript:;\" class=\"button btn-line mm-quick-operation\" type=\"delete-empty\" title=\"\u53EA\u5220\u9664\u5F53\u524D\u9875\u7801\u76EE\u5F55\u4E2D\u7684\u6587\u4EF6\u5939\"><span>\u5220\u9664\u7A7A\u6587\u4EF6\u5939</span></a>";
+            }
+            $('#js_path_add_dir').after(operations);
+        }
+        observerChildList(function () {
+            autoCheckDisabled = false;
+            if ($('.list-thumb').length > 0) {
+                return;
+            }
+            $('li[rel="item"]').each(function () {
+                if (!$(this).find('.mm-operation').length) {
+                    $(this)
+                        .find('a[menu="public_share"]')
+                        .after(getFloatMenu($(this).attr('file_type')));
+                }
+            });
+        });
+        var handleGetDetail = function (aid, cid) {
+            return new Promise(function (resolve) {
+                top.Core.DataAccess.Dir.GetDetail(aid, cid, function (res) { return resolve(res); });
+            });
+        };
         var SHA1_MAP = {};
         var handleAutoCheckSha1 = function () {
             if (autoCheckDisabled) {
@@ -445,12 +454,22 @@
         });
     };
     $(function () {
+        initMenu();
         if (urlHasString('cid=')) {
             G.get('addTaskBtn') && addLinkTaskBtn();
             initQuickOperation();
         }
         else if (urlHasString('tab=sha1_repeat')) {
             initRepeatSha1List();
+        }
+        else if (urlHasString('mode=search') && G.get('search.addMenu')) {
+            observerChildList(function () {
+                $('li[rel="item"]').each(function () {
+                    if (!$(this).find('.mm-operation').length) {
+                        $(this).append(getFloatMenu($(this).attr('file_type'), ['move', 'edit_name', 'delete', 'search', 'sha1'], true));
+                    }
+                });
+            });
         }
     });
 })();
