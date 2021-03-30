@@ -2,8 +2,8 @@
 // ==UserScript==
 // @name          115小助手
 // @namespace     https://github.com/maomao1996/tampermonkey-scripts
-// @version       0.8.0
-// @description   顶部链接任务入口还原、SHA1 快速查重（新页面打开）、SHA1 自动查重、删除空文件夹、一键搜（快捷搜索）、SHA1 查重列表支持选中第一个元素和悬浮菜单展示
+// @version       0.9.0
+// @description   顶部链接任务入口还原、SHA1 快速查重（新页面打开）、SHA1 自动查重、删除空文件夹、一键搜（快捷搜索）、SHA1 查重列表支持选中第一个元素和悬浮菜单展示、搜索列表支持悬浮菜单展示
 // @icon      	  https://115.com/favicon.ico
 // @author        maomao1996
 // @include       *://115.com/*
@@ -38,7 +38,7 @@
     css:
       '#Helper_Cfg .config_var textarea{width: 310px; height: 50px;} #Helper_Cfg .inline {padding-bottom:0px;}#Helper_Cfg .config_var {margin-left: 20px;margin-right: 20px;} #Helper_Cfg input[type="checkbox"] {margin-left: 0px;vertical-align: top;} #Helper_Cfg input[type="text"] {width: 53px;} #Helper_Cfg {background-color: lightblue;} #Helper_Cfg .reset_holder {float: left; position: relative; bottom: -1.2em;}',
     frameStyle: {
-      height: '540px',
+      height: '560px',
       width: '420px',
       zIndex: '13145201996'
     },
@@ -115,6 +115,13 @@
       },
       'sha1Repeat.select': {
         label: '打开后默认选中',
+        labelPos: 'right',
+        type: 'checkbox',
+        default: true
+      },
+      'search.addMenu': {
+        section: ['', '网盘搜索列表模块'],
+        label: '列表增加悬浮菜单',
         labelPos: 'right',
         type: 'checkbox',
         default: true
@@ -212,6 +219,45 @@
     )
   }
 
+  /**
+   * SHA1 查重
+   */
+  const handleRepeatSha1 = (
+    file_id: string,
+    isAll = false
+  ): Promise<boolean> => {
+    return new Promise((resolve) => {
+      !isAll &&
+        MinMessage.Show({ text: '正在查找', type: 'load', timeout: 2e5 })
+      top.UA$.ajax({
+        url: '//webapi.115.com/files/get_repeat_sha',
+        data: { file_id },
+        xhrFields: { withCredentials: !0 },
+        dataType: 'json',
+        type: 'GET',
+        success({ state, data }) {
+          !isAll && MinMessage.Hide()
+          if (state && data.length > 1) {
+            let sha1RepeatUrl = `//115.com/?tab=sha1_repeat&file_id=${file_id}&mode=wangpan`
+            if (G.get('sha1Repeat.select')) {
+              sha1RepeatUrl += '&select=1'
+            }
+            GM_openInTab(sha1RepeatUrl, { active: !isAll })
+            resolve(true)
+          } else {
+            !isAll &&
+              MinMessage.Show({
+                text: '没有重复文件',
+                type: 'war',
+                timeout: 2e3
+              })
+            resolve(false)
+          }
+        }
+      })
+    })
+  }
+
   const MENU_MAP = {
     move: `<a href="javascript:;" menu="move"><i class="icon-operate ifo-move" menu="move"></i><span menu="move">移动</span></a>`,
     edit_name: `<a href="javascript:;" menu="edit_name"><i class="icon-operate ifo-rename" menu="edit_name"></i><span menu="edit_name">重命名</span></a>`,
@@ -246,83 +292,13 @@
   }
 
   /**
-   * 快捷操作增强
-   *  - SHA1查重
-   *  - 删除空文件夹
+   * 悬浮菜单初始化
    */
-  const initQuickOperation = (): void => {
-    // 防止重复点击自动查重
-    let autoCheckDisabled = false
-
-    // 顶部添加快捷操作按钮
-    if (!$('.mm-quick-operation').length) {
-      let operations = ''
-      if (G.get('autoSha1.addBtn')) {
-        operations += `<a href="javascript:;" class="button btn-line mm-quick-operation" type="auto-sha1" title="只查询当前页码目录中的文件"><span>SHA1自动查重</span></a>`
-      }
-      if (G.get('addDeleteEmptyBtn')) {
-        operations += `<a href="javascript:;" class="button btn-line mm-quick-operation" type="delete-empty" title="只删除当前页码目录中的文件夹"><span>删除空文件夹</span></a>`
-      }
-      $('#js_path_add_dir').after(operations)
-    }
-
-    observerChildList(() => {
-      autoCheckDisabled = false
-      if ($('.list-thumb').length > 0) {
-        return
-      }
-      $('li[rel="item"]').each(function () {
-        if (!$(this).find('.mm-operation').length) {
-          $(this)
-            .find('a[menu="public_share"]')
-            .after(getFloatMenu($(this).attr('file_type')))
-        }
-      })
-    })
-
-    const handleRepeatSha1 = (
-      file_id: string,
-      isAll = false
-    ): Promise<boolean> => {
-      return new Promise((resolve) => {
-        !isAll &&
-          MinMessage.Show({ text: '正在查找', type: 'load', timeout: 2e5 })
-        top.UA$.ajax({
-          url: '//webapi.115.com/files/get_repeat_sha',
-          data: { file_id },
-          xhrFields: { withCredentials: !0 },
-          dataType: 'json',
-          type: 'GET',
-          success({ state, data }) {
-            !isAll && MinMessage.Hide()
-            if (state && data.length > 1) {
-              let sha1RepeatUrl = `//115.com/?tab=sha1_repeat&file_id=${file_id}&mode=wangpan`
-              if (G.get('sha1Repeat.select')) {
-                sha1RepeatUrl += '&select=1'
-              }
-              GM_openInTab(sha1RepeatUrl, { active: !isAll })
-              resolve(true)
-            } else {
-              !isAll &&
-                MinMessage.Show({
-                  text: '没有重复文件',
-                  type: 'war',
-                  timeout: 2e3
-                })
-              resolve(false)
-            }
-          }
-        })
-      })
-    }
-
-    const handleGetDetail = (aid: string, cid: string): Promise<any> => {
-      return new Promise((resolve) => {
-        top.Core.DataAccess.Dir.GetDetail(aid, cid, (res) => resolve(res))
-      })
-    }
-
-    const handleSearch = (keyword: string): void => {
+  const initMenu = (): void => {
+    /**
+     * 一键搜（快捷搜索）
+     */
+    const handleQuickSearch = (keyword: string): void => {
       const { aid, cid, name } = getAidCid()
 
       const openSearch = (value: string) => {
@@ -374,7 +350,6 @@
       $input.focus()
     }
 
-    // 单文件操作
     $(document).on('click', '.mm-operation', function () {
       const type = $(this).attr('type')
       const $li = $(this).parents('li')
@@ -387,9 +362,51 @@
         case 'search':
           const ico = $li.attr('ico')
           const title = $li.attr('title')
-          return handleSearch(title.replace(`.${ico}`, ''))
+          return handleQuickSearch(title.replace(`.${ico}`, ''))
       }
     })
+  }
+
+  /**
+   * 快捷操作增强
+   *  - SHA1查重
+   *  - 删除空文件夹
+   */
+  const initQuickOperation = (): void => {
+    // 防止重复点击自动查重
+    let autoCheckDisabled = false
+
+    // 顶部添加快捷操作按钮
+    if (!$('.mm-quick-operation').length) {
+      let operations = ''
+      if (G.get('autoSha1.addBtn')) {
+        operations += `<a href="javascript:;" class="button btn-line mm-quick-operation" type="auto-sha1" title="只查询当前页码目录中的文件"><span>SHA1自动查重</span></a>`
+      }
+      if (G.get('addDeleteEmptyBtn')) {
+        operations += `<a href="javascript:;" class="button btn-line mm-quick-operation" type="delete-empty" title="只删除当前页码目录中的文件夹"><span>删除空文件夹</span></a>`
+      }
+      $('#js_path_add_dir').after(operations)
+    }
+
+    observerChildList(() => {
+      autoCheckDisabled = false
+      if ($('.list-thumb').length > 0) {
+        return
+      }
+      $('li[rel="item"]').each(function () {
+        if (!$(this).find('.mm-operation').length) {
+          $(this)
+            .find('a[menu="public_share"]')
+            .after(getFloatMenu($(this).attr('file_type')))
+        }
+      })
+    })
+
+    const handleGetDetail = (aid: string, cid: string): Promise<any> => {
+      return new Promise((resolve) => {
+        top.Core.DataAccess.Dir.GetDetail(aid, cid, (res) => resolve(res))
+      })
+    }
 
     // SHA1 自动查重
     const SHA1_MAP = {}
@@ -567,17 +584,32 @@
 
   // 初始化
   $(() => {
+    initMenu()
     // 网盘列表模块
     if (urlHasString('cid=')) {
       // 添加链接任务入口
       G.get('addTaskBtn') && addLinkTaskBtn()
-
-      // 快捷操作初始化
       initQuickOperation()
     }
     // SHA1 查重列表模块
     else if (urlHasString('tab=sha1_repeat')) {
       initRepeatSha1List()
+    }
+    // 网盘搜索模块
+    else if (urlHasString('mode=search') && G.get('search.addMenu')) {
+      observerChildList(() => {
+        $('li[rel="item"]').each(function () {
+          if (!$(this).find('.mm-operation').length) {
+            $(this).append(
+              getFloatMenu(
+                $(this).attr('file_type'),
+                ['move', 'edit_name', 'delete', 'search', 'sha1'],
+                true
+              )
+            )
+          }
+        })
+      })
     }
   })
 })()
