@@ -2,7 +2,7 @@
 // ==UserScript==
 // @name         慕课小助手
 // @namespace    https://github.com/maomao1996/tampermonkey-scripts
-// @version      0.3.8
+// @version      0.3.9
 // @description  慕课网问答区快速查看问答详情、自动播放下一节视频
 // @icon         https://coding.m.imooc.com/static/wap/static/favicon.ico
 // @author       maomao1996
@@ -80,12 +80,8 @@ interface StyleMap {
    */
 
   // 获取按钮 html
-  function getBntHtml(id: string): string {
-    return (
-      '<a class="mm-btn" href="javascript:void(0)" data-id="' +
-      id +
-      '">弹窗查看</a>'
-    )
+  function getBntHtml(link: string): string {
+    return `<a class="mm-btn" href="javascript:void(0)" data-link="${link}">弹窗查看</a>`
   }
 
   // 插入弹窗 dom
@@ -97,23 +93,21 @@ interface StyleMap {
 
   // 点击事件
   function handleClick(): void {
-    const id: string = $(this).data('id')
+    const link: string = $(this).data('link')
     $('#mm-modal').show().scrollTop(0)
     const $content = $('iframe#mm-content')
-    $content
-      .attr('src', `//coding.imooc.com/learn/questiondetail/${id}.html`)
-      .on('load', function () {
-        const iframeCtx = $(this).contents()
-        const style: string = `<style id="mm-style">html {width: 780px!important;min-width: 780px!important;overflow-x:hidden} html .wrap {margin: 0 2px!important;}#new_header,#footer,html .col-aside.wenda-col-aside {display: none!important;}.layout{padding-bottom: 2px;} html .wenda-top-intro-box .wenda-top-intro-wrap {width: auto}</style>`
-        iframeCtx.find('head').append(style)
-      })
+    $content.attr('src', link).on('load', function () {
+      const iframeCtx = $(this).contents()
+      const style: string = `<style id="mm-style">html{width:780px!important;min-width:780px!important;overflow-x:hidden}html .wrap{margin:0 2px!important}#footer,#globalTopBanner,#new_header,html .col-aside.wenda-col-aside{display:none!important}.layout{padding-bottom:2px}html .wenda-top-intro-box .wenda-top-intro-wrap{width:auto}</style>`
+      iframeCtx.find('head').append(style)
+    })
   }
 
   // 问答区初始化
   function qaInit(): void {
-    $('.qa-item-title').each(function () {
-      const id = $(this).find('a').attr('href').replace(/\D/g, '')
-      $(this).append(getBntHtml(id))
+    $('#qa-list .nwenda-box').each(function () {
+      const link = $(this).attr('href')
+      $(this).find('h3').append(getBntHtml(link))
     })
 
     appendModal()
