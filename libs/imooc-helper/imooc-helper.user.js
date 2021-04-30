@@ -2,7 +2,7 @@
 // ==UserScript==
 // @name         慕课小助手
 // @namespace    https://github.com/maomao1996/tampermonkey-scripts
-// @version      0.3.8
+// @version      0.3.9
 // @description  慕课网问答区快速查看问答详情、自动播放下一节视频
 // @icon         https://coding.m.imooc.com/static/wap/static/favicon.ico
 // @author       maomao1996
@@ -24,31 +24,27 @@
         }
         GM_addStyle(rules);
     }
-    function getBntHtml(id) {
-        return ('<a class="mm-btn" href="javascript:void(0)" data-id="' +
-            id +
-            '">弹窗查看</a>');
+    function getBntHtml(link) {
+        return "<a class=\"mm-btn\" href=\"javascript:void(0)\" data-link=\"" + link + "\">\u5F39\u7A97\u67E5\u770B</a>";
     }
     function appendModal() {
         var modalHtml = '<div class="mm-modal" id="mm-modal"><div class="mm-mask"></div><div class="mm-modal-x"><iframe id="mm-content" width="100%" height="100%" frameborder="0"></iframe></div></div>';
         $('body').append(modalHtml);
     }
     function handleClick() {
-        var id = $(this).data('id');
+        var link = $(this).data('link');
         $('#mm-modal').show().scrollTop(0);
         var $content = $('iframe#mm-content');
-        $content
-            .attr('src', "//coding.imooc.com/learn/questiondetail/" + id + ".html")
-            .on('load', function () {
+        $content.attr('src', link).on('load', function () {
             var iframeCtx = $(this).contents();
-            var style = "<style id=\"mm-style\">html {width: 780px!important;min-width: 780px!important;overflow-x:hidden} html .wrap {margin: 0 2px!important;}#new_header,#footer,html .col-aside.wenda-col-aside {display: none!important;}.layout{padding-bottom: 2px;} html .wenda-top-intro-box .wenda-top-intro-wrap {width: auto}</style>";
+            var style = "<style id=\"mm-style\">html{width:780px!important;min-width:780px!important;overflow-x:hidden}html .wrap{margin:0 2px!important}#footer,#globalTopBanner,#new_header,html .col-aside.wenda-col-aside{display:none!important}.layout{padding-bottom:2px}html .wenda-top-intro-box .wenda-top-intro-wrap{width:auto}</style>";
             iframeCtx.find('head').append(style);
         });
     }
     function qaInit() {
-        $('.qa-item-title').each(function () {
-            var id = $(this).find('a').attr('href').replace(/\D/g, '');
-            $(this).append(getBntHtml(id));
+        $('#qa-list .nwenda-box').each(function () {
+            var link = $(this).attr('href');
+            $(this).find('h3').append(getBntHtml(link));
         });
         appendModal();
         $(document).on('click', '.mm-mask', function () {
