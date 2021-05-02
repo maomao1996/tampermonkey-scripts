@@ -2,7 +2,7 @@
 // ==UserScript==
 // @name          115小助手
 // @namespace     https://github.com/maomao1996/tampermonkey-scripts
-// @version       0.9.0
+// @version       1.0.0
 // @description   顶部链接任务入口还原、SHA1 快速查重（新页面打开）、SHA1 自动查重、删除空文件夹、一键搜（快捷搜索）、SHA1 查重列表支持选中第一个元素和悬浮菜单展示、搜索列表支持悬浮菜单展示
 // @icon      	  https://115.com/favicon.ico
 // @author        maomao1996
@@ -57,6 +57,12 @@
             },
             addDeleteEmptyBtn: {
                 label: '网盘路径栏增加删除空文件夹按钮',
+                labelPos: 'right',
+                type: 'checkbox',
+                default: true
+            },
+            addFolderRepeatBtn: {
+                label: '网盘路径栏增加单文件夹查重按钮',
                 labelPos: 'right',
                 type: 'checkbox',
                 default: true
@@ -148,8 +154,8 @@
     var observerChildList = function (callback, selector) {
         if (selector === void 0) { selector = '#js_data_list'; }
         var observer = new MutationObserver(function (_a) {
-            var type = _a[0].type;
-            type === 'childList' && callback(observer);
+            var mutation = _a[0];
+            mutation.type === 'childList' && callback(observer, mutation);
         });
         var $selector = typeof selector === 'string' ? $(selector) : selector;
         if ($selector.length) {
@@ -295,6 +301,9 @@
             if (G.get('addDeleteEmptyBtn')) {
                 operations += "<a href=\"javascript:;\" class=\"button btn-line mm-quick-operation\" type=\"delete-empty\" title=\"\u53EA\u5220\u9664\u5F53\u524D\u9875\u7801\u76EE\u5F55\u4E2D\u7684\u6587\u4EF6\u5939\"><span>\u5220\u9664\u7A7A\u6587\u4EF6\u5939</span></a>";
             }
+            if (G.get('addFolderRepeatBtn')) {
+                operations += "<a href=\"javascript:;\" class=\"button btn-line mm-quick-operation\" type=\"folder-sha1\" title=\"\u53EA\u67E5\u8BE2\u5E76\u6807\u8BB0\u5F53\u524D\u76EE\u5F55\u4E2D\u7684\u91CD\u590D\u6587\u4EF6\"><span>\u5355\u6587\u4EF6\u5939\u67E5\u91CD</span></a>";
+            }
             $('#js_path_add_dir').after(operations);
         }
         observerChildList(function () {
@@ -414,6 +423,53 @@
                 }
             });
         };
+        var handleFolderCheckSha1 = function () {
+            var $loadAllFile = $('[menu="load_all_file"]:visible');
+            var isMore = !!$loadAllFile.length;
+            var checkSha1 = function () {
+                var SHA1_MAP = {};
+                var $li = $('li[file_type="1"]');
+                if (!$li.length) {
+                    MinMessage.Show({
+                        text: '当前文件夹下没有可查重文件',
+                        type: 'war',
+                        timeout: 2e3
+                    });
+                    return;
+                }
+                var repeatCount = 0;
+                $li.each(function () {
+                    var sha1 = $(this).attr('sha1');
+                    if (!SHA1_MAP[sha1]) {
+                        SHA1_MAP[sha1] = 1;
+                    }
+                    else {
+                        repeatCount++;
+                        $(this).addClass('active');
+                    }
+                });
+                var options = { text: '', type: '', timeout: 2e3 };
+                if (repeatCount) {
+                    options.text = "\u5F53\u524D\u6587\u4EF6\u5939\u4E0B\u5171 " + repeatCount + " \u4E2A\u91CD\u590D\u6587\u4EF6";
+                    options.type = 'suc';
+                }
+                else {
+                    options.text = '当前文件夹下没有重复文件';
+                    options.type = 'war';
+                }
+                MinMessage.Show(options);
+            };
+            if (isMore) {
+                observerChildList(function (_, _a) {
+                    var addedNodes = _a.addedNodes;
+                    addedNodes.length && checkSha1();
+                }, '#js_data_list .list-contents > ul');
+                $loadAllFile.trigger('click');
+            }
+            else {
+                checkSha1();
+            }
+        };
         $(document).on('click', '.mm-quick-operation', function () {
             var type = $(this).attr('type');
             if (!type) {
@@ -424,6 +480,8 @@
                     return handleAutoCheckSha1();
                 case 'delete-empty':
                     return handleDeleteEmptyFolder();
+                case 'folder-sha1':
+                    return handleFolderCheckSha1();
             }
         });
     };
