@@ -2,7 +2,7 @@
 // ==UserScript==
 // @name          115小助手
 // @namespace     https://github.com/maomao1996/tampermonkey-scripts
-// @version       0.9.0
+// @version       1.0.0
 // @description   顶部链接任务入口还原、SHA1 快速查重（新页面打开）、SHA1 自动查重、删除空文件夹、一键搜（快捷搜索）、SHA1 查重列表支持选中第一个元素和悬浮菜单展示、搜索列表支持悬浮菜单展示
 // @icon      	  https://115.com/favicon.ico
 // @author        maomao1996
@@ -68,6 +68,12 @@
       },
       addDeleteEmptyBtn: {
         label: '网盘路径栏增加删除空文件夹按钮',
+        labelPos: 'right',
+        type: 'checkbox',
+        default: true
+      },
+      addFolderRepeatBtn: {
+        label: '网盘路径栏增加单文件夹查重按钮',
         labelPos: 'right',
         type: 'checkbox',
         default: true
@@ -176,11 +182,11 @@
    * 工具方法 - 观察子元素变化
    */
   const observerChildList = (
-    callback: (observer: MutationObserver) => void,
+    callback: (observer: MutationObserver, MutationRecord) => void,
     selector: JQuery | JQuery.Selector = '#js_data_list'
   ): MutationObserver => {
-    const observer = new MutationObserver(([{ type }]) => {
-      type === 'childList' && callback(observer)
+    const observer = new MutationObserver(([mutation]) => {
+      mutation.type === 'childList' && callback(observer, mutation)
     })
     const $selector = typeof selector === 'string' ? $(selector) : selector
     if ($selector.length) {
@@ -385,6 +391,9 @@
       if (G.get('addDeleteEmptyBtn')) {
         operations += `<a href="javascript:;" class="button btn-line mm-quick-operation" type="delete-empty" title="只删除当前页码目录中的文件夹"><span>删除空文件夹</span></a>`
       }
+      if (G.get('addFolderRepeatBtn')) {
+        operations += `<a href="javascript:;" class="button btn-line mm-quick-operation" type="folder-sha1" title="只查询并标记当前目录中的重复文件"><span>单文件夹查重</span></a>`
+      }
       $('#js_path_add_dir').after(operations)
     }
 
@@ -520,6 +529,60 @@
       })
     }
 
+    // 单文件夹查重
+    const handleFolderCheckSha1 = () => {
+      const $loadAllFile = $('[menu="load_all_file"]:visible')
+      const isMore = !!$loadAllFile.length
+
+      const checkSha1 = () => {
+        const SHA1_MAP = {}
+
+        const $li = $('li[file_type="1"]')
+
+        if (!$li.length) {
+          MinMessage.Show({
+            text: '当前文件夹下没有可查重文件',
+            type: 'war',
+            timeout: 2e3
+          })
+          return
+        }
+        // 重复数统计
+        let repeatCount = 0
+
+        $li.each(function () {
+          const sha1 = $(this).attr('sha1')
+          if (!SHA1_MAP[sha1]) {
+            SHA1_MAP[sha1] = 1
+          } else {
+            repeatCount++
+            $(this).addClass('active')
+          }
+        })
+
+        const options = { text: '', type: '', timeout: 2e3 }
+        if (repeatCount) {
+          options.text = `当前文件夹下共 ${repeatCount} 个重复文件`
+          options.type = 'suc'
+        } else {
+          options.text = '当前文件夹下没有重复文件'
+          options.type = 'war'
+        }
+        MinMessage.Show(options)
+      }
+
+      if (isMore) {
+        observerChildList((_, { addedNodes }) => {
+          addedNodes.length && checkSha1()
+        }, '#js_data_list .list-contents > ul')
+
+        // 加载全部文件
+        $loadAllFile.trigger('click')
+      } else {
+        checkSha1()
+      }
+    }
+
     // 路径栏快捷操作
     $(document).on('click', '.mm-quick-operation', function () {
       const type = $(this).attr('type')
@@ -533,6 +596,9 @@
         // 删除空文件夹
         case 'delete-empty':
           return handleDeleteEmptyFolder()
+        // 单文件夹查重
+        case 'folder-sha1':
+          return handleFolderCheckSha1()
       }
     })
   }
