@@ -2,7 +2,7 @@
 // ==UserScript==
 // @name         慕课小助手
 // @namespace    https://github.com/maomao1996/tampermonkey-scripts
-// @version      0.3.9
+// @version      0.3.10
 // @description  慕课网问答区快速查看问答详情、自动播放下一节视频
 // @icon         https://coding.m.imooc.com/static/wap/static/favicon.ico
 // @author       maomao1996
@@ -49,7 +49,7 @@ interface StyleMap {
       z-index: 2;
       border-radius: 20px;
       padding: 25px;
-      width: 780px;
+      width: 836px;
       min-height: 480px;
       background: #fff;
       transform: translateX(-50%);
@@ -98,7 +98,23 @@ interface StyleMap {
     const $content = $('iframe#mm-content')
     $content.attr('src', link).on('load', function () {
       const iframeCtx = $(this).contents()
-      const style: string = `<style id="mm-style">html{width:780px!important;min-width:780px!important;overflow-x:hidden}html .wrap{margin:0 2px!important}#footer,#globalTopBanner,#new_header,html .col-aside.wenda-col-aside{display:none!important}.layout{padding-bottom:2px}html .wenda-top-intro-box .wenda-top-intro-wrap{width:auto}</style>`
+      const style: string = `<style id="mm-style">
+      html, body {
+        overflow-x: hidden;
+        width: 836px!important;
+        min-width: 836px!important;
+        padding-bottom: 0!important
+      }
+      #footer, #globalTopBanner, #new_header, #J_GotoTop,html .col-aside.wenda-col-aside, .detail-r {
+        display: none!important
+      }
+      html .quedetail-wrap {
+        margin: 2px;
+      }
+      html .wenda-answer .cmt-post {
+        margin-bottom: 2px;
+      }
+      </style>`
       iframeCtx.find('head').append(style)
     })
   }
