@@ -2,7 +2,7 @@
 // ==UserScript==
 // @name         慕课小助手
 // @namespace    https://github.com/maomao1996/tampermonkey-scripts
-// @version      0.3.9
+// @version      0.3.10
 // @description  慕课网问答区快速查看问答详情、自动播放下一节视频
 // @icon         https://coding.m.imooc.com/static/wap/static/favicon.ico
 // @author       maomao1996
@@ -15,7 +15,7 @@
 (function () {
     'use strict';
     var STYLE_MAP = {
-        'learn/qa': ".mm-modal {\n      position: fixed;\n      top: 0;\n      right: 0;\n      bottom: 0;\n      left: 0;\n      z-index: 1996;\n      display: none;\n      overflow-y: auto;\n    }\n    .mm-mask {\n      position: fixed;\n      top: 0;\n      right: 0;\n      bottom: 0;\n      left: 0;\n      z-index: 1;\n      background-color: rgba(0, 0, 0, 0.5);\n    }\n    .mm-modal-x {\n      overflow: hidden;\n      position: absolute;\n      top: 10%;\n      bottom: 5%;\n      left: 50%;\n      z-index: 2;\n      border-radius: 20px;\n      padding: 25px;\n      width: 780px;\n      min-height: 480px;\n      background: #fff;\n      transform: translateX(-50%);\n    }\n    .mm-modal-x::before {\n      position: absolute;\n      top: 0;\n      left: 0;\n      z-index: -1;\n      width: 100%;\n      content: '\u6570\u636E\u52A0\u8F7D\u4E2D...';\n      font-size: 24px;\n      text-align: center;\n      line-height: 480px;\n    }"
+        'learn/qa': ".mm-modal {\n      position: fixed;\n      top: 0;\n      right: 0;\n      bottom: 0;\n      left: 0;\n      z-index: 1996;\n      display: none;\n      overflow-y: auto;\n    }\n    .mm-mask {\n      position: fixed;\n      top: 0;\n      right: 0;\n      bottom: 0;\n      left: 0;\n      z-index: 1;\n      background-color: rgba(0, 0, 0, 0.5);\n    }\n    .mm-modal-x {\n      overflow: hidden;\n      position: absolute;\n      top: 10%;\n      bottom: 5%;\n      left: 50%;\n      z-index: 2;\n      border-radius: 20px;\n      padding: 25px;\n      width: 836px;\n      min-height: 480px;\n      background: #fff;\n      transform: translateX(-50%);\n    }\n    .mm-modal-x::before {\n      position: absolute;\n      top: 0;\n      left: 0;\n      z-index: -1;\n      width: 100%;\n      content: '\u6570\u636E\u52A0\u8F7D\u4E2D...';\n      font-size: 24px;\n      text-align: center;\n      line-height: 480px;\n    }"
     };
     function addStyle(type) {
         var rules = STYLE_MAP[type];
@@ -37,7 +37,7 @@
         var $content = $('iframe#mm-content');
         $content.attr('src', link).on('load', function () {
             var iframeCtx = $(this).contents();
-            var style = "<style id=\"mm-style\">html{width:780px!important;min-width:780px!important;overflow-x:hidden}html .wrap{margin:0 2px!important}#footer,#globalTopBanner,#new_header,html .col-aside.wenda-col-aside{display:none!important}.layout{padding-bottom:2px}html .wenda-top-intro-box .wenda-top-intro-wrap{width:auto}</style>";
+            var style = "<style id=\"mm-style\">\n      html, body {\n        overflow-x: hidden;\n        width: 836px!important;\n        min-width: 836px!important;\n        padding-bottom: 0!important\n      }\n      #footer, #globalTopBanner, #new_header, #J_GotoTop,html .col-aside.wenda-col-aside, .detail-r {\n        display: none!important\n      }\n      html .quedetail-wrap {\n        margin: 2px;\n      }\n      html .wenda-answer .cmt-post {\n        margin-bottom: 2px;\n      }\n      </style>";
             iframeCtx.find('head').append(style);
         });
     }
