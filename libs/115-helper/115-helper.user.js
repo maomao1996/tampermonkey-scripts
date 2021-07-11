@@ -2,7 +2,7 @@
 // ==UserScript==
 // @name          115小助手
 // @namespace     https://github.com/maomao1996/tampermonkey-scripts
-// @version       1.0.0
+// @version       1.0.1
 // @description   顶部链接任务入口还原、SHA1 快速查重（新页面打开）、SHA1 自动查重、删除空文件夹、一键搜（快捷搜索）、SHA1 查重列表支持选中第一个元素和悬浮菜单展示、搜索列表支持悬浮菜单展示
 // @icon      	  https://115.com/favicon.ico
 // @author        maomao1996
@@ -500,8 +500,12 @@
             }
             if (G.get('sha1Repeat.addMenu')) {
                 $('li[rel="item"]').each(function () {
-                    if (!$(this).find('.file-opr').length) {
-                        $(this).append(getFloatMenu($(this).attr('file_type'), ['move', 'edit_name', 'delete'], true));
+                    var that = $(this);
+                    if (!that.attr('shared')) {
+                        that.attr('shared', '0');
+                    }
+                    if (!that.find('.file-opr').length) {
+                        that.append(getFloatMenu(that.attr('file_type'), ['move', 'edit_name', 'delete'], true));
                     }
                 });
             }
