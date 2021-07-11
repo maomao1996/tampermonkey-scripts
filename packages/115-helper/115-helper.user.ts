@@ -2,7 +2,7 @@
 // ==UserScript==
 // @name          115小助手
 // @namespace     https://github.com/maomao1996/tampermonkey-scripts
-// @version       1.0.0
+// @version       1.0.1
 // @description   顶部链接任务入口还原、SHA1 快速查重（新页面打开）、SHA1 自动查重、删除空文件夹、一键搜（快捷搜索）、SHA1 查重列表支持选中第一个元素和悬浮菜单展示、搜索列表支持悬浮菜单展示
 // @icon      	  https://115.com/favicon.ico
 // @author        maomao1996
@@ -18,7 +18,7 @@
 ;(() => {
   'use strict'
 
-  // 过滤非 iframe 和 iframe 套娃场景 场景
+  // 过滤非 iframe 和 iframe 套娃场景
   if (window.self === window.top || typeof TOP === 'undefined') {
     return
   }
@@ -35,8 +35,7 @@
   const GMConfigOptions = {
     id: 'Helper_Cfg',
     title: '115 小助手',
-    css:
-      '#Helper_Cfg .config_var textarea{width: 310px; height: 50px;} #Helper_Cfg .inline {padding-bottom:0px;}#Helper_Cfg .config_var {margin-left: 20px;margin-right: 20px;} #Helper_Cfg input[type="checkbox"] {margin-left: 0px;vertical-align: top;} #Helper_Cfg input[type="text"] {width: 53px;} #Helper_Cfg {background-color: lightblue;} #Helper_Cfg .reset_holder {float: left; position: relative; bottom: -1.2em;}',
+    css: '#Helper_Cfg .config_var textarea{width: 310px; height: 50px;} #Helper_Cfg .inline {padding-bottom:0px;}#Helper_Cfg .config_var {margin-left: 20px;margin-right: 20px;} #Helper_Cfg input[type="checkbox"] {margin-left: 0px;vertical-align: top;} #Helper_Cfg input[type="text"] {width: 53px;} #Helper_Cfg {background-color: lightblue;} #Helper_Cfg .reset_holder {float: left; position: relative; bottom: -1.2em;}',
     frameStyle: {
       height: '560px',
       width: '420px',
@@ -624,10 +623,14 @@
       // 添加悬浮菜单
       if (G.get('sha1Repeat.addMenu')) {
         $('li[rel="item"]').each(function () {
-          if (!$(this).find('.file-opr').length) {
-            $(this).append(
+          const that = $(this)
+          if (!that.attr('shared')) {
+            that.attr('shared', '0')
+          }
+          if (!that.find('.file-opr').length) {
+            that.append(
               getFloatMenu(
-                $(this).attr('file_type'),
+                that.attr('file_type'),
                 ['move', 'edit_name', 'delete'],
                 true
               )
