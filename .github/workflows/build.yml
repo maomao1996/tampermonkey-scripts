@@ -25,5 +25,5 @@ jobs:
           push-branch: master
           commit-message: 'Update libs by Github Actions'
           files: libs/
-          name: maomao1996
-          email: 1714487678@qq.com
+          name: github-actions[bot]
+          email: 41898282+github-actions[bot]@users.noreply.github.com
