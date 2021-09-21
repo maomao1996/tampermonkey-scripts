@@ -2,7 +2,7 @@
 // ==UserScript==
 // @name          115小助手
 // @namespace     https://github.com/maomao1996/tampermonkey-scripts
-// @version       1.0.1
+// @version       1.1.0
 // @description   顶部链接任务入口还原、SHA1 快速查重（新页面打开）、SHA1 自动查重、删除空文件夹、一键搜（快捷搜索）、SHA1 查重列表支持选中第一个元素和悬浮菜单展示、搜索列表支持悬浮菜单展示
 // @icon      	  https://115.com/favicon.ico
 // @author        maomao1996
@@ -14,6 +14,43 @@
 // @run-at        document-end
 // ==/UserScript==
 */
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+var __generator = (this && this.__generator) || function (thisArg, body) {
+    var _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t, g;
+    return g = { next: verb(0), "throw": verb(1), "return": verb(2) }, typeof Symbol === "function" && (g[Symbol.iterator] = function() { return this; }), g;
+    function verb(n) { return function (v) { return step([n, v]); }; }
+    function step(op) {
+        if (f) throw new TypeError("Generator is already executing.");
+        while (_) try {
+            if (f = 1, y && (t = op[0] & 2 ? y["return"] : op[0] ? y["throw"] || ((t = y["return"]) && t.call(y), 0) : y.next) && !(t = t.call(y, op[1])).done) return t;
+            if (y = 0, t) op = [op[0] & 2, t.value];
+            switch (op[0]) {
+                case 0: case 1: t = op; break;
+                case 4: _.label++; return { value: op[1], done: false };
+                case 5: _.label++; y = op[1]; op = [0]; continue;
+                case 7: op = _.ops.pop(); _.trys.pop(); continue;
+                default:
+                    if (!(t = _.trys, t = t.length > 0 && t[t.length - 1]) && (op[0] === 6 || op[0] === 2)) { _ = 0; continue; }
+                    if (op[0] === 3 && (!t || (op[1] > t[0] && op[1] < t[3]))) { _.label = op[1]; break; }
+                    if (op[0] === 6 && _.label < t[1]) { _.label = t[1]; t = op; break; }
+                    if (t && _.label < t[2]) { _.label = t[2]; _.ops.push(op); break; }
+                    if (t[2]) _.ops.pop();
+                    _.trys.pop(); continue;
+            }
+            op = body.call(thisArg, _);
+        } catch (e) { op = [6, e]; y = 0; } finally { f = t = 0; }
+        if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
+    }
+};
+var _this = this;
 ;
 (function () {
     'use strict';
@@ -32,6 +69,30 @@
             zIndex: '13145201996'
         },
         fields: {
+            'delay.minCount': {
+                section: ['', '延迟相关设置'],
+                label: '开始延迟最小查询数量',
+                labelPos: 'left',
+                type: 'int',
+                min: 20,
+                max: 50,
+                default: 20
+            },
+            'delay.minTime': {
+                label: '最小延迟时间(毫秒)',
+                type: 'int',
+                min: 50,
+                max: 1e3,
+                default: 66
+            },
+            'delay.maxTime': {
+                label: '最大延迟时间(毫秒)',
+                type: 'int',
+                min: 200,
+                max: 5e3,
+                default: 200,
+                line: 'end'
+            },
             addTaskBtn: {
                 section: ['', '网盘顶部菜单相关设置'],
                 label: '网盘顶部菜单增加链接任务按钮',
@@ -52,7 +113,7 @@
                 type: 'int',
                 min: 1,
                 max: 50,
-                default: '20',
+                default: 20,
                 line: 'end'
             },
             addDeleteEmptyBtn: {
@@ -136,7 +197,7 @@
                 labelPos: 'right',
                 type: 'button',
                 click: function () {
-                    alert("1. \u4E3A\u4FDD\u8BC1\u8D26\u53F7\u5B89\u5168 SHA1 \u81EA\u52A8\u67E5\u91CD \u529F\u80FD\u4F7F\u7528\u4E86\u7F13\u5B58\u673A\u5236\uFF08\u6BCF\u4E2A\u9875\u7801\u76EE\u5F55\u4E0B\u7684\u6587\u4EF6\u53EA\u4F1A\u67E5\u8BE2\u4E00\u6B21\uFF0C\u5982\u9700\u518D\u6B21\u67E5\u8BE2\u8BF7\u4F7F\u7528\u5177\u4F53\u6587\u4EF6\u7684 SHA1\u67E5\u91CD \u6309\u94AE\u6216\u5237\u65B0\u9875\u9762\u540E\u518D\u4F7F\u7528\uFF09\n2. \u811A\u672C\u8BBE\u7F6E\u4FDD\u5B58\u540E\u5C06\u4F1A\u81EA\u52A8\u5237\u65B0\u9875\u9762\n3. \u811A\u672C\u52A0\u8F7D\u6709\u6761\u4EF6\u9650\u5236\u4F1A\u9020\u6210\u8BBE\u7F6E\u5F39\u7A97\u4E0D\u5C45\u4E2D");
+                    alert("1. \u4E3A\u4FDD\u8BC1\u8D26\u53F7\u5B89\u5168\uFF0C\u4ECE 1.1.0 \u7248\u672C\u5F00\u59CB\uFF0C\u6240\u6709\u9891\u7E41\u8BF7\u6C42\u63A5\u53E3\u7684\u64CD\u4F5C\u90FD\u4F1A\u52A0\u5165\u968F\u673A\u5EF6\u8FDF\uFF1B\u540C\u65F6 SHA1 \u81EA\u52A8\u67E5\u91CD \u529F\u80FD\u4F1A\u4F7F\u7528\u7F13\u5B58\u673A\u5236\uFF08\u6BCF\u4E2A\u9875\u7801\u76EE\u5F55\u4E0B\u7684\u6587\u4EF6\u53EA\u4F1A\u67E5\u8BE2\u4E00\u6B21\uFF0C\u5982\u9700\u518D\u6B21\u67E5\u8BE2\u8BF7\u4F7F\u7528\u5177\u4F53\u6587\u4EF6\u7684 SHA1\u67E5\u91CD \u6309\u94AE\u6216\u5237\u65B0\u9875\u9762\u540E\u518D\u4F7F\u7528\uFF09\n2. \u811A\u672C\u8BBE\u7F6E\u4FDD\u5B58\u540E\u5C06\u4F1A\u81EA\u52A8\u5237\u65B0\u9875\u9762\n3. \u811A\u672C\u52A0\u8F7D\u6709\u6761\u4EF6\u9650\u5236\u4F1A\u9020\u6210\u8BBE\u7F6E\u5F39\u7A97\u4E0D\u5C45\u4E2D");
                 }
             }
         },
@@ -162,6 +223,21 @@
             observer.observe($selector[0], { childList: true });
         }
         return observer;
+    };
+    var random = function (lower, upper, floating) {
+        if (floating) {
+            var rand = Math.random();
+            var randLength = ("" + rand).length - 1;
+            return Math.min(lower + rand * (upper - lower + parseFloat("1e-" + randLength)), upper);
+        }
+        return lower + Math.floor(Math.random() * (upper - lower + 1));
+    };
+    var delay = function (timeout) {
+        if (!timeout) {
+            timeout = random(G.get('delay.minTime'), G.get('delay.maxTime'));
+        }
+        console.log('等待 :', timeout, 'ms');
+        return new Promise(function (resolve) { return setTimeout(resolve, timeout); });
     };
     var getAidCid = function () {
         try {
@@ -325,6 +401,7 @@
             });
         };
         var SHA1_MAP = {};
+        var delayIndex = random(3, 7);
         var handleAutoCheckSha1 = function () {
             if (autoCheckDisabled) {
                 MinMessage.Show({
@@ -346,41 +423,54 @@
             MinMessage.Show({ text: '正在查找', type: 'load', timeout: 2e5 });
             var index = 0;
             var repeatCount = 0;
-            var findRepeat = function () {
-                var isMax = repeatCount >= G.get('autoSha1.maxCount');
-                var isEnd = index >= $li.length;
-                if (isEnd || isMax) {
-                    isEnd && (autoCheckDisabled = true);
-                    var options = { text: '', type: '', timeout: 2e3 };
-                    if (repeatCount) {
-                        options.text = isMax
-                            ? "\u5DF2\u67E5\u8BE2\u5230 " + repeatCount + " \u4E2A\u91CD\u590D\u6587\u4EF6"
-                            : "\u5DF2\u67E5\u8BE2\u5B8C\u5F53\u524D\u5206\u9875\uFF0C\u5171 " + repeatCount + " \u4E2A\u91CD\u590D\u6587\u4EF6";
-                        options.type = 'suc';
+            var findRepeat = function () { return __awaiter(_this, void 0, void 0, function () {
+                var isMax, isEnd, options, $currentLi, fileId, sha1;
+                return __generator(this, function (_a) {
+                    switch (_a.label) {
+                        case 0:
+                            isMax = repeatCount >= G.get('autoSha1.maxCount');
+                            isEnd = index >= $li.length;
+                            if (isEnd || isMax) {
+                                isEnd && (autoCheckDisabled = true);
+                                options = { text: '', type: '', timeout: 2e3 };
+                                if (repeatCount) {
+                                    options.text = isMax
+                                        ? "\u5DF2\u67E5\u8BE2\u5230 " + repeatCount + " \u4E2A\u91CD\u590D\u6587\u4EF6"
+                                        : "\u5DF2\u67E5\u8BE2\u5B8C\u5F53\u524D\u5206\u9875\uFF0C\u5171 " + repeatCount + " \u4E2A\u91CD\u590D\u6587\u4EF6";
+                                    options.type = 'suc';
+                                }
+                                else {
+                                    options.text = '当前分页下没有可查重文件';
+                                    options.type = 'war';
+                                }
+                                MinMessage.Show(options);
+                                return [2];
+                            }
+                            if (!(index > G.get('delay.minCount') && index % delayIndex === 0)) return [3, 2];
+                            delayIndex = random(3, 7);
+                            return [4, delay()];
+                        case 1:
+                            _a.sent();
+                            _a.label = 2;
+                        case 2:
+                            $currentLi = $li.eq(index);
+                            fileId = $currentLi.attr('file_id');
+                            sha1 = $currentLi.attr('sha1');
+                            index++;
+                            if (fileId && sha1 && !SHA1_MAP[sha1]) {
+                                SHA1_MAP[sha1] = 1;
+                                return [2, handleRepeatSha1(fileId, true).then(function (flag) {
+                                        if (flag) {
+                                            $currentLi.addClass('active');
+                                            repeatCount++;
+                                        }
+                                        return findRepeat();
+                                    })];
+                            }
+                            return [2, findRepeat()];
                     }
-                    else {
-                        options.text = '当前分页下没有可查重文件';
-                        options.type = 'war';
-                    }
-                    MinMessage.Show(options);
-                    return;
-                }
-                var $currentLi = $li.eq(index);
-                var fileId = $currentLi.attr('file_id');
-                var sha1 = $currentLi.attr('sha1');
-                index++;
-                if (fileId && sha1 && !SHA1_MAP[sha1]) {
-                    SHA1_MAP[sha1] = 1;
-                    return handleRepeatSha1(fileId, true).then(function (flag) {
-                        if (flag) {
-                            $currentLi.addClass('active');
-                            repeatCount++;
-                        }
-                        return findRepeat();
-                    });
-                }
-                return findRepeat();
-            };
+                });
+            }); };
             findRepeat();
         };
         var handleDeleteEmptyFolder = function () {
@@ -394,34 +484,52 @@
                 return;
             }
             MinMessage.Show({ text: '正在查找', type: 'load', timeout: 2e4 });
-            var files = [];
-            $li.each(function () {
-                files.push(handleGetDetail($(this).attr('area_id'), $(this).attr('cate_id')));
-            });
-            Promise.all(files).then(function (result) {
-                var emptyFolderCount = 0;
-                result.forEach(function (item, index) {
-                    var $current = $li.eq(index);
-                    if (item.size === '0B') {
-                        emptyFolderCount++;
-                        $current.find('[menu="file_check_one"]').trigger('click');
+            var index = 0;
+            var emptyFolderCount = 0;
+            var recursive = function () { return __awaiter(_this, void 0, void 0, function () {
+                var $currentLi;
+                return __generator(this, function (_a) {
+                    switch (_a.label) {
+                        case 0:
+                            if (index >= $li.length) {
+                                if (emptyFolderCount === 0) {
+                                    MinMessage.Show({
+                                        text: '当前文件目录下没有空文件夹',
+                                        type: 'war',
+                                        timeout: 2e3
+                                    });
+                                }
+                                else {
+                                    MinMessage.Hide();
+                                    setTimeout(function () {
+                                        $('li[menu="delete"]:visible').trigger('click');
+                                    }, 2e2);
+                                }
+                                return [2];
+                            }
+                            if (!(index > G.get('delay.minCount') && index % delayIndex === 0)) return [3, 2];
+                            delayIndex = random(3, 7);
+                            return [4, delay()];
+                        case 1:
+                            _a.sent();
+                            _a.label = 2;
+                        case 2:
+                            $currentLi = $li.eq(index);
+                            handleGetDetail($currentLi.attr('area_id'), $currentLi.attr('cate_id')).then(function (_a) {
+                                var size = _a.size;
+                                if (size === '0B') {
+                                    emptyFolderCount++;
+                                    $currentLi.find('[menu="file_check_one"]').trigger('click');
+                                }
+                                index++;
+                                $currentLi.find('.file-size span').text(size);
+                                return recursive();
+                            });
+                            return [2];
                     }
-                    $current.find('.file-size span').text(item.size);
                 });
-                if (emptyFolderCount === 0) {
-                    MinMessage.Show({
-                        text: '当前文件目录下没有空文件夹',
-                        type: 'war',
-                        timeout: 2e3
-                    });
-                }
-                else {
-                    MinMessage.Hide();
-                    setTimeout(function () {
-                        $('li[menu="delete"]:visible').trigger('click');
-                    }, 200);
-                }
-            });
+            }); };
+            recursive();
         };
         var handleFolderCheckSha1 = function () {
             var $loadAllFile = $('[menu="load_all_file"]:visible');
