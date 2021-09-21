@@ -2,7 +2,7 @@
 // ==UserScript==
 // @name          115小助手
 // @namespace     https://github.com/maomao1996/tampermonkey-scripts
-// @version       1.0.1
+// @version       1.1.0
 // @description   顶部链接任务入口还原、SHA1 快速查重（新页面打开）、SHA1 自动查重、删除空文件夹、一键搜（快捷搜索）、SHA1 查重列表支持选中第一个元素和悬浮菜单展示、搜索列表支持悬浮菜单展示
 // @icon      	  https://115.com/favicon.ico
 // @author        maomao1996
@@ -42,6 +42,30 @@
       zIndex: '13145201996'
     },
     fields: {
+      'delay.minCount': {
+        section: ['', '延迟相关设置'],
+        label: '开始延迟最小查询数量',
+        labelPos: 'left',
+        type: 'int',
+        min: 20,
+        max: 50,
+        default: 20
+      },
+      'delay.minTime': {
+        label: '最小延迟时间(毫秒)',
+        type: 'int',
+        min: 50,
+        max: 1e3,
+        default: 66
+      },
+      'delay.maxTime': {
+        label: '最大延迟时间(毫秒)',
+        type: 'int',
+        min: 200,
+        max: 5e3,
+        default: 200,
+        line: 'end'
+      },
       addTaskBtn: {
         section: ['', '网盘顶部菜单相关设置'],
         label: '网盘顶部菜单增加链接任务按钮',
@@ -62,7 +86,7 @@
         type: 'int',
         min: 1,
         max: 50,
-        default: '20',
+        default: 20,
         line: 'end'
       },
       addDeleteEmptyBtn: {
@@ -148,7 +172,7 @@
         type: 'button',
         click() {
           alert(
-            `1. 为保证账号安全 SHA1 自动查重 功能使用了缓存机制（每个页码目录下的文件只会查询一次，如需再次查询请使用具体文件的 SHA1查重 按钮或刷新页面后再使用）
+            `1. 为保证账号安全，从 1.1.0 版本开始，所有频繁请求接口的操作都会加入随机延迟；同时 SHA1 自动查重 功能会使用缓存机制（每个页码目录下的文件只会查询一次，如需再次查询请使用具体文件的 SHA1查重 按钮或刷新页面后再使用）
 2. 脚本设置保存后将会自动刷新页面
 3. 脚本加载有条件限制会造成设置弹窗不居中`
           )
@@ -192,6 +216,33 @@
       observer.observe($selector[0], { childList: true })
     }
     return observer
+  }
+
+  /**
+   * 工具方法 - 随机函数
+   * https://github.com/lodash/lodash/blob/master/random.js
+   */
+  const random = (lower: number, upper: number, floating?: boolean): number => {
+    if (floating) {
+      const rand = Math.random()
+      const randLength = `${rand}`.length - 1
+      return Math.min(
+        lower + rand * (upper - lower + parseFloat(`1e-${randLength}`)),
+        upper
+      )
+    }
+    return lower + Math.floor(Math.random() * (upper - lower + 1))
+  }
+
+  /**
+   * 工具方法 - 等待函数
+   */
+  const delay = (timeout?: number) => {
+    if (!timeout) {
+      timeout = random(G.get('delay.minTime'), G.get('delay.maxTime'))
+    }
+    console.log('等待 :', timeout, 'ms')
+    return new Promise((resolve) => setTimeout(resolve, timeout))
   }
 
   const getAidCid = (): any => {
@@ -418,6 +469,9 @@
 
     // SHA1 自动查重
     const SHA1_MAP = {}
+    // 随机延迟索引
+    let delayIndex = random(3, 7)
+
     const handleAutoCheckSha1 = () => {
       if (autoCheckDisabled) {
         MinMessage.Show({
@@ -445,7 +499,7 @@
       // 重复数统计
       let repeatCount = 0
 
-      const findRepeat = () => {
+      const findRepeat = async () => {
         const isMax = repeatCount >= G.get('autoSha1.maxCount')
         const isEnd = index >= $li.length
         if (isEnd || isMax) {
@@ -463,6 +517,12 @@
           MinMessage.Show(options)
           return
         }
+
+        if (index > G.get('delay.minCount') && index % delayIndex === 0) {
+          delayIndex = random(3, 7)
+          await delay()
+        }
+
         const $currentLi = $li.eq(index)
         const fileId = $currentLi.attr('file_id')
         const sha1 = $currentLi.attr('sha1')
@@ -496,36 +556,50 @@
       }
 
       MinMessage.Show({ text: '正在查找', type: 'load', timeout: 2e4 })
-      const files = []
-      $li.each(function () {
-        files.push(
-          handleGetDetail($(this).attr('area_id'), $(this).attr('cate_id'))
-        )
-      })
-      Promise.all(files).then(function (result) {
-        let emptyFolderCount = 0
-        result.forEach((item, index) => {
-          const $current = $li.eq(index)
-          if (item.size === '0B') {
-            emptyFolderCount++
-            $current.find('[menu="file_check_one"]').trigger('click')
-          }
-          $current.find('.file-size span').text(item.size)
-        })
 
-        if (emptyFolderCount === 0) {
-          MinMessage.Show({
-            text: '当前文件目录下没有空文件夹',
-            type: 'war',
-            timeout: 2e3
-          })
-        } else {
-          MinMessage.Hide()
-          setTimeout(() => {
-            $('li[menu="delete"]:visible').trigger('click')
-          }, 200)
+      let index = 0
+      // 空文件夹统计
+      let emptyFolderCount = 0
+
+      const recursive = async () => {
+        if (index >= $li.length) {
+          if (emptyFolderCount === 0) {
+            MinMessage.Show({
+              text: '当前文件目录下没有空文件夹',
+              type: 'war',
+              timeout: 2e3
+            })
+          } else {
+            MinMessage.Hide()
+            setTimeout(() => {
+              $('li[menu="delete"]:visible').trigger('click')
+            }, 2e2)
+          }
+          return
         }
-      })
+
+        if (index > G.get('delay.minCount') && index % delayIndex === 0) {
+          delayIndex = random(3, 7)
+          await delay()
+        }
+
+        const $currentLi = $li.eq(index)
+
+        handleGetDetail(
+          $currentLi.attr('area_id'),
+          $currentLi.attr('cate_id')
+        ).then(({ size }) => {
+          if (size === '0B') {
+            emptyFolderCount++
+            $currentLi.find('[menu="file_check_one"]').trigger('click')
+          }
+          index++
+          $currentLi.find('.file-size span').text(size)
+          return recursive()
+        })
+      }
+
+      recursive()
     }
 
     // 单文件夹查重
