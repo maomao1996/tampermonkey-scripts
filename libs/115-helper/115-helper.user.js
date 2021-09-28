@@ -2,7 +2,7 @@
 // ==UserScript==
 // @name          115小助手
 // @namespace     https://github.com/maomao1996/tampermonkey-scripts
-// @version       1.1.0
+// @version       1.1.1
 // @description   顶部链接任务入口还原、SHA1 快速查重（新页面打开）、SHA1 自动查重、删除空文件夹、一键搜（快捷搜索）、SHA1 查重列表支持选中第一个元素和悬浮菜单展示、搜索列表支持悬浮菜单展示
 // @icon      	  https://115.com/favicon.ico
 // @author        maomao1996
@@ -412,7 +412,7 @@ var _this = this;
                 return;
             }
             var $li = $('li[file_type="1"]');
-            if (!$li.length || Object.keys(SHA1_MAP).length === $li.length) {
+            if (!$li.length) {
                 MinMessage.Show({
                     text: '当前文件夹下没有可查重文件',
                     type: 'war',
@@ -446,16 +446,18 @@ var _this = this;
                                 MinMessage.Show(options);
                                 return [2];
                             }
-                            if (!(index > G.get('delay.minCount') && index % delayIndex === 0)) return [3, 2];
+                            $currentLi = $li.eq(index);
+                            fileId = $currentLi.attr('file_id');
+                            sha1 = $currentLi.attr('sha1');
+                            if (!(!SHA1_MAP[sha1] &&
+                                index > G.get('delay.minCount') &&
+                                index % delayIndex === 0)) return [3, 2];
                             delayIndex = random(3, 7);
                             return [4, delay()];
                         case 1:
                             _a.sent();
                             _a.label = 2;
                         case 2:
-                            $currentLi = $li.eq(index);
-                            fileId = $currentLi.attr('file_id');
-                            sha1 = $currentLi.attr('sha1');
                             index++;
                             if (fileId && sha1 && !SHA1_MAP[sha1]) {
                                 SHA1_MAP[sha1] = 1;
