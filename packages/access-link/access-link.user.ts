@@ -2,11 +2,12 @@
 // ==UserScript==
 // @name         跳转链接修复
 // @namespace    https://github.com/maomao1996/tampermonkey-scripts
-// @version      0.3.8
-// @description  为知乎、微信拦截页面增加跳转按钮（支持3秒后自动跳转）
+// @version      0.4.0
+// @description  为知乎、微信、掘金拦截页面增加跳转按钮（支持3秒后自动跳转）
 // @author       maomao1996
 // @include      *://weixin110.qq.com/cgi-bin/mmspamsupport-bin/*
 // @include      *://link.zhihu.com/*
+// @include      *://link.juejin.cn/*
 // @grant        GM_notification
 // @require		   https://cdn.jsdelivr.net/npm/jquery@v3.4.1
 // ==/UserScript==
@@ -63,6 +64,10 @@ interface Params {
     'link.zhihu.com'() {
       insertion = 'html'
       return initParams(params.target!, '.actions')
+    },
+    'link.juejin.cn'() {
+      url = params.target
+      $('button.btn').text('继续访问 (3 秒后自动跳转)')
     }
   }
 
@@ -73,8 +78,10 @@ interface Params {
       url
     )
 
-  if (target && html && isUrl) {
-    $(target)[insertion](html)
+  if (isUrl) {
+    if (target && html) {
+      $(target)[insertion](html)
+    }
     setTimeout(() => {
       location.href = url
     }, 3000)
