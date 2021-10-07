@@ -2,7 +2,7 @@
 // ==UserScript==
 // @name          115小助手
 // @namespace     https://github.com/maomao1996/tampermonkey-scripts
-// @version       1.1.1
+// @version       1.1.2
 // @description   顶部链接任务入口还原、SHA1 快速查重（新页面打开）、SHA1 自动查重、删除空文件夹、一键搜（快捷搜索）、SHA1 查重列表支持选中第一个元素和悬浮菜单展示、搜索列表支持悬浮菜单展示
 // @icon      	  https://115.com/favicon.ico
 // @author        maomao1996
@@ -74,23 +74,23 @@ var _this = this;
                 label: '开始延迟最小查询数量',
                 labelPos: 'left',
                 type: 'int',
-                min: 20,
+                min: 5,
                 max: 50,
-                default: 20
+                default: 15
             },
             'delay.minTime': {
                 label: '最小延迟时间(毫秒)',
                 type: 'int',
-                min: 50,
+                min: 100,
                 max: 1e3,
-                default: 66
+                default: 200
             },
             'delay.maxTime': {
                 label: '最大延迟时间(毫秒)',
                 type: 'int',
-                min: 200,
-                max: 5e3,
-                default: 200,
+                min: 300,
+                max: 3e3,
+                default: 400,
                 line: 'end'
             },
             addTaskBtn: {
@@ -113,7 +113,7 @@ var _this = this;
                 type: 'int',
                 min: 1,
                 max: 50,
-                default: 20,
+                default: 25,
                 line: 'end'
             },
             addDeleteEmptyBtn: {
@@ -248,6 +248,7 @@ var _this = this;
             return { cid: 0 };
         }
     };
+    var randomDelayIndex = [3, 5];
     var styles = [
         '.mm-quick-operation{margin-left: 12px;padding: 0 6px}',
         '.list-contents .active::before{background: rgba(199, 237, 204, 0.7)!important;}'
@@ -401,7 +402,7 @@ var _this = this;
             });
         };
         var SHA1_MAP = {};
-        var delayIndex = random(3, 7);
+        var delayIndex = random.apply(void 0, randomDelayIndex);
         var handleAutoCheckSha1 = function () {
             if (autoCheckDisabled) {
                 MinMessage.Show({
@@ -452,7 +453,7 @@ var _this = this;
                             if (!(!SHA1_MAP[sha1] &&
                                 index > G.get('delay.minCount') &&
                                 index % delayIndex === 0)) return [3, 2];
-                            delayIndex = random(3, 7);
+                            delayIndex = random.apply(void 0, randomDelayIndex);
                             return [4, delay()];
                         case 1:
                             _a.sent();
@@ -510,7 +511,7 @@ var _this = this;
                                 return [2];
                             }
                             if (!(index > G.get('delay.minCount') && index % delayIndex === 0)) return [3, 2];
-                            delayIndex = random(3, 7);
+                            delayIndex = random.apply(void 0, randomDelayIndex);
                             return [4, delay()];
                         case 1:
                             _a.sent();
