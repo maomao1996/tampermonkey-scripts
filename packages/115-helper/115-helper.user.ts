@@ -2,7 +2,7 @@
 // ==UserScript==
 // @name          115小助手
 // @namespace     https://github.com/maomao1996/tampermonkey-scripts
-// @version       1.1.1
+// @version       1.1.2
 // @description   顶部链接任务入口还原、SHA1 快速查重（新页面打开）、SHA1 自动查重、删除空文件夹、一键搜（快捷搜索）、SHA1 查重列表支持选中第一个元素和悬浮菜单展示、搜索列表支持悬浮菜单展示
 // @icon      	  https://115.com/favicon.ico
 // @author        maomao1996
@@ -47,23 +47,23 @@
         label: '开始延迟最小查询数量',
         labelPos: 'left',
         type: 'int',
-        min: 20,
+        min: 5,
         max: 50,
-        default: 20
+        default: 15
       },
       'delay.minTime': {
         label: '最小延迟时间(毫秒)',
         type: 'int',
-        min: 50,
+        min: 100,
         max: 1e3,
-        default: 66
+        default: 200
       },
       'delay.maxTime': {
         label: '最大延迟时间(毫秒)',
         type: 'int',
-        min: 200,
-        max: 5e3,
-        default: 200,
+        min: 300,
+        max: 3e3,
+        default: 400,
         line: 'end'
       },
       addTaskBtn: {
@@ -86,7 +86,7 @@
         type: 'int',
         min: 1,
         max: 50,
-        default: 20,
+        default: 25,
         line: 'end'
       },
       addDeleteEmptyBtn: {
@@ -253,6 +253,9 @@
       return { cid: 0 }
     }
   }
+
+  // 随机索引参数
+  const randomDelayIndex: [number, number] = [3, 5]
 
   /**
    * 样式调整
@@ -470,7 +473,7 @@
     // SHA1 自动查重
     const SHA1_MAP = {}
     // 随机延迟索引
-    let delayIndex = random(3, 7)
+    let delayIndex = random(...randomDelayIndex)
 
     const handleAutoCheckSha1 = () => {
       if (autoCheckDisabled) {
@@ -527,7 +530,7 @@
           index > G.get('delay.minCount') &&
           index % delayIndex === 0
         ) {
-          delayIndex = random(3, 7)
+          delayIndex = random(...randomDelayIndex)
           await delay()
         }
 
@@ -585,7 +588,7 @@
         }
 
         if (index > G.get('delay.minCount') && index % delayIndex === 0) {
-          delayIndex = random(3, 7)
+          delayIndex = random(...randomDelayIndex)
           await delay()
         }
 
