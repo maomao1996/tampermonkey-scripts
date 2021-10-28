@@ -2,7 +2,7 @@
 // ==UserScript==
 // @name         跳转链接修复
 // @namespace    https://github.com/maomao1996/tampermonkey-scripts
-// @version      0.4.0
+// @version      0.4.1
 // @description  为知乎、微信、掘金拦截页面增加跳转按钮（支持3秒后自动跳转）
 // @author       maomao1996
 // @include      *://weixin110.qq.com/cgi-bin/mmspamsupport-bin/*
@@ -33,6 +33,7 @@
         }
         return {};
     }
+    var urlCharRE = /^(https|http):\/\/[A-Za-z0-9-_]+\.[A-Za-z0-9]+[\/=\?%\-&_~`@[\]\':+!]*([^<>\"\"])*$/;
     var params = getQueryStringArgs(location.search);
     var target = '';
     var url = '';
@@ -45,7 +46,9 @@
     }
     var fns = {
         'weixin110.qq.com': function () {
-            return initParams($('.weui-msg .weui-msg__desc').text(), '.weui-msg', 'weui-btn_cell weui-btn_cell-primary');
+            return initParams($('.weui-msg .weui-msg__desc')
+                .text()
+                .replace(/非微信官方网页，请确认是否继续访问。/, ''), '.weui-msg', 'weui-btn_cell weui-btn_cell-primary');
         },
         'link.zhihu.com': function () {
             insertion = 'html';
@@ -58,7 +61,7 @@
     };
     var fn = fns[location.hostname];
     var html = typeof fn === 'function' ? fn() : '';
-    var isUrl = /^(https|http):\/\/[A-Za-z0-9-_]+\.[A-Za-z0-9]+[\/=\?%\-&_~`@[\]\':+!]*([^<>\"\"])*$/.test(url);
+    var isUrl = urlCharRE.test(url);
     if (isUrl) {
         if (target && html) {
             $(target)[insertion](html);
