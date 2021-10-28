@@ -2,7 +2,7 @@
 // ==UserScript==
 // @name         跳转链接修复
 // @namespace    https://github.com/maomao1996/tampermonkey-scripts
-// @version      0.4.0
+// @version      0.4.1
 // @description  为知乎、微信、掘金拦截页面增加跳转按钮（支持3秒后自动跳转）
 // @author       maomao1996
 // @include      *://weixin110.qq.com/cgi-bin/mmspamsupport-bin/*
@@ -40,6 +40,8 @@ interface Params {
     return {}
   }
 
+  const urlCharRE =
+    /^(https|http):\/\/[A-Za-z0-9-_]+\.[A-Za-z0-9]+[\/=\?%\-&_~`@[\]\':+!]*([^<>\"\"])*$/
   const params = getQueryStringArgs(location.search)
   let target: string = ''
   let url: string = ''
@@ -56,7 +58,9 @@ interface Params {
   const fns = {
     'weixin110.qq.com'() {
       return initParams(
-        $('.weui-msg .weui-msg__desc').text(),
+        $('.weui-msg .weui-msg__desc')
+          .text()
+          .replace(/非微信官方网页，请确认是否继续访问。/, ''),
         '.weui-msg',
         'weui-btn_cell weui-btn_cell-primary'
       )
@@ -73,10 +77,7 @@ interface Params {
 
   const fn = fns[location.hostname]
   const html: string = typeof fn === 'function' ? fn() : ''
-  const isUrl =
-    /^(https|http):\/\/[A-Za-z0-9-_]+\.[A-Za-z0-9]+[\/=\?%\-&_~`@[\]\':+!]*([^<>\"\"])*$/.test(
-      url
-    )
+  const isUrl = urlCharRE.test(url)
 
   if (isUrl) {
     if (target && html) {
