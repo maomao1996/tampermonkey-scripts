@@ -2,7 +2,7 @@
 // ==UserScript==
 // @name          115小助手
 // @namespace     https://github.com/maomao1996/tampermonkey-scripts
-// @version       1.1.2
+// @version       1.2.0
 // @description   顶部链接任务入口还原、SHA1 快速查重（新页面打开）、SHA1 自动查重、删除空文件夹、一键搜（快捷搜索）、SHA1 查重列表支持选中第一个元素和悬浮菜单展示、搜索列表支持悬浮菜单展示
 // @icon      	  https://115.com/favicon.ico
 // @author        maomao1996
@@ -122,11 +122,19 @@ var _this = this;
                 type: 'checkbox',
                 default: true
             },
-            addFolderRepeatBtn: {
+            'folderRepeat.addBtn': {
                 label: '网盘路径栏增加单文件夹查重按钮',
                 labelPos: 'right',
                 type: 'checkbox',
-                default: true
+                default: true,
+                line: 'start'
+            },
+            'folderRepeat.select': {
+                label: '选中重复文件',
+                labelPos: 'right',
+                type: 'checkbox',
+                default: false,
+                line: 'end'
             },
             addSha1Btn: {
                 section: ['', '网盘列表悬浮菜单相关设置'],
@@ -378,7 +386,7 @@ var _this = this;
             if (G.get('addDeleteEmptyBtn')) {
                 operations += "<a href=\"javascript:;\" class=\"button btn-line mm-quick-operation\" type=\"delete-empty\" title=\"\u53EA\u5220\u9664\u5F53\u524D\u9875\u7801\u76EE\u5F55\u4E2D\u7684\u6587\u4EF6\u5939\"><span>\u5220\u9664\u7A7A\u6587\u4EF6\u5939</span></a>";
             }
-            if (G.get('addFolderRepeatBtn')) {
+            if (G.get('folderRepeat.addBtn')) {
                 operations += "<a href=\"javascript:;\" class=\"button btn-line mm-quick-operation\" type=\"folder-sha1\" title=\"\u53EA\u67E5\u8BE2\u5E76\u6807\u8BB0\u5F53\u524D\u76EE\u5F55\u4E2D\u7684\u91CD\u590D\u6587\u4EF6\"><span>\u5355\u6587\u4EF6\u5939\u67E5\u91CD</span></a>";
             }
             $('#js_path_add_dir').after(operations);
@@ -537,6 +545,7 @@ var _this = this;
         var handleFolderCheckSha1 = function () {
             var $loadAllFile = $('[menu="load_all_file"]:visible');
             var isMore = !!$loadAllFile.length;
+            var isSelected = G.get('folderRepeat.select');
             var checkSha1 = function () {
                 var SHA1_MAP = {};
                 var $li = $('li[file_type="1"]');
@@ -557,6 +566,9 @@ var _this = this;
                     else {
                         repeatCount++;
                         $(this).addClass('active');
+                        if (isSelected) {
+                            $(this).children('.checkbox').trigger('click');
+                        }
                     }
                 });
                 var options = { text: '', type: '', timeout: 2e3 };
