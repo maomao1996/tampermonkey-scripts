@@ -2,7 +2,7 @@
 // ==UserScript==
 // @name          115小助手
 // @namespace     https://github.com/maomao1996/tampermonkey-scripts
-// @version       1.1.2
+// @version       1.2.0
 // @description   顶部链接任务入口还原、SHA1 快速查重（新页面打开）、SHA1 自动查重、删除空文件夹、一键搜（快捷搜索）、SHA1 查重列表支持选中第一个元素和悬浮菜单展示、搜索列表支持悬浮菜单展示
 // @icon      	  https://115.com/favicon.ico
 // @author        maomao1996
@@ -95,11 +95,20 @@
         type: 'checkbox',
         default: true
       },
-      addFolderRepeatBtn: {
+      // 单文件查重相关设置
+      'folderRepeat.addBtn': {
         label: '网盘路径栏增加单文件夹查重按钮',
         labelPos: 'right',
         type: 'checkbox',
-        default: true
+        default: true,
+        line: 'start'
+      },
+      'folderRepeat.select': {
+        label: '选中重复文件',
+        labelPos: 'right',
+        type: 'checkbox',
+        default: false,
+        line: 'end'
       },
       addSha1Btn: {
         section: ['', '网盘列表悬浮菜单相关设置'],
@@ -444,7 +453,7 @@
       if (G.get('addDeleteEmptyBtn')) {
         operations += `<a href="javascript:;" class="button btn-line mm-quick-operation" type="delete-empty" title="只删除当前页码目录中的文件夹"><span>删除空文件夹</span></a>`
       }
-      if (G.get('addFolderRepeatBtn')) {
+      if (G.get('folderRepeat.addBtn')) {
         operations += `<a href="javascript:;" class="button btn-line mm-quick-operation" type="folder-sha1" title="只查询并标记当前目录中的重复文件"><span>单文件夹查重</span></a>`
       }
       $('#js_path_add_dir').after(operations)
@@ -615,6 +624,7 @@
     const handleFolderCheckSha1 = () => {
       const $loadAllFile = $('[menu="load_all_file"]:visible')
       const isMore = !!$loadAllFile.length
+      const isSelected = G.get('folderRepeat.select')
 
       const checkSha1 = () => {
         const SHA1_MAP = {}
@@ -639,6 +649,9 @@
           } else {
             repeatCount++
             $(this).addClass('active')
+            if (isSelected) {
+              $(this).children('.checkbox').trigger('click')
+            }
           }
         })
 
