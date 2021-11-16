@@ -2,7 +2,7 @@
 // ==UserScript==
 // @name          115小助手
 // @namespace     https://github.com/maomao1996/tampermonkey-scripts
-// @version       1.2.0
+// @version       1.2.1
 // @description   顶部链接任务入口还原、SHA1 快速查重（新页面打开）、SHA1 自动查重、删除空文件夹、一键搜（快捷搜索）、SHA1 查重列表支持选中第一个元素和悬浮菜单展示、搜索列表支持悬浮菜单展示
 // @icon      	  https://115.com/favicon.ico
 // @author        maomao1996
@@ -137,7 +137,7 @@ var _this = this;
                 line: 'end'
             },
             addSha1Btn: {
-                section: ['', '网盘列表悬浮菜单相关设置'],
+                section: ['', '网盘列表悬浮菜单相关设置(不支持缩略图模式)'],
                 label: '悬浮菜单增加SHA1查重按钮',
                 labelPos: 'right',
                 type: 'checkbox',
@@ -259,7 +259,7 @@ var _this = this;
     var randomDelayIndex = [3, 5];
     var styles = [
         '.mm-quick-operation{margin-left: 12px;padding: 0 6px}',
-        '.list-contents .active::before{background: rgba(199, 237, 204, 0.7)!important;}'
+        '.list-contents .active::before, .list-thumb .active{background: rgba(199, 237, 204, 0.7)!important;}'
     ].join('');
     GM_addStyle(styles);
     var addLinkTaskBtn = function () {
@@ -268,8 +268,7 @@ var _this = this;
     var handleRepeatSha1 = function (file_id, isAll) {
         if (isAll === void 0) { isAll = false; }
         return new Promise(function (resolve) {
-            !isAll &&
-                MinMessage.Show({ text: '正在查找', type: 'load', timeout: 2e5 });
+            !isAll && MinMessage.Show({ text: '正在查找', type: 'load', timeout: 0 });
             top.UA$.ajax({
                 url: '//webapi.115.com/files/get_repeat_sha',
                 data: { file_id: file_id },
@@ -429,7 +428,7 @@ var _this = this;
                 });
                 return;
             }
-            MinMessage.Show({ text: '正在查找', type: 'load', timeout: 2e5 });
+            MinMessage.Show({ text: '正在查找', type: 'load', timeout: 0 });
             var index = 0;
             var repeatCount = 0;
             var findRepeat = function () { return __awaiter(_this, void 0, void 0, function () {
@@ -494,7 +493,7 @@ var _this = this;
                 });
                 return;
             }
-            MinMessage.Show({ text: '正在查找', type: 'load', timeout: 2e4 });
+            MinMessage.Show({ text: '正在查找', type: 'load', timeout: 0 });
             var index = 0;
             var emptyFolderCount = 0;
             var recursive = function () { return __awaiter(_this, void 0, void 0, function () {
@@ -530,7 +529,7 @@ var _this = this;
                                 var size = _a.size;
                                 if (size === '0B') {
                                     emptyFolderCount++;
-                                    $currentLi.find('[menu="file_check_one"]').trigger('click');
+                                    $currentLi.find('.checkbox').trigger('click');
                                 }
                                 index++;
                                 $currentLi.find('.file-size span').text(size);
@@ -567,7 +566,7 @@ var _this = this;
                         repeatCount++;
                         $(this).addClass('active');
                         if (isSelected) {
-                            $(this).children('.checkbox').trigger('click');
+                            $(this).find('.checkbox').trigger('click');
                         }
                     }
                 });
