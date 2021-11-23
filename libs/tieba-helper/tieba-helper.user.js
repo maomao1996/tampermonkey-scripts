@@ -2,7 +2,7 @@
 // ==UserScript==
 // @name          贴吧小助手
 // @namespace     https://github.com/maomao1996/tampermonkey-scripts
-// @version       0.6.1
+// @version       0.6.2
 // @description   自动顶贴回复(立即回复)、移除贴吧列表和帖子内部广告、移除碍眼模块
 // @icon          https://tb1.bdstatic.com/tb/favicon.ico
 // @author        maomao1996
@@ -44,12 +44,14 @@
                 label: '顶帖最小间隔（分钟）',
                 labelPos: 'left',
                 type: 'unsigned int',
-                default: '1'
+                min: 1,
+                default: 1
             },
             responseTimeMax: {
                 label: '顶帖最大间隔（分钟）',
                 type: 'unsigned int',
-                default: '30'
+                min: 1,
+                default: 30
             },
             responseMode: {
                 label: '顶贴模式选择',
@@ -98,22 +100,31 @@
             $(this).remove();
         });
     };
-    var moduleSelector = [
-        '.u_member',
-        '.celebrity',
-        '.app_download_box',
-        '.tbui_aside_fbar_button.tbui_fbar_down',
-        'tbui_fbar_props',
-        '.tbui_fbar_tsukkomi',
-        '.icon_wrap.icon_wrap_theme1',
-        '#j_navtab_game',
-        '.post-foot-send-gift-btn',
-        '.tb_poster_placeholder'
-    ];
-    G.get('removeEyesore') &&
-        GM_addStyle(moduleSelector.join(',') + '{display:none !important;}');
+    var hideHtmlElement = function (selector) {
+        return selector.join(',') + '{display:none !important;}';
+    };
+    var styles = [
+        '.core_title.core_title_theme_bright, .core_title.core_title_theme_bright .quick_reply {display: flex;}',
+        '.core_title.core_title_theme_bright .core_title_txt {flex: 1}',
+        '.core_title.core_title_theme_bright .btn-small {margin-left: 10px;padding-top: 3px;padding-bottom: 3px;}'
+    ].join('');
+    if (G.get('removeEyesore')) {
+        styles += hideHtmlElement([
+            '.u_member',
+            '.celebrity',
+            '.app_download_box',
+            '.tbui_aside_fbar_button.tbui_fbar_down',
+            'tbui_fbar_props',
+            '.tbui_fbar_tsukkomi',
+            '.icon_wrap.icon_wrap_theme1',
+            '#j_navtab_game',
+            '.post-foot-send-gift-btn',
+            '.tb_poster_placeholder'
+        ]);
+    }
     var autoResponse = function () {
-        if (!$('.core_title_btns.pull-right').length) {
+        var $titleBtn = $('.core_title_btns');
+        if (!$titleBtn.length) {
             return;
         }
         var appendResponseBtn = function () {
@@ -132,7 +143,7 @@
                 }
             });
         });
-        responseObserver.observe($('.core_title_btns.pull-right')[0], {
+        responseObserver.observe($titleBtn[0], {
             childList: true
         });
         var runResponse = function () {
@@ -221,29 +232,23 @@
             runResponse();
         });
     };
+    if (pathname === '/f') {
+        console.log('进入贴吧列表');
+        if (!G.get('removeAd')) {
+            return;
+        }
+        styles += hideHtmlElement([
+            '.bus-top-activity-wrap',
+            '.fengchao-wrap-feed',
+            '[id="pagelet_frs-aside/pagelet/fengchao_ad"]'
+        ]);
+    }
+    GM_addStyle(styles);
     $(window).on('load', function () {
         if (/^\/p\/\d{1,}$/.test(pathname)) {
             console.log('进入贴子详情');
             autoResponse();
             G.get('removeAd') && removeHtmlElement($('div[ad-dom-img="true"]'));
-        }
-        else if (pathname === '/f') {
-            console.log('进入贴吧列表');
-            if (!G.get('removeAd')) {
-                return;
-            }
-            removeHtmlElement($('#thread_list>li span.pull_right.label_text')
-                .parents('li.clearfix')
-                .not('.j_thread_list'));
-            var adObserver = new MutationObserver(function (mutationsList) {
-                mutationsList.forEach(function (mutation) {
-                    if (mutation.type === 'childList' &&
-                        $('li.clearfix .pull_right.label_text').length) {
-                        removeHtmlElement($('#thread_list>li').not('.j_thread_list'));
-                    }
-                });
-            });
-            adObserver.observe($('body')[0], { childList: true });
         }
     });
 })();
