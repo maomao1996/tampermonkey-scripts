@@ -2,7 +2,7 @@
 // ==UserScript==
 // @name          贴吧小助手
 // @namespace     https://github.com/maomao1996/tampermonkey-scripts
-// @version       0.6.1
+// @version       0.6.2
 // @description   自动顶贴回复(立即回复)、移除贴吧列表和帖子内部广告、移除碍眼模块
 // @icon          https://tb1.bdstatic.com/tb/favicon.ico
 // @author        maomao1996
@@ -22,8 +22,7 @@
   const GMConfigOptions = {
     id: 'Helper_Cfg',
     title: '贴吧小助手',
-    css:
-      '#Helper_Cfg .config_var textarea{max-width: 100%; width: 100%; min-height: 120px;} #Helper_Cfg .inline {padding-bottom:0px;}#Helper_Cfg .config_var {margin-left: 20px;margin-right: 20px;} #Helper_Cfg input[type="checkbox"] {margin-left: 0px;vertical-align: top;} #Helper_Cfg input[type="text"] {width: 60px;} #Helper_Cfg {background-color: lightblue;} #Helper_Cfg .reset_holder {float: left; position: relative; bottom: -1.2em;}',
+    css: '#Helper_Cfg .config_var textarea{max-width: 100%; width: 100%; min-height: 120px;} #Helper_Cfg .inline {padding-bottom:0px;}#Helper_Cfg .config_var {margin-left: 20px;margin-right: 20px;} #Helper_Cfg input[type="checkbox"] {margin-left: 0px;vertical-align: top;} #Helper_Cfg input[type="text"] {width: 60px;} #Helper_Cfg {background-color: lightblue;} #Helper_Cfg .reset_holder {float: left; position: relative; bottom: -1.2em;}',
     frameStyle: {
       zIndex: '1314520',
       width: '400px',
@@ -48,12 +47,14 @@
         label: '顶帖最小间隔（分钟）',
         labelPos: 'left',
         type: 'unsigned int',
-        default: '1'
+        min: 1,
+        default: 1
       },
       responseTimeMax: {
         label: '顶帖最大间隔（分钟）',
         type: 'unsigned int',
-        default: '30'
+        min: 1,
+        default: 30
       },
       responseMode: {
         label: '顶贴模式选择',
@@ -139,40 +140,54 @@
   }
 
   /**
-   * 移除碍眼模块
+   * 工具方法 - 隐藏元素
    */
-  const moduleSelector = [
-    // 顶部会员按钮
-    '.u_member',
-    // 右侧会员模块
-    '.celebrity',
-    // 右侧 app 下载
-    '.app_download_box',
-    // 悬浮栏 - app 下载
-    '.tbui_aside_fbar_button.tbui_fbar_down',
-    // 悬浮栏 - 魔法道具
-    'tbui_fbar_props',
-    // 悬浮栏 - 神来一句
-    '.tbui_fbar_tsukkomi',
-    // 勋章
-    '.icon_wrap.icon_wrap_theme1',
-    // ===== 贴子列表 =====
-    // ===== 贴子详情 =====
-    // 导航栏游戏按钮
-    '#j_navtab_game',
-    // 送TA礼物按钮
-    '.post-foot-send-gift-btn',
-    // 开通超级会员发贴6倍经验
-    '.tb_poster_placeholder'
-  ]
-  G.get('removeEyesore') &&
-    GM_addStyle(moduleSelector.join(',') + '{display:none !important;}')
+  const hideHtmlElement = (selector: string[]): string =>
+    selector.join(',') + '{display:none !important;}'
+
+  /**
+   * 样式处理模块
+   */
+  let styles = [
+    '.core_title.core_title_theme_bright, .core_title.core_title_theme_bright .quick_reply {display: flex;}',
+    '.core_title.core_title_theme_bright .core_title_txt {flex: 1}',
+    '.core_title.core_title_theme_bright .btn-small {margin-left: 10px;padding-top: 3px;padding-bottom: 3px;}'
+  ].join('')
+
+  /** 移除碍眼模块 */
+  if (G.get('removeEyesore')) {
+    styles += hideHtmlElement([
+      // 顶部会员按钮
+      '.u_member',
+      // 右侧会员模块
+      '.celebrity',
+      // 右侧 app 下载
+      '.app_download_box',
+      // 悬浮栏 - app 下载
+      '.tbui_aside_fbar_button.tbui_fbar_down',
+      // 悬浮栏 - 魔法道具
+      'tbui_fbar_props',
+      // 悬浮栏 - 神来一句
+      '.tbui_fbar_tsukkomi',
+      // 勋章
+      '.icon_wrap.icon_wrap_theme1',
+      // ===== 贴子列表 =====
+      // ===== 贴子详情 =====
+      // 导航栏游戏按钮
+      '#j_navtab_game',
+      // 送TA礼物按钮
+      '.post-foot-send-gift-btn',
+      // 开通超级会员发贴6倍经验
+      '.tb_poster_placeholder'
+    ])
+  }
 
   /**
    * 顶帖模块
    **/
   const autoResponse = (): void => {
-    if (!$('.core_title_btns.pull-right').length) {
+    const $titleBtn = $('.core_title_btns')
+    if (!$titleBtn.length) {
       return
     }
     const appendResponseBtn = (): void => {
@@ -200,7 +215,7 @@
         }
       })
     })
-    responseObserver.observe($('.core_title_btns.pull-right')[0], {
+    responseObserver.observe($titleBtn[0], {
       childList: true
     })
 
@@ -316,6 +331,25 @@
   /**
    * 执行插件
    **/
+  // 贴吧列表
+  if (pathname === '/f') {
+    console.log('进入贴吧列表')
+
+    // 移除贴吧列表广告
+    if (!G.get('removeAd')) {
+      return
+    }
+    styles += hideHtmlElement([
+      // 顶部活动广告
+      '.bus-top-activity-wrap',
+      // 列表广告
+      '.fengchao-wrap-feed',
+      // 右侧广告
+      '[id="pagelet_frs-aside/pagelet/fengchao_ad"]'
+    ])
+  }
+  GM_addStyle(styles)
+
   $(window).on('load', () => {
     // 贴子详情
     if (/^\/p\/\d{1,}$/.test(pathname)) {
@@ -325,31 +359,6 @@
 
       // 移除帖子内部广告
       G.get('removeAd') && removeHtmlElement($('div[ad-dom-img="true"]'))
-    }
-    // 贴吧列表
-    else if (pathname === '/f') {
-      console.log('进入贴吧列表')
-
-      // 移除贴吧列表广告
-      if (!G.get('removeAd')) {
-        return
-      }
-      removeHtmlElement(
-        $('#thread_list>li span.pull_right.label_text')
-          .parents('li.clearfix')
-          .not('.j_thread_list')
-      )
-      const adObserver = new MutationObserver((mutationsList) => {
-        mutationsList.forEach((mutation) => {
-          if (
-            mutation.type === 'childList' &&
-            $('li.clearfix .pull_right.label_text').length
-          ) {
-            removeHtmlElement($('#thread_list>li').not('.j_thread_list'))
-          }
-        })
-      })
-      adObserver.observe($('body')[0], { childList: true })
     }
   })
 })()
