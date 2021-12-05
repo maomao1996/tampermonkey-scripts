@@ -2,8 +2,8 @@
 // ==UserScript==
 // @name          115小助手
 // @namespace     https://github.com/maomao1996/tampermonkey-scripts
-// @version       1.2.1
-// @description   顶部链接任务入口还原、SHA1 快速查重（新页面打开）、SHA1 自动查重、删除空文件夹、一键搜（快捷搜索）、SHA1 查重列表支持选中第一个元素和悬浮菜单展示、搜索列表支持悬浮菜单展示
+// @version       1.3.0
+// @description   顶部链接任务入口还原、SHA1 快速查重（新页面打开）、SHA1 自动查重、删除空文件夹、一键搜（快捷搜索）、SHA1 查重列表支持选中第一个元素和悬浮菜单展示、搜索列表支持悬浮菜单展示、列表显示文件 SHA1 信息
 // @icon      	  https://115.com/favicon.ico
 // @author        maomao1996
 // @include       *://115.com/*
@@ -110,8 +110,14 @@
         default: false,
         line: 'end'
       },
+      'list.showSha1': {
+        section: ['', '网盘列表相关设置(悬浮菜单不支持缩略图模式)'],
+        label: '列表显示文件SHA1信息',
+        labelPos: 'right',
+        type: 'checkbox',
+        default: true
+      },
       addSha1Btn: {
-        section: ['', '网盘列表悬浮菜单相关设置(不支持缩略图模式)'],
         label: '悬浮菜单增加SHA1查重按钮',
         labelPos: 'right',
         type: 'checkbox',
@@ -160,6 +166,12 @@
       'search.addMenu': {
         section: ['', '网盘搜索列表模块'],
         label: '列表增加悬浮菜单',
+        labelPos: 'right',
+        type: 'checkbox',
+        default: true
+      },
+      'search.showSha1': {
+        label: '列表显示文件SHA1信息',
         labelPos: 'right',
         type: 'checkbox',
         default: true
@@ -254,6 +266,24 @@
     return new Promise((resolve) => setTimeout(resolve, timeout))
   }
 
+  /**
+   * 工具方法 - 获取样式
+   */
+  const getStyles = (styles: string, key: GetKey | GetKey[]) => {
+    if (!Array.isArray(key)) {
+      key = [key]
+    }
+    if (key.some((k) => G.get(k))) {
+      return styles
+    }
+    return ''
+  }
+
+  /**
+   * 工具方法 - 是否缩略图模式
+   */
+  const isThumbnail = () => !!$('.list-thumb').length
+
   const getAidCid = (): any => {
     try {
       var main = top.Ext.CACHE.FileMain
@@ -274,7 +304,12 @@
      * 小助手相关样式
      */
     '.mm-quick-operation{margin-left: 12px;padding: 0 6px}',
-    '.list-contents .active::before, .list-thumb .active{background: rgba(199, 237, 204, 0.7)!important;}'
+    '.list-contents .active::before, .list-thumb .active{background: rgba(199, 237, 204, 0.7)!important;}',
+    // 列表显示文件SHA1信息
+    getStyles(
+      '.list-contents .file-name{flex-direction: column;height:auto;}[show-sha1]{font-size: xx-small;color:#999;}',
+      ['list.showSha1', 'search.showSha1']
+    )
   ].join('')
   GM_addStyle(styles)
 
@@ -435,6 +470,16 @@
   }
 
   /**
+   * 列表显示文件SHA1信息
+   */
+  const listShowSHA1 = ($listItem: JQuery): void => {
+    const sha1 = $listItem.attr('sha1')
+    if (sha1 && !$listItem.find('[show-sha1]').length) {
+      $listItem.find('.file-name').append(`<em show-sha1>${sha1}</em>`)
+    }
+  }
+
+  /**
    * 快捷操作增强
    *  - SHA1查重
    *  - 删除空文件夹
@@ -460,10 +505,11 @@
 
     observerChildList(() => {
       autoCheckDisabled = false
-      if ($('.list-thumb').length > 0) {
+      if (isThumbnail()) {
         return
       }
       $('li[rel="item"]').each(function () {
+        G.get('list.showSha1') && listShowSHA1($(this))
         if (!$(this).find('.mm-operation').length) {
           $(this)
             .find('a[menu="public_share"]')
@@ -763,6 +809,7 @@
     else if (urlHasString('mode=search') && G.get('search.addMenu')) {
       observerChildList(() => {
         $('li[rel="item"]').each(function () {
+          G.get('search.showSha1') && listShowSHA1($(this))
           if (!$(this).find('.mm-operation').length) {
             $(this).append(
               getFloatMenu(
