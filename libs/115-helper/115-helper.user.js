@@ -2,7 +2,7 @@
 // ==UserScript==
 // @name          115小助手
 // @namespace     https://github.com/maomao1996/tampermonkey-scripts
-// @version       1.3.1
+// @version       1.3.2
 // @description   顶部链接任务入口还原、SHA1 快速查重（新页面打开）、SHA1 自动查重、删除空文件夹、一键搜（快捷搜索）、SHA1 查重列表支持选中第一个元素和悬浮菜单展示、搜索列表支持悬浮菜单展示、列表显示文件 SHA1 信息
 // @icon      	  https://115.com/favicon.ico
 // @author        maomao1996
@@ -284,7 +284,7 @@ var _this = this;
         '.list-contents .active::before, .list-thumb .active{background: rgba(199, 237, 204, 0.7)!important;}',
         '[show-sha1]{position: absolute;top:20px;color:#999;}',
         getStyles('.list-cell:not([class="lstc-search"]) .list-contents [file_type="1"] .file-name{flex:1;padding-bottom: 20px;height:auto;}', 'list.showSha1'),
-        getStyles('.lstc-search [file_type="1"] .file-name{flex:1;padding-bottom: 20px;height:auto;}', 'search.showSha1')
+        getStyles('.lstc-search .list-contents [file_type="1"] .file-name{flex:1;padding-bottom: 20px;height:auto;}', 'search.showSha1')
     ].join('');
     GM_addStyle(styles);
     var addLinkTaskBtn = function () {
