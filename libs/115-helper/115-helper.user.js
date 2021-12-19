@@ -2,7 +2,7 @@
 // ==UserScript==
 // @name          115小助手
 // @namespace     https://github.com/maomao1996/tampermonkey-scripts
-// @version       1.3.0
+// @version       1.3.1
 // @description   顶部链接任务入口还原、SHA1 快速查重（新页面打开）、SHA1 自动查重、删除空文件夹、一键搜（快捷搜索）、SHA1 查重列表支持选中第一个元素和悬浮菜单展示、搜索列表支持悬浮菜单展示、列表显示文件 SHA1 信息
 // @icon      	  https://115.com/favicon.ico
 // @author        maomao1996
@@ -138,7 +138,7 @@ var _this = this;
             },
             'list.showSha1': {
                 section: ['', '网盘列表相关设置(悬浮菜单不支持缩略图模式)'],
-                label: '列表显示文件SHA1信息',
+                label: '列表显示文件SHA1信息(包含标签页)',
                 labelPos: 'right',
                 type: 'checkbox',
                 default: true
@@ -282,7 +282,9 @@ var _this = this;
     var styles = [
         '.mm-quick-operation{margin-left: 12px;padding: 0 6px}',
         '.list-contents .active::before, .list-thumb .active{background: rgba(199, 237, 204, 0.7)!important;}',
-        getStyles('.list-contents .file-name{flex-direction: column;height:auto;}[show-sha1]{font-size: xx-small;color:#999;}', ['list.showSha1', 'search.showSha1'])
+        '[show-sha1]{position: absolute;top:20px;color:#999;}',
+        getStyles('.list-cell:not([class="lstc-search"]) .list-contents [file_type="1"] .file-name{flex:1;padding-bottom: 20px;height:auto;}', 'list.showSha1'),
+        getStyles('.lstc-search [file_type="1"] .file-name{flex:1;padding-bottom: 20px;height:auto;}', 'search.showSha1')
     ].join('');
     GM_addStyle(styles);
     var addLinkTaskBtn = function () {
@@ -401,7 +403,7 @@ var _this = this;
     var listShowSHA1 = function ($listItem) {
         var sha1 = $listItem.attr('sha1');
         if (sha1 && !$listItem.find('[show-sha1]').length) {
-            $listItem.find('.file-name').append("<em show-sha1>".concat(sha1, "</em>"));
+            $listItem.find('.file-name').append("<small show-sha1>".concat(sha1, "</small>"));
         }
     };
     var initQuickOperation = function () {
@@ -683,6 +685,14 @@ var _this = this;
                     if (!$(this).find('.mm-operation').length) {
                         $(this).append(getFloatMenu($(this).attr('file_type'), ['move', 'edit_name', 'delete', 'search', 'sha1'], true));
                     }
+                });
+            });
+        }
+        else if (urlHasString('tab=label') && G.get('list.showSha1')) {
+            observerChildList(function () {
+                console.log('object :>> ', $('li[rel="item"]'));
+                $('li[rel="item"]').each(function () {
+                    listShowSHA1($(this));
                 });
             });
         }
