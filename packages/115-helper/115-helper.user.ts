@@ -2,7 +2,7 @@
 // ==UserScript==
 // @name          115小助手
 // @namespace     https://github.com/maomao1996/tampermonkey-scripts
-// @version       1.3.2
+// @version       1.3.3
 // @description   顶部链接任务入口还原、SHA1 快速查重（新页面打开）、SHA1 自动查重、删除空文件夹、一键搜（快捷搜索）、SHA1 查重列表支持选中第一个元素和悬浮菜单展示、搜索列表支持悬浮菜单展示、列表显示文件 SHA1 信息
 // @icon      	  https://115.com/favicon.ico
 // @author        maomao1996
@@ -176,8 +176,19 @@
         type: 'checkbox',
         default: true
       },
-      joinGroup: {
+      sponsor: {
         section: ['', '其他'],
+        label: '给作者赞助',
+        labelPos: 'right',
+        type: 'button',
+        click() {
+          GM_openInTab(
+            'https://gitee.com/fe-mm/picture/raw/main/sponsor/sponsor.jpg',
+            { active: true }
+          )
+        }
+      },
+      joinGroup: {
         label: '加入 QQ 群',
         labelPos: 'right',
         type: 'button',
@@ -308,11 +319,11 @@
     // 列表显示文件SHA1信息
     '[show-sha1]{position: absolute;top:20px;color:#999;}',
     getStyles(
-      '.list-cell:not([class="lstc-search"]) .list-contents [file_type="1"] .file-name{flex:1;padding-bottom: 20px;height:auto;}',
+      '.list-cell:not(.lstc-search) .list-contents [file_type="1"] .file-name{flex:1;padding-bottom: 20px;height:auto;}',
       'list.showSha1'
     ),
     getStyles(
-      '.lstc-search .list-contents [file_type="1"] .file-name{flex:1;padding-bottom: 20px;height:auto;}',
+      '.page-center .lstc-search .list-contents [file_type="1"] .file-name{flex:1;padding-bottom: 20px;height:auto;}',
       'search.showSha1'
     )
   ].join('')
@@ -830,7 +841,6 @@
     // 标签模块
     else if (urlHasString('tab=label') && G.get('list.showSha1')) {
       observerChildList(() => {
-        console.log('object :>> ', $('li[rel="item"]'))
         $('li[rel="item"]').each(function () {
           listShowSHA1($(this))
         })
