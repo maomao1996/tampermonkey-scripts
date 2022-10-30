@@ -104,4 +104,5 @@ interface Window {
   Core: any
   UA$: any
   Ext: any
+  $: JQueryStatic
 }

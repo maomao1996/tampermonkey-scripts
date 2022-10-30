@@ -2,15 +2,15 @@
 // ==UserScript==
 // @name          115小助手
 // @namespace     https://github.com/maomao1996/tampermonkey-scripts
-// @version       1.3.3
-// @description   顶部链接任务入口还原、SHA1 快速查重（新页面打开）、SHA1 自动查重、删除空文件夹、一键搜（快捷搜索）、SHA1 查重列表支持选中第一个元素和悬浮菜单展示、搜索列表支持悬浮菜单展示、列表显示文件 SHA1 信息
+// @version       1.4.0
+// @description   顶部链接任务入口还原、SHA1 快速查重（新页面打开）、SHA1 自动查重、删除空文件夹、一键搜（快捷搜索）、SHA1 查重列表支持选中第一个元素和悬浮菜单展示、搜索列表支持悬浮菜单展示、列表显示文件 SHA1 信息、关闭侧边栏
 // @icon      	  https://115.com/favicon.ico
 // @author        maomao1996
 // @include       *://115.com/*
 // @grant         GM_registerMenuCommand
 // @grant         GM_addStyle
 // @grant         GM_openInTab
-// @require       https://greasyfork.org/scripts/398240-gm-config-zh-cn/code/G_zh-CN.js
+// @require       https://greasyfork.org/scripts/447340-gm-config-zh/code/GM_config_zh.js
 // @run-at        document-end
 // ==/UserScript==
 */
@@ -66,8 +66,14 @@
         default: 400,
         line: 'end'
       },
+      hideSidebar: {
+        section: ['', '界面布局相关设置'],
+        label: '关闭存储侧边栏',
+        labelPos: 'right',
+        type: 'checkbox',
+        default: false
+      },
       addTaskBtn: {
-        section: ['', '网盘顶部菜单相关设置'],
         label: '网盘顶部菜单增加链接任务按钮',
         labelPos: 'right',
         type: 'checkbox',
@@ -213,8 +219,7 @@
     },
     events: {
       save() {
-        location.reload()
-        G.close()
+        top.location.reload()
       }
     }
   }
@@ -314,16 +319,16 @@
     /**
      * 小助手相关样式
      */
-    '.mm-quick-operation{margin-left: 12px;padding: 0 6px}',
-    '.list-contents .active::before, .list-thumb .active{background: rgba(199, 237, 204, 0.7)!important;}',
+    /*css*/ `.mm-quick-operation{margin-left: 12px;padding: 0 6px}',
+    '.list-contents .active::before, .list-thumb .active{background: rgba(199, 237, 204, 0.7)!important;}`,
     // 列表显示文件SHA1信息
-    '[show-sha1]{position: absolute;top:20px;color:#999;}',
+    /*css*/ `[show-sha1]{position: absolute;top:20px;color:#999;}`,
     getStyles(
-      '.list-cell:not(.lstc-search) .list-contents [file_type="1"] .file-name{flex:1;padding-bottom: 20px;height:auto;}',
+      /*css*/ `.list-cell:not(.lstc-search) .list-contents [file_type="1"] .file-name{flex:1;padding-bottom: 20px;height:auto;}`,
       'list.showSha1'
     ),
     getStyles(
-      '.page-center .lstc-search .list-contents [file_type="1"] .file-name{flex:1;padding-bottom: 20px;height:auto;}',
+      /*css*/ `.page-center .lstc-search .list-contents [file_type="1"] .file-name{flex:1;padding-bottom: 20px;height:auto;}`,
       'search.showSha1'
     )
   ].join('')
@@ -334,7 +339,7 @@
    */
   const addLinkTaskBtn = (): void => {
     $('#js_top_panel_box .button[menu="upload"]').after(
-      '<a href="javascript:;" class="button btn-line btn-upload" menu="offline_task"><i class="icon-operate ifo-linktask"></i><span>链接任务</span><em style="display:none;" class="num-dot"></em></a>'
+      /*html*/ `<a href="javascript:;" class="button btn-line btn-upload" menu="offline_task"><i class="icon-operate ifo-linktask"></i><span>链接任务</span><em style="display:none;" class="num-dot"></em></a>`
     )
   }
 
@@ -377,11 +382,11 @@
   }
 
   const MENU_MAP = {
-    move: `<a href="javascript:;" menu="move"><i class="icon-operate ifo-move" menu="move"></i><span menu="move">移动</span></a>`,
-    edit_name: `<a href="javascript:;" menu="edit_name"><i class="icon-operate ifo-rename" menu="edit_name"></i><span menu="edit_name">重命名</span></a>`,
-    delete: `<a href="javascript:;" menu="delete" btn="del"><i class="icon-operate ifo-remove" menu="delete"></i><span menu="delete">删除</span></a>`,
-    search: `<a href="javascript:;" class="mm-operation" type="search"><span>一键搜</span></a>`,
-    sha1: `<a href="javascript:;" class="mm-operation" type="sha1"><span>SHA1查重</span></a>`
+    move: /*html*/ `<a href="javascript:;" menu="move"><i class="icon-operate ifo-move" menu="move"></i><span menu="move">移动</span></a>`,
+    edit_name: /*html*/ `<a href="javascript:;" menu="edit_name"><i class="icon-operate ifo-rename" menu="edit_name"></i><span menu="edit_name">重命名</span></a>`,
+    delete: /*html*/ `<a href="javascript:;" menu="delete" btn="del"><i class="icon-operate ifo-remove" menu="delete"></i><span menu="delete">删除</span></a>`,
+    search: /*html*/ `<a href="javascript:;" class="mm-operation" type="search"><span>一键搜</span></a>`,
+    sha1: /*html*/ `<a href="javascript:;" class="mm-operation" type="sha1"><span>SHA1查重</span></a>`
   }
   type MenuKey = keyof typeof MENU_MAP
   const CONTROLLED_MENU: MenuKey[] = ['search', 'sha1']
@@ -440,7 +445,7 @@
       }
 
       const content = $(
-        '<div class="dialog-input"><textarea rel="txt"></textarea></div><div class="dialog-action"><a href="javascript:;" class="dgac-confirm" btn="confirm">搜索</a></div>'
+        /*html*/ `<div class="dialog-input"><textarea rel="txt"></textarea></div><div class="dialog-action"><a href="javascript:;" class="dgac-confirm" btn="confirm">搜索</a></div>`
       )
       const $input = content.find("[rel='txt']")
 
@@ -508,13 +513,13 @@
     if (!$('.mm-quick-operation').length) {
       let operations = ''
       if (G.get('autoSha1.addBtn')) {
-        operations += `<a href="javascript:;" class="button btn-line mm-quick-operation" type="auto-sha1" title="只查询当前页码目录中的文件"><span>SHA1自动查重</span></a>`
+        operations += /*html*/ `<a href="javascript:;" class="button btn-line mm-quick-operation" type="auto-sha1" title="只查询当前页码目录中的文件"><span>SHA1自动查重</span></a>`
       }
       if (G.get('addDeleteEmptyBtn')) {
-        operations += `<a href="javascript:;" class="button btn-line mm-quick-operation" type="delete-empty" title="只删除当前页码目录中的文件夹"><span>删除空文件夹</span></a>`
+        operations += /*html*/ `<a href="javascript:;" class="button btn-line mm-quick-operation" type="delete-empty" title="只删除当前页码目录中的文件夹"><span>删除空文件夹</span></a>`
       }
       if (G.get('folderRepeat.addBtn')) {
-        operations += `<a href="javascript:;" class="button btn-line mm-quick-operation" type="folder-sha1" title="只查询并标记当前目录中的重复文件"><span>单文件夹查重</span></a>`
+        operations += /*html*/ `<a href="javascript:;" class="button btn-line mm-quick-operation" type="folder-sha1" title="只查询并标记当前目录中的重复文件"><span>单文件夹查重</span></a>`
       }
       $('#js_path_add_dir').after(operations)
     }
@@ -808,9 +813,36 @@
     })
   }
 
+  const initMainLayout = () => {
+    if (top.$('#mm-sidebar').length) {
+      return
+    }
+
+    G.get('hideSidebar') && top.$('.wrap-hflow .sub-hflow').toggle(0)
+
+    top.$('.main-sub .sub-footer ul').append(/*html*/ `<li>
+    <a href="javascript:;" data-helper="sidebar"><p id="mm-sidebar">${
+      top.$('.wrap-hflow .sub-hflow').is(':visible') ? '关闭' : '打开'
+    }</p><p>侧边栏</p></a>
+</li>`)
+
+    top.$('[data-helper="sidebar"]').on('click', function () {
+      const $sidebar = top.$('.wrap-hflow .sub-hflow')
+      $sidebar.toggle(200)
+      setTimeout(function () {
+        top.$('#mm-sidebar').text($sidebar.is(':visible') ? '关闭' : '打开')
+      }, 200)
+    })
+  }
+
   // 初始化
   $(() => {
     initMenu()
+
+    /* 主界面布局初始化 */
+    if (urlHasString('mode=wangpan')) {
+      initMainLayout()
+    }
     // 网盘列表模块
     if (urlHasString('cid=')) {
       // 添加链接任务入口
