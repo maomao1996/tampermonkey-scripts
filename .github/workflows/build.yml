@@ -22,7 +22,7 @@ jobs:
         run: yarn && yarn build
       # 提交代码
       - name: Push
-        uses: github-actions-x/commit@v2.7
+        uses: github-actions-x/commit@v2.9
         with:
           github-token: ${{ secrets.ACCESS_TOKEN }}
           push-branch: master
