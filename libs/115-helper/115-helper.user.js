@@ -2,15 +2,15 @@
 // ==UserScript==
 // @name          115小助手
 // @namespace     https://github.com/maomao1996/tampermonkey-scripts
-// @version       1.3.3
-// @description   顶部链接任务入口还原、SHA1 快速查重（新页面打开）、SHA1 自动查重、删除空文件夹、一键搜（快捷搜索）、SHA1 查重列表支持选中第一个元素和悬浮菜单展示、搜索列表支持悬浮菜单展示、列表显示文件 SHA1 信息
+// @version       1.4.0
+// @description   顶部链接任务入口还原、SHA1 快速查重（新页面打开）、SHA1 自动查重、删除空文件夹、一键搜（快捷搜索）、SHA1 查重列表支持选中第一个元素和悬浮菜单展示、搜索列表支持悬浮菜单展示、列表显示文件 SHA1 信息、关闭侧边栏
 // @icon      	  https://115.com/favicon.ico
 // @author        maomao1996
 // @include       *://115.com/*
 // @grant         GM_registerMenuCommand
 // @grant         GM_addStyle
 // @grant         GM_openInTab
-// @require       https://greasyfork.org/scripts/398240-gm-config-zh-cn/code/G_zh-CN.js
+// @require       https://greasyfork.org/scripts/447340-gm-config-zh/code/GM_config_zh.js
 // @run-at        document-end
 // ==/UserScript==
 */
@@ -93,8 +93,14 @@ var _this = this;
                 default: 400,
                 line: 'end'
             },
+            hideSidebar: {
+                section: ['', '界面布局相关设置'],
+                label: '关闭存储侧边栏',
+                labelPos: 'right',
+                type: 'checkbox',
+                default: false
+            },
             addTaskBtn: {
-                section: ['', '网盘顶部菜单相关设置'],
                 label: '网盘顶部菜单增加链接任务按钮',
                 labelPos: 'right',
                 type: 'checkbox',
@@ -231,8 +237,7 @@ var _this = this;
         },
         events: {
             save: function () {
-                location.reload();
-                G.close();
+                top.location.reload();
             }
         }
     };
@@ -288,15 +293,14 @@ var _this = this;
     };
     var randomDelayIndex = [3, 5];
     var styles = [
-        '.mm-quick-operation{margin-left: 12px;padding: 0 6px}',
-        '.list-contents .active::before, .list-thumb .active{background: rgba(199, 237, 204, 0.7)!important;}',
-        '[show-sha1]{position: absolute;top:20px;color:#999;}',
-        getStyles('.list-cell:not(.lstc-search) .list-contents [file_type="1"] .file-name{flex:1;padding-bottom: 20px;height:auto;}', 'list.showSha1'),
-        getStyles('.page-center .lstc-search .list-contents [file_type="1"] .file-name{flex:1;padding-bottom: 20px;height:auto;}', 'search.showSha1')
+        ".mm-quick-operation{margin-left: 12px;padding: 0 6px}',\n    '.list-contents .active::before, .list-thumb .active{background: rgba(199, 237, 204, 0.7)!important;}",
+        "[show-sha1]{position: absolute;top:20px;color:#999;}",
+        getStyles(".list-cell:not(.lstc-search) .list-contents [file_type=\"1\"] .file-name{flex:1;padding-bottom: 20px;height:auto;}", 'list.showSha1'),
+        getStyles(".page-center .lstc-search .list-contents [file_type=\"1\"] .file-name{flex:1;padding-bottom: 20px;height:auto;}", 'search.showSha1')
     ].join('');
     GM_addStyle(styles);
     var addLinkTaskBtn = function () {
-        $('#js_top_panel_box .button[menu="upload"]').after('<a href="javascript:;" class="button btn-line btn-upload" menu="offline_task"><i class="icon-operate ifo-linktask"></i><span>链接任务</span><em style="display:none;" class="num-dot"></em></a>');
+        $('#js_top_panel_box .button[menu="upload"]').after("<a href=\"javascript:;\" class=\"button btn-line btn-upload\" menu=\"offline_task\"><i class=\"icon-operate ifo-linktask\"></i><span>\u94FE\u63A5\u4EFB\u52A1</span><em style=\"display:none;\" class=\"num-dot\"></em></a>");
     };
     var handleRepeatSha1 = function (file_id, isAll) {
         if (isAll === void 0) { isAll = false; }
@@ -369,7 +373,7 @@ var _this = this;
                 openSearch(keyword);
                 return;
             }
-            var content = $('<div class="dialog-input"><textarea rel="txt"></textarea></div><div class="dialog-action"><a href="javascript:;" class="dgac-confirm" btn="confirm">搜索</a></div>');
+            var content = $("<div class=\"dialog-input\"><textarea rel=\"txt\"></textarea></div><div class=\"dialog-action\"><a href=\"javascript:;\" class=\"dgac-confirm\" btn=\"confirm\">\u641C\u7D22</a></div>");
             var $input = content.find("[rel='txt']");
             $input.val(keyword);
             var $dialog = new top.Core.DialogBase({
@@ -677,8 +681,25 @@ var _this = this;
             top.Core.FileMenu.DoEvent([$(this).parents('li')], $(this).attr('menu'), checkRepaatApi.load);
         });
     };
+    var initMainLayout = function () {
+        if (top.$('#mm-sidebar').length) {
+            return;
+        }
+        G.get('hideSidebar') && top.$('.wrap-hflow .sub-hflow').toggle(0);
+        top.$('.main-sub .sub-footer ul').append("<li>\n    <a href=\"javascript:;\" data-helper=\"sidebar\"><p id=\"mm-sidebar\">".concat(top.$('.wrap-hflow .sub-hflow').is(':visible') ? '关闭' : '打开', "</p><p>\u4FA7\u8FB9\u680F</p></a>\n</li>"));
+        top.$('[data-helper="sidebar"]').on('click', function () {
+            var $sidebar = top.$('.wrap-hflow .sub-hflow');
+            $sidebar.toggle(200);
+            setTimeout(function () {
+                top.$('#mm-sidebar').text($sidebar.is(':visible') ? '关闭' : '打开');
+            }, 200);
+        });
+    };
     $(function () {
         initMenu();
+        if (urlHasString('mode=wangpan')) {
+            initMainLayout();
+        }
         if (urlHasString('cid=')) {
             G.get('addTaskBtn') && addLinkTaskBtn();
             initQuickOperation();
