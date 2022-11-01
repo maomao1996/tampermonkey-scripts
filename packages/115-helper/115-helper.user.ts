@@ -2,7 +2,7 @@
 // ==UserScript==
 // @name          115小助手
 // @namespace     https://github.com/maomao1996/tampermonkey-scripts
-// @version       1.4.0
+// @version       1.4.1
 // @description   顶部链接任务入口还原、SHA1 快速查重（新页面打开）、SHA1 自动查重、删除空文件夹、一键搜（快捷搜索）、SHA1 查重列表支持选中第一个元素和悬浮菜单展示、搜索列表支持悬浮菜单展示、列表显示文件 SHA1 信息、关闭侧边栏
 // @icon      	  https://115.com/favicon.ico
 // @author        maomao1996
@@ -319,8 +319,8 @@
     /**
      * 小助手相关样式
      */
-    /*css*/ `.mm-quick-operation{margin-left: 12px;padding: 0 6px}',
-    '.list-contents .active::before, .list-thumb .active{background: rgba(199, 237, 204, 0.7)!important;}`,
+    /*css*/ `.mm-quick-operation{margin-left: 12px;padding: 0 6px}`,
+    /*css*/ `.list-contents .active::before, .list-thumb .active{background: rgba(199, 237, 204, 0.7)!important;}`,
     // 列表显示文件SHA1信息
     /*css*/ `[show-sha1]{position: absolute;top:20px;color:#999;}`,
     getStyles(
