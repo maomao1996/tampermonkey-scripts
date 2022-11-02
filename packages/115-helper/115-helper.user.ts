@@ -2,7 +2,7 @@
 // ==UserScript==
 // @name          115小助手
 // @namespace     https://github.com/maomao1996/tampermonkey-scripts
-// @version       1.4.1
+// @version       1.5.0
 // @description   顶部链接任务入口还原、SHA1 快速查重（新页面打开）、SHA1 自动查重、删除空文件夹、一键搜（快捷搜索）、SHA1 查重列表支持选中第一个元素和悬浮菜单展示、搜索列表支持悬浮菜单展示、列表显示文件 SHA1 信息、关闭侧边栏
 // @icon      	  https://115.com/favicon.ico
 // @author        maomao1996
@@ -38,7 +38,7 @@
     css: '#Helper_Cfg .config_var textarea{width: 310px; height: 50px;} #Helper_Cfg .inline {padding-bottom:0px;}#Helper_Cfg .config_var {margin-left: 20px;margin-right: 20px;} #Helper_Cfg input[type="checkbox"] {margin-left: 0px;vertical-align: top;} #Helper_Cfg input[type="text"] {width: 53px;} #Helper_Cfg {background-color: lightblue;} #Helper_Cfg .reset_holder {float: left; position: relative; bottom: -1.2em;}',
     frameStyle: {
       height: '560px',
-      width: '420px',
+      width: '520px',
       zIndex: '13145201996'
     },
     fields: {
@@ -66,14 +66,20 @@
         default: 400,
         line: 'end'
       },
-      hideSidebar: {
+      'layout.hideSidebar': {
         section: ['', '界面布局相关设置'],
         label: '关闭存储侧边栏',
         labelPos: 'right',
         type: 'checkbox',
         default: false
       },
-      addTaskBtn: {
+      'layout.addSettingBtn': {
+        label: '侧边栏增加插件设置按钮',
+        labelPos: 'right',
+        type: 'checkbox',
+        default: true
+      },
+      'layout.addTaskBtn': {
         label: '网盘顶部菜单增加链接任务按钮',
         labelPos: 'right',
         type: 'checkbox',
@@ -338,8 +344,8 @@
    * 在顶部菜单添加链接任务按钮
    */
   const addLinkTaskBtn = (): void => {
-    $('#js_top_panel_box .button[menu="upload"]').after(
-      /*html*/ `<a href="javascript:;" class="button btn-line btn-upload" menu="offline_task"><i class="icon-operate ifo-linktask"></i><span>链接任务</span><em style="display:none;" class="num-dot"></em></a>`
+    $('[data-dropdown-tab="upload_btn_add_dir"]').after(
+      /*html*/ `<a href="javascript:;" class="button btn-line btn-upload" menu="offline_task"><i class="icon-operate ifo-linktask"></i><span>链接任务</span></a>`
     )
   }
 
@@ -814,25 +820,48 @@
   }
 
   const initMainLayout = () => {
-    if (top.$('#mm-sidebar').length) {
-      return
+    const SIDEBAR_SELECTOR = '[mm-layout="sidebar"]'
+    const HELPER_SETTING_SELECTOR = '[mm-layout="helper-setting"]'
+    const $mainSidebar = top.$('.main-sub .sub-footer ul')
+
+    G.get('layout.hideSidebar') && top.$('.wrap-hflow .sub-hflow').toggle(0)
+
+    const initSidebar = () => {
+      if (top.$(SIDEBAR_SELECTOR).length) {
+        return
+      }
+
+      $mainSidebar
+        .append(
+          /*html*/ `<li mm-layout="sidebar"><a href="javascript:;"><p id="mm-sidebar">${
+            top.$('.wrap-hflow .sub-hflow').is(':visible') ? '关闭' : '打开'
+          }</p><p>侧边栏</p></a></li>`
+        )
+        .find(SIDEBAR_SELECTOR)
+        .on('click', function () {
+          const $sidebar = top.$('.wrap-hflow .sub-hflow')
+          $sidebar.toggle(200)
+          setTimeout(function () {
+            top.$('#mm-sidebar').text($sidebar.is(':visible') ? '关闭' : '打开')
+          }, 200)
+        })
     }
 
-    G.get('hideSidebar') && top.$('.wrap-hflow .sub-hflow').toggle(0)
+    const initSetting = () => {
+      if (top.$(HELPER_SETTING_SELECTOR).length) {
+        return
+      }
 
-    top.$('.main-sub .sub-footer ul').append(/*html*/ `<li>
-    <a href="javascript:;" data-helper="sidebar"><p id="mm-sidebar">${
-      top.$('.wrap-hflow .sub-hflow').is(':visible') ? '关闭' : '打开'
-    }</p><p>侧边栏</p></a>
-</li>`)
+      $mainSidebar
+        .append(
+          /*html*/ `<li mm-layout="helper-setting"><a href="javascript:;"><p>小助手</p><p>设置</p></a></li>`
+        )
+        .find(HELPER_SETTING_SELECTOR)
+        .on('click', () => (G.isOpen ? G.close() : G.open()))
+    }
 
-    top.$('[data-helper="sidebar"]').on('click', function () {
-      const $sidebar = top.$('.wrap-hflow .sub-hflow')
-      $sidebar.toggle(200)
-      setTimeout(function () {
-        top.$('#mm-sidebar').text($sidebar.is(':visible') ? '关闭' : '打开')
-      }, 200)
-    })
+    initSidebar()
+    G.get('layout.addSettingBtn') && initSetting()
   }
 
   // 初始化
@@ -846,7 +875,7 @@
     // 网盘列表模块
     if (urlHasString('cid=')) {
       // 添加链接任务入口
-      G.get('addTaskBtn') && addLinkTaskBtn()
+      G.get('layout.addTaskBtn') && addLinkTaskBtn()
       initQuickOperation()
     }
     // SHA1 查重列表模块
