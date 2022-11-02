@@ -2,7 +2,7 @@
 // ==UserScript==
 // @name          115小助手
 // @namespace     https://github.com/maomao1996/tampermonkey-scripts
-// @version       1.4.1
+// @version       1.5.0
 // @description   顶部链接任务入口还原、SHA1 快速查重（新页面打开）、SHA1 自动查重、删除空文件夹、一键搜（快捷搜索）、SHA1 查重列表支持选中第一个元素和悬浮菜单展示、搜索列表支持悬浮菜单展示、列表显示文件 SHA1 信息、关闭侧边栏
 // @icon      	  https://115.com/favicon.ico
 // @author        maomao1996
@@ -65,7 +65,7 @@ var _this = this;
         css: '#Helper_Cfg .config_var textarea{width: 310px; height: 50px;} #Helper_Cfg .inline {padding-bottom:0px;}#Helper_Cfg .config_var {margin-left: 20px;margin-right: 20px;} #Helper_Cfg input[type="checkbox"] {margin-left: 0px;vertical-align: top;} #Helper_Cfg input[type="text"] {width: 53px;} #Helper_Cfg {background-color: lightblue;} #Helper_Cfg .reset_holder {float: left; position: relative; bottom: -1.2em;}',
         frameStyle: {
             height: '560px',
-            width: '420px',
+            width: '520px',
             zIndex: '13145201996'
         },
         fields: {
@@ -93,14 +93,20 @@ var _this = this;
                 default: 400,
                 line: 'end'
             },
-            hideSidebar: {
+            'layout.hideSidebar': {
                 section: ['', '界面布局相关设置'],
                 label: '关闭存储侧边栏',
                 labelPos: 'right',
                 type: 'checkbox',
                 default: false
             },
-            addTaskBtn: {
+            'layout.addSettingBtn': {
+                label: '侧边栏增加插件设置按钮',
+                labelPos: 'right',
+                type: 'checkbox',
+                default: true
+            },
+            'layout.addTaskBtn': {
                 label: '网盘顶部菜单增加链接任务按钮',
                 labelPos: 'right',
                 type: 'checkbox',
@@ -301,7 +307,7 @@ var _this = this;
     ].join('');
     GM_addStyle(styles);
     var addLinkTaskBtn = function () {
-        $('#js_top_panel_box .button[menu="upload"]').after("<a href=\"javascript:;\" class=\"button btn-line btn-upload\" menu=\"offline_task\"><i class=\"icon-operate ifo-linktask\"></i><span>\u94FE\u63A5\u4EFB\u52A1</span><em style=\"display:none;\" class=\"num-dot\"></em></a>");
+        $('[data-dropdown-tab="upload_btn_add_dir"]').after("<a href=\"javascript:;\" class=\"button btn-line btn-upload\" menu=\"offline_task\"><i class=\"icon-operate ifo-linktask\"></i><span>\u94FE\u63A5\u4EFB\u52A1</span></a>");
     };
     var handleRepeatSha1 = function (file_id, isAll) {
         if (isAll === void 0) { isAll = false; }
@@ -683,18 +689,36 @@ var _this = this;
         });
     };
     var initMainLayout = function () {
-        if (top.$('#mm-sidebar').length) {
-            return;
-        }
-        G.get('hideSidebar') && top.$('.wrap-hflow .sub-hflow').toggle(0);
-        top.$('.main-sub .sub-footer ul').append("<li>\n    <a href=\"javascript:;\" data-helper=\"sidebar\"><p id=\"mm-sidebar\">".concat(top.$('.wrap-hflow .sub-hflow').is(':visible') ? '关闭' : '打开', "</p><p>\u4FA7\u8FB9\u680F</p></a>\n</li>"));
-        top.$('[data-helper="sidebar"]').on('click', function () {
-            var $sidebar = top.$('.wrap-hflow .sub-hflow');
-            $sidebar.toggle(200);
-            setTimeout(function () {
-                top.$('#mm-sidebar').text($sidebar.is(':visible') ? '关闭' : '打开');
-            }, 200);
-        });
+        var SIDEBAR_SELECTOR = '[mm-layout="sidebar"]';
+        var HELPER_SETTING_SELECTOR = '[mm-layout="helper-setting"]';
+        var $mainSidebar = top.$('.main-sub .sub-footer ul');
+        G.get('layout.hideSidebar') && top.$('.wrap-hflow .sub-hflow').toggle(0);
+        var initSidebar = function () {
+            if (top.$(SIDEBAR_SELECTOR).length) {
+                return;
+            }
+            $mainSidebar
+                .append("<li mm-layout=\"sidebar\"><a href=\"javascript:;\"><p id=\"mm-sidebar\">".concat(top.$('.wrap-hflow .sub-hflow').is(':visible') ? '关闭' : '打开', "</p><p>\u4FA7\u8FB9\u680F</p></a></li>"))
+                .find(SIDEBAR_SELECTOR)
+                .on('click', function () {
+                var $sidebar = top.$('.wrap-hflow .sub-hflow');
+                $sidebar.toggle(200);
+                setTimeout(function () {
+                    top.$('#mm-sidebar').text($sidebar.is(':visible') ? '关闭' : '打开');
+                }, 200);
+            });
+        };
+        var initSetting = function () {
+            if (top.$(HELPER_SETTING_SELECTOR).length) {
+                return;
+            }
+            $mainSidebar
+                .append("<li mm-layout=\"helper-setting\"><a href=\"javascript:;\"><p>\u5C0F\u52A9\u624B</p><p>\u8BBE\u7F6E</p></a></li>")
+                .find(HELPER_SETTING_SELECTOR)
+                .on('click', function () { return (G.isOpen ? G.close() : G.open()); });
+        };
+        initSidebar();
+        G.get('layout.addSettingBtn') && initSetting();
     };
     $(function () {
         initMenu();
@@ -702,7 +726,7 @@ var _this = this;
             initMainLayout();
         }
         if (urlHasString('cid=')) {
-            G.get('addTaskBtn') && addLinkTaskBtn();
+            G.get('layout.addTaskBtn') && addLinkTaskBtn();
             initQuickOperation();
         }
         else if (urlHasString('tab=sha1_repeat')) {
