@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name          GM_config_zh
 // @author        Mike Medley & zxf10608 & maomao1996
-// @version       1.0.0
+// @version       1.0.1
 // @description   GM_config 中文版
 // @grant         GM_getValue
 // @grant         GM_setValue
@@ -217,7 +217,7 @@ GM_configStruct.prototype = {
   open: function () {
     // Die if the menu is already open on this page
     // You can have multiple instances but you can't open the same instance twice
-    var match = document.getElementById(this.id)
+    var match = top.document.getElementById(this.id)
     if (match && (match.tagName == 'IFRAME' || match.childNodes.length > 0))
       return
 
@@ -567,7 +567,6 @@ GM_configStruct.prototype = {
   },
 
   center: function () {
-    console.log(`111`, 111)
     var node = this.frame
     if (!node) return
     var style = node.style,
