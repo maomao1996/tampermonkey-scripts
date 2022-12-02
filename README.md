@@ -18,7 +18,8 @@
   - [access-link 跳转链接修复](#access-link-跳转链接修复)
     - [🔧 插件功能](#-插件功能-3)
     - [💽 安装插件](#-安装插件-3)
-    - [效果图](#效果图-1)
+  - [color-restore 颜色还原](#color-restore-颜色还原)
+    - [💽 安装插件](#-安装插件-4)
   - [油猴 API 文档](#油猴-api-文档)
   - [赞助](#赞助)
 
@@ -35,6 +36,7 @@
 - [x] 一键搜索
 - [x] 单文件夹查重
 - [x] 列表显示文件 SHA1 信息
+- [x] 侧边栏关闭
 
 ### 💽 安装插件
 
@@ -84,15 +86,13 @@
 
 [access-link 插件安装地址](https://greasyfork.org/zh-CN/scripts/395970)
 
-### 效果图
+## color-restore 颜色还原
 
-<details>
-  <summary>展开查看</summary>
-  <img src="https://cdn.jsdelivr.net/gh/maomao1996/tampermonkey-scripts/screenshots/access-link/1.png" width="520" alt="微信" align="center" />
-  <img src="https://cdn.jsdelivr.net/gh/maomao1996/tampermonkey-scripts/screenshots/access-link/2.png" width="520" alt="微信" align="center" />
-  <img src="https://cdn.jsdelivr.net/gh/maomao1996/tampermonkey-scripts/screenshots/access-link/3.png" width="520" alt="微信" align="center" />
-  <img src="https://cdn.jsdelivr.net/gh/maomao1996/tampermonkey-scripts/screenshots/access-link/4.png" width="520" alt="知乎" align="center" />
-</details>
+还你一个五彩斑斓的网页
+
+### 💽 安装插件
+
+[color-restore 插件安装地址](https://greasyfork.org/zh-CN/scripts/455825)
 
 ## 油猴 API 文档
 
