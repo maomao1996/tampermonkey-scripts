@@ -18,7 +18,7 @@
   - [access-link 跳转链接修复](#access-link-跳转链接修复)
     - [🔧 插件功能](#-插件功能-3)
     - [💽 安装插件](#-安装插件-3)
-  - [color-restore 颜色还原](#color-restore-颜色还原)
+  - [color-restore 黑白网页颜色还原](#color-restore-黑白网页颜色还原)
     - [💽 安装插件](#-安装插件-4)
   - [油猴 API 文档](#油猴-api-文档)
   - [赞助](#赞助)
@@ -86,7 +86,7 @@
 
 [access-link 插件安装地址](https://greasyfork.org/zh-CN/scripts/395970)
 
-## color-restore 颜色还原
+## color-restore 黑白网页颜色还原
 
 移除灰色滤镜，还你一个五彩斑斓的网页
 
