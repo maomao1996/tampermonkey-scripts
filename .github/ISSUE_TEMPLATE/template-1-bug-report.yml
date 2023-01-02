@@ -1,0 +1,94 @@
+name: Bug report 问题反馈
+description: 使用 Bug 报告模板提交一个问题反馈
+labels: ['bug']
+body:
+  - type: dropdown
+    id: script-type
+    attributes:
+      label: 脚本
+      description: 使用的脚本是？
+      options:
+        - 115-helper 115 小助手
+        - imooc-helper 慕课小助手
+        - tieba-helper 贴吧小助手
+        - access-link 跳转链接修复
+        - color-restore 黑白网页颜色还原
+        - 其他
+    validations:
+      required: true
+  - type: textarea
+    id: reproduce-steps
+    attributes:
+      label: 问题重现步骤
+      description: 请提供一个傻瓜式的操作步骤，方便无脑重现问题。
+      placeholder: |
+        1. 点击脚本设置
+        2. 没有出现脚本设置弹窗
+    validations:
+      required: true
+  - type: textarea
+    id: reality
+    attributes:
+      label: 实际的结果是什么？
+      placeholder: 比如：点击脚本设置没有出现脚本设置弹窗
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: 期望的结果是什么？
+      placeholder: 比如：点击脚本设置出现脚本设置弹窗
+    validations:
+      required: true
+  - type: dropdown
+    id: os
+    attributes:
+      label: 操作系统
+      description: 使用的操作系统是？
+      options:
+        - Windows
+        - MacOS
+        - iOS
+        - Android
+        - 其他
+    validations:
+      required: true
+  - type: dropdown
+    id: browsers
+    attributes:
+      label: 浏览器
+      description: 在哪些浏览器上能重现这个问题？
+      options:
+        - Chrome
+        - Edge
+        - Firefox
+        - 其他
+    validations:
+      required: true
+  - type: input
+    id: browsers-version
+    attributes:
+      label: 使用的浏览器
+      description: 上一个选项选择【其他】时填写
+      placeholder: 如：Edge
+  - type: input
+    id: browsers-other
+    attributes:
+      label: 浏览器版本（设置 — 关于）
+      placeholder: 如：版本 108.0.5359.124（正式版本） (x86_64)
+  - type: dropdown
+    id: extension-type
+    attributes:
+      label: 扩展
+      description: 使用的扩展是？
+      options:
+        - 油猴 Tampermonkey
+        - 暴力猴 Violentmonkey
+        - 其他
+    validations:
+      required: true
+  - type: input
+    id: extension-version
+    attributes:
+      label: 扩展版本
+      placeholder: 如：Tampermonkey v4.18.1

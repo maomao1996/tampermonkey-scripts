@@ -1,0 +1,35 @@
+name: Feature request 功能需求
+description: 使用功能需求报告模板提交一个功能需求建议
+labels: ['功能需求']
+body:
+  - type: dropdown
+    id: script-type
+    attributes:
+      label: 脚本
+      description: 使用的脚本是？
+      options:
+        - 115-helper 115 小助手
+        - imooc-helper 慕课小助手
+        - tieba-helper 贴吧小助手
+        - access-link 跳转链接修复
+        - color-restore 黑白网页颜色还原
+        - 其他
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: 期望的功能是什么？
+      placeholder: 比如：希望在悬浮菜单添加一个在【新标签页打开】按钮
+    validations:
+      required: true
+  - type: textarea
+    id: reason
+    attributes:
+      label: 这个功能解决了什么问题？
+      placeholder: |
+        请尽可能详尽地说明这个需求的用例和场景。
+        最重要的是：解释清楚是怎样的用户体验需求催生了这个功能上的需求。
+        比如：从列表进入一个文件夹再返回时列表需要重新加载，而且重新加载后又回到了顶部，使用很不方便
+    validations:
+      required: true
