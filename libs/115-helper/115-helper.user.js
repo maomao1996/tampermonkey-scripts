@@ -2,8 +2,8 @@
 // ==UserScript==
 // @name          115小助手
 // @namespace     https://github.com/maomao1996/tampermonkey-scripts
-// @version       1.5.0
-// @description   顶部链接任务入口还原、SHA1 快速查重（新页面打开）、SHA1 自动查重、删除空文件夹、一键搜（快捷搜索）、SHA1 查重列表支持选中第一个元素和悬浮菜单展示、搜索列表支持悬浮菜单展示、列表显示文件 SHA1 信息、关闭侧边栏
+// @version       1.6.0
+// @description   顶部链接任务入口还原、SHA1 快速查重（新页面打开）、SHA1 自动查重、删除空文件夹、一键搜（快捷搜索）、SHA1 查重列表支持选中第一个元素和悬浮菜单展示、搜索列表支持悬浮菜单展示、列表显示文件 SHA1 信息、关闭侧边栏、悬浮菜单移除图标、悬浮菜单支持新标签页打开文件夹
 // @icon      	  https://115.com/favicon.ico
 // @author        maomao1996
 // @include       *://115.com/*
@@ -155,7 +155,19 @@ var _this = this;
                 type: 'checkbox',
                 default: true
             },
-            addSha1Btn: {
+            'floatOperation.removeIcon': {
+                label: '悬浮菜单移除图标',
+                labelPos: 'right',
+                type: 'checkbox',
+                default: false
+            },
+            'floatOperation.newTab.addBtn': {
+                label: '悬浮菜单增加新标签页打开按钮',
+                labelPos: 'right',
+                type: 'checkbox',
+                default: true
+            },
+            'floatOperation.sha1.addBtn': {
                 label: '悬浮菜单增加SHA1查重按钮',
                 labelPos: 'right',
                 type: 'checkbox',
@@ -302,8 +314,8 @@ var _this = this;
         ".mm-quick-operation{margin-left: 12px;padding: 0 6px}",
         ".list-contents .active::before, .list-thumb .active{background: rgba(199, 237, 204, 0.7)!important;}",
         "[show-sha1]{position: absolute;top:20px;color:#999;}",
-        getStyles(".list-cell:not(.lstc-search) .list-contents [file_type=\"1\"] .file-name{flex:1;padding-bottom: 20px;height:auto;}", 'list.showSha1'),
-        getStyles(".page-center .lstc-search .list-contents [file_type=\"1\"] .file-name{flex:1;padding-bottom: 20px;height:auto;}", 'search.showSha1')
+        ".page-center .lstc-search .list-contents [file_type=\"1\"] .file-name.h-auto,.list-cell:not(.lstc-search) .list-contents [file_type=\"1\"] .file-name.h-auto{flex:1;padding-bottom: 20px;height:auto;}",
+        getStyles(".file-opr [class|=\"icon\"]{display:none!important;}", 'floatOperation.removeIcon')
     ].join('');
     GM_addStyle(styles);
     var addLinkTaskBtn = function () {
@@ -348,16 +360,24 @@ var _this = this;
         edit_name: "<a href=\"javascript:;\" menu=\"edit_name\"><i class=\"icon-operate ifo-rename\" menu=\"edit_name\"></i><span menu=\"edit_name\">\u91CD\u547D\u540D</span></a>",
         delete: "<a href=\"javascript:;\" menu=\"delete\" btn=\"del\"><i class=\"icon-operate ifo-remove\" menu=\"delete\"></i><span menu=\"delete\">\u5220\u9664</span></a>",
         search: "<a href=\"javascript:;\" class=\"mm-operation\" type=\"search\"><span>\u4E00\u952E\u641C</span></a>",
-        sha1: "<a href=\"javascript:;\" class=\"mm-operation\" type=\"sha1\"><span>SHA1\u67E5\u91CD</span></a>"
+        sha1: "<a href=\"javascript:;\" class=\"mm-operation\" type=\"sha1\"><span>SHA1\u67E5\u91CD</span></a>",
+        new_tab: "<a href=\"$href\" target=\"_blank\" class=\"mm-operation\"><span>\u65B0\u6807\u7B7E\u9875\u6253\u5F00</span></a>"
     };
-    var CONTROLLED_MENU = ['search', 'sha1'];
-    var getFloatMenu = function (fileType, menuKeys, isAddWrap) {
-        if (menuKeys === void 0) { menuKeys = CONTROLLED_MENU; }
+    var CONTROLLED_MENU = ['new_tab', 'search', 'sha1'];
+    var getFloatMenu = function (_a) {
+        var fileType = _a.fileType, _b = _a.menuKeys, menuKeys = _b === void 0 ? CONTROLLED_MENU : _b, isAddWrap = _a.isAddWrap, cid = _a.cid;
         var menu = menuKeys.reduce(function (prev, key) {
             if (key === 'search' && G.get('quickSearch.addBtn')) {
                 prev += MENU_MAP.search;
             }
-            else if (key === 'sha1' && G.get('addSha1Btn') && fileType === '1') {
+            else if (key === 'new_tab' &&
+                G.get('floatOperation.newTab.addBtn') &&
+                fileType === '0') {
+                prev += MENU_MAP.new_tab.replace('$href', "/?cid=".concat(cid, "&offset=0&mode=wangpan"));
+            }
+            else if (key === 'sha1' &&
+                G.get('floatOperation.sha1.addBtn') &&
+                fileType === '1') {
                 prev += MENU_MAP.sha1;
             }
             else if (!CONTROLLED_MENU.includes(key)) {
@@ -422,7 +442,10 @@ var _this = this;
     var listShowSHA1 = function ($listItem) {
         var sha1 = $listItem.attr('sha1');
         if (sha1 && !$listItem.find('[show-sha1]').length) {
-            $listItem.find('.file-name').append("<small show-sha1>".concat(sha1, "</small>"));
+            $listItem
+                .find('.file-name')
+                .addClass('h-auto')
+                .append("<small show-sha1>".concat(sha1, "</small>"));
         }
     };
     var initQuickOperation = function () {
@@ -449,8 +472,11 @@ var _this = this;
                 G.get('list.showSha1') && listShowSHA1($(this));
                 if (!$(this).find('.mm-operation').length) {
                     $(this)
-                        .find('a[menu="public_share"]')
-                        .after(getFloatMenu($(this).attr('file_type')));
+                        .find('.file-opr')
+                        .prepend(getFloatMenu({
+                        fileType: $(this).attr('file_type'),
+                        cid: $(this).attr('cate_id')
+                    }));
                 }
             });
         });
@@ -678,7 +704,11 @@ var _this = this;
                         that.attr('shared', '0');
                     }
                     if (!that.find('.file-opr').length) {
-                        that.append(getFloatMenu(that.attr('file_type'), ['move', 'edit_name', 'delete'], true));
+                        that.append(getFloatMenu({
+                            fileType: that.attr('file_type'),
+                            menuKeys: ['move', 'edit_name', 'delete'],
+                            isAddWrap: true
+                        }));
                     }
                 });
             }
@@ -737,7 +767,18 @@ var _this = this;
                 $('li[rel="item"]').each(function () {
                     G.get('search.showSha1') && listShowSHA1($(this));
                     if (!$(this).find('.mm-operation').length) {
-                        $(this).append(getFloatMenu($(this).attr('file_type'), ['move', 'edit_name', 'delete', 'search', 'sha1'], true));
+                        $(this).append(getFloatMenu({
+                            fileType: $(this).attr('file_type'),
+                            menuKeys: [
+                                'new_tab',
+                                'search',
+                                'sha1',
+                                'move',
+                                'edit_name',
+                                'delete'
+                            ],
+                            isAddWrap: true
+                        }));
                     }
                 });
             });
