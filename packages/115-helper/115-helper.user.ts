@@ -2,7 +2,7 @@
 // ==UserScript==
 // @name          115小助手
 // @namespace     https://github.com/maomao1996/tampermonkey-scripts
-// @version       1.6.0
+// @version       1.6.1
 // @description   顶部链接任务入口还原、SHA1 快速查重（新页面打开）、SHA1 自动查重、删除空文件夹、一键搜（快捷搜索）、SHA1 查重列表支持选中第一个元素和悬浮菜单展示、搜索列表支持悬浮菜单展示、列表显示文件 SHA1 信息、关闭侧边栏、悬浮菜单移除图标、悬浮菜单支持新标签页打开文件夹
 // @icon      	  https://115.com/favicon.ico
 // @author        maomao1996
@@ -937,7 +937,8 @@
                   'edit_name',
                   'delete'
                 ],
-                isAddWrap: true
+                isAddWrap: true,
+                cid: $(this).attr('cate_id')
               })
             )
           }
