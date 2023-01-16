@@ -84,6 +84,11 @@ declare function GM_registerMenuCommand(
   accessKey?: string
 ): number
 
+/**
+ * 正在运行的页面的窗口对象
+ */
+declare const unsafeWindow: Window
+
 interface GMConfig {
   get(key: string): any
   [key: string]: any
@@ -101,8 +106,19 @@ declare const TOP: Window
 declare const checkRepaatApi: any
 
 interface Window {
-  Core: any
-  UA$: any
-  Ext: any
   $: JQueryStatic
+  Core: any
+  UA$: { ajax(options: JQuery.AjaxSettings): void }
+  USER_INFO: {
+    ALIAS_NAME: string
+    IS_VIP: number
+    USER_ID: string
+    USER_NAME: string
+  }
+  Ext: any
+}
+
+interface JQueryStatic {
+  confirm(...args: any[]): void
+  alertTip(...args: any[]): void
 }

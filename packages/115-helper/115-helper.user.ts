@@ -2,14 +2,15 @@
 // ==UserScript==
 // @name          115小助手
 // @namespace     https://github.com/maomao1996/tampermonkey-scripts
-// @version       1.6.1
-// @description   顶部链接任务入口还原、SHA1 快速查重（新页面打开）、SHA1 自动查重、删除空文件夹、一键搜（快捷搜索）、SHA1 查重列表支持选中第一个元素和悬浮菜单展示、搜索列表支持悬浮菜单展示、列表显示文件 SHA1 信息、关闭侧边栏、悬浮菜单移除图标、悬浮菜单支持新标签页打开文件夹
+// @version       1.7.0
+// @description   顶部链接任务入口还原、SHA1 快速查重（新页面打开）、SHA1 自动查重、删除空文件夹、一键搜（快捷搜索）、SHA1 查重列表支持选中第一个元素和悬浮菜单展示、搜索列表支持悬浮菜单展示、列表显示文件 SHA1 信息、关闭侧边栏、悬浮菜单移除图标、悬浮菜单支持新标签页打开文件夹、加速转码
 // @icon      	  https://115.com/favicon.ico
 // @author        maomao1996
 // @include       *://115.com/*
 // @grant         GM_registerMenuCommand
 // @grant         GM_addStyle
 // @grant         GM_openInTab
+// @grant         unsafeWindow
 // @require       https://greasyfork.org/scripts/447340-gm-config-zh/code/GM_config_zh.js
 // @run-at        document-end
 // ==/UserScript==
@@ -19,7 +20,7 @@
   'use strict'
 
   // 过滤非 iframe 和 iframe 套娃场景
-  if (window.self === window.top || typeof TOP === 'undefined') {
+  if (unsafeWindow.self === unsafeWindow.top || typeof TOP === 'undefined') {
     return
   }
 
@@ -121,6 +122,12 @@
         type: 'checkbox',
         default: false,
         line: 'end'
+      },
+      'transcoded.addBtn': {
+        label: '网盘路径栏增加加速转码按钮',
+        labelPos: 'right',
+        type: 'checkbox',
+        default: true
       },
       'list.showSha1': {
         section: ['', '网盘列表相关设置(悬浮菜单不支持缩略图模式)'],
@@ -229,8 +236,11 @@
         click() {
           alert(
             `1. 为保证账号安全，从 1.1.0 版本开始，所有频繁请求接口的操作都会加入随机延迟；同时 SHA1 自动查重 功能会使用缓存机制（每个页码目录下的文件只会查询一次，如需再次查询请使用具体文件的 SHA1查重 按钮或刷新页面后再使用）
-2. 脚本设置保存后将会自动刷新页面
-3. 脚本加载有条件限制会造成设置弹窗不居中`
+2. 加速转码：（加速转码是不排队的，普通转码需要排队）
+   115 是通过当前目录下第一个视频文件去查询剩余未转码的视频文件，在查询时会将当前目录下第一个视频文件自动进行转码（只会在第一个视频文件未转码时触发），所以会存在下次查询时数量不一致的问题；
+  在查询时会有缓存问题，所以会存在下次查询时返回的未转码的数量和上次一样，等一两秒再点就行（提交的加速转码文件过多会被 115 限制，需要等提交的文件转码完以后再进行转码）
+3. 脚本设置保存后将会自动刷新页面
+4. 脚本加载有条件限制会造成设置弹窗不居中`
           )
         }
       }
@@ -353,7 +363,7 @@
   /**
    * 在顶部菜单添加链接任务按钮
    */
-  const addLinkTaskBtn = (): void => {
+  const addLinkTaskBtn = () => {
     $('[data-dropdown-tab="upload_btn_add_dir"]').after(
       /*html*/ `<a href="javascript:;" class="button btn-line btn-upload" menu="offline_task"><i class="icon-operate ifo-linktask"></i><span>链接任务</span></a>`
     )
@@ -453,11 +463,11 @@
   /**
    * 悬浮菜单初始化
    */
-  const initMenu = (): void => {
+  const initMenu = () => {
     /**
      * 一键搜（快捷搜索）
      */
-    const handleQuickSearch = (keyword: string): void => {
+    const handleQuickSearch = (keyword: string) => {
       const { aid, cid, name } = getAidCid()
 
       const openSearch = (value: string) => {
@@ -529,7 +539,7 @@
   /**
    * 列表显示文件SHA1信息
    */
-  const listShowSHA1 = ($listItem: JQuery): void => {
+  const listShowSHA1 = ($listItem: JQuery) => {
     const sha1 = $listItem.attr('sha1')
     if (sha1 && !$listItem.find('[show-sha1]').length) {
       $listItem
@@ -543,25 +553,12 @@
    * 快捷操作增强
    *  - SHA1查重
    *  - 删除空文件夹
+   *  - 单文件夹查重
+   *  - 加速转码
    */
-  const initQuickOperation = (): void => {
+  const initQuickOperation = () => {
     // 防止重复点击自动查重
     let autoCheckDisabled = false
-
-    // 顶部添加快捷操作按钮
-    if (!$('.mm-quick-operation').length) {
-      let operations = ''
-      if (G.get('autoSha1.addBtn')) {
-        operations += /*html*/ `<a href="javascript:;" class="button btn-line mm-quick-operation" type="auto-sha1" title="只查询当前页码目录中的文件"><span>SHA1自动查重</span></a>`
-      }
-      if (G.get('addDeleteEmptyBtn')) {
-        operations += /*html*/ `<a href="javascript:;" class="button btn-line mm-quick-operation" type="delete-empty" title="只删除当前页码目录中的文件夹"><span>删除空文件夹</span></a>`
-      }
-      if (G.get('folderRepeat.addBtn')) {
-        operations += /*html*/ `<a href="javascript:;" class="button btn-line mm-quick-operation" type="folder-sha1" title="只查询并标记当前目录中的重复文件"><span>单文件夹查重</span></a>`
-      }
-      $('#js_path_add_dir').after(operations)
-    }
 
     observerChildList(() => {
       autoCheckDisabled = false
@@ -583,235 +580,308 @@
       })
     })
 
-    const handleGetDetail = (aid: string, cid: string): Promise<any> => {
-      return new Promise((resolve) => {
+    const handleGetDetail = (aid: string, cid: string): Promise<any> =>
+      new Promise((resolve) =>
         top.Core.DataAccess.Dir.GetDetail(aid, cid, (res) => resolve(res))
-      })
-    }
+      )
 
     // SHA1 自动查重
     const SHA1_MAP = {}
     // 随机延迟索引
     let delayIndex = random(...randomDelayIndex)
 
-    const handleAutoCheckSha1 = () => {
-      if (autoCheckDisabled) {
-        MinMessage.Show({
-          text: '已查询过当前页码所有文件，需再次查询请刷新页面',
-          type: 'war',
-          timeout: 2e3
-        })
-        return
+    type QuicOperationKey =
+      | 'auto-sha1'
+      | 'delete-empty'
+      | 'folder-sha1'
+      | 'transcoded'
+    type QuicOperationConfigs = {
+      [P in QuicOperationKey]: {
+        GMConfigKey: GetKey
+        btnHtml: string
+        func(): void
       }
-
-      const $li = $('li[file_type="1"]')
-
-      if (!$li.length) {
-        MinMessage.Show({
-          text: '当前文件夹下没有可查重文件',
-          type: 'war',
-          timeout: 2e3
-        })
-        return
-      }
-
-      MinMessage.Show({ text: '正在查找', type: 'load', timeout: 0 })
-
-      let index = 0
-      // 重复数统计
-      let repeatCount = 0
-
-      const findRepeat = async () => {
-        const isMax = repeatCount >= G.get('autoSha1.maxCount')
-        const isEnd = index >= $li.length
-        if (isEnd || isMax) {
-          isEnd && (autoCheckDisabled = true)
-          const options = { text: '', type: '', timeout: 2e3 }
-          if (repeatCount) {
-            options.text = isMax
-              ? `已查询到 ${repeatCount} 个重复文件`
-              : `已查询完当前分页，共 ${repeatCount} 个重复文件`
-            options.type = 'suc'
-          } else {
-            options.text = '当前分页下没有可查重文件'
-            options.type = 'war'
-          }
-          MinMessage.Show(options)
-          return
-        }
-
-        const $currentLi = $li.eq(index)
-        const fileId = $currentLi.attr('file_id')
-        const sha1 = $currentLi.attr('sha1')
-
-        if (
-          !SHA1_MAP[sha1] &&
-          index > G.get('delay.minCount') &&
-          index % delayIndex === 0
-        ) {
-          delayIndex = random(...randomDelayIndex)
-          await delay()
-        }
-
-        index++
-
-        if (fileId && sha1 && !SHA1_MAP[sha1]) {
-          SHA1_MAP[sha1] = 1
-          return handleRepeatSha1(fileId, true).then((flag) => {
-            if (flag) {
-              $currentLi.addClass('active')
-              repeatCount++
-            }
-            return findRepeat()
-          })
-        }
-        return findRepeat()
-      }
-
-      findRepeat()
     }
-
-    // 删除空文件夹
-    const handleDeleteEmptyFolder = () => {
-      const $li = $('li[file_type="0"]')
-      if (!$li.length) {
-        MinMessage.Show({
-          text: '当前文件目录下没有文件夹',
-          type: 'war',
-          timeout: 2e3
-        })
-        return
-      }
-
-      MinMessage.Show({ text: '正在查找', type: 'load', timeout: 0 })
-
-      let index = 0
-      // 空文件夹统计
-      let emptyFolderCount = 0
-
-      const recursive = async () => {
-        if (index >= $li.length) {
-          if (emptyFolderCount === 0) {
+    const QUIC_OPERATION_CONFIGS: QuicOperationConfigs = {
+      // SHA1 自动查重
+      'auto-sha1': {
+        GMConfigKey: 'autoSha1.addBtn',
+        btnHtml: /*html*/ `<a href="javascript:;" class="button btn-line mm-quick-operation" type="auto-sha1" title="只查询当前页码目录中的文件"><span>SHA1自动查重</span></a>`,
+        func() {
+          if (autoCheckDisabled) {
             MinMessage.Show({
-              text: '当前文件目录下没有空文件夹',
+              text: '已查询过当前页码所有文件，需再次查询请刷新页面',
               type: 'war',
               timeout: 2e3
             })
+            return
+          }
+
+          const $li = $('li[file_type="1"]')
+
+          if (!$li.length) {
+            MinMessage.Show({
+              text: '当前文件夹下没有可查重文件',
+              type: 'war',
+              timeout: 2e3
+            })
+            return
+          }
+
+          MinMessage.Show({ text: '正在查找', type: 'load', timeout: 0 })
+
+          let index = 0
+          // 重复数统计
+          let repeatCount = 0
+
+          const findRepeat = async () => {
+            const isMax = repeatCount >= G.get('autoSha1.maxCount')
+            const isEnd = index >= $li.length
+            if (isEnd || isMax) {
+              isEnd && (autoCheckDisabled = true)
+              const options = { text: '', type: '', timeout: 2e3 }
+              if (repeatCount) {
+                options.text = isMax
+                  ? `已查询到 ${repeatCount} 个重复文件`
+                  : `已查询完当前分页，共 ${repeatCount} 个重复文件`
+                options.type = 'suc'
+              } else {
+                options.text = '当前分页下没有可查重文件'
+                options.type = 'war'
+              }
+              MinMessage.Show(options)
+              return
+            }
+
+            const $currentLi = $li.eq(index)
+            const fileId = $currentLi.attr('file_id')
+            const sha1 = $currentLi.attr('sha1')
+
+            if (
+              !SHA1_MAP[sha1] &&
+              index > G.get('delay.minCount') &&
+              index % delayIndex === 0
+            ) {
+              delayIndex = random(...randomDelayIndex)
+              await delay()
+            }
+
+            index++
+
+            if (fileId && sha1 && !SHA1_MAP[sha1]) {
+              SHA1_MAP[sha1] = 1
+              return handleRepeatSha1(fileId, true).then((flag) => {
+                if (flag) {
+                  $currentLi.addClass('active')
+                  repeatCount++
+                }
+                return findRepeat()
+              })
+            }
+            return findRepeat()
+          }
+
+          findRepeat()
+        }
+      },
+      // 删除空文件夹
+      'delete-empty': {
+        GMConfigKey: 'addDeleteEmptyBtn',
+        btnHtml: /*html*/ `<a href="javascript:;" class="button btn-line mm-quick-operation" type="delete-empty" title="只删除当前页码目录中的文件夹"><span>删除空文件夹</span></a>`,
+        func() {
+          const $li = $('li[file_type="0"]')
+          if (!$li.length) {
+            MinMessage.Show({
+              text: '当前文件目录下没有文件夹',
+              type: 'war',
+              timeout: 2e3
+            })
+            return
+          }
+
+          MinMessage.Show({ text: '正在查找', type: 'load', timeout: 0 })
+
+          let index = 0
+          // 空文件夹统计
+          let emptyFolderCount = 0
+
+          const recursive = async () => {
+            if (index >= $li.length) {
+              if (emptyFolderCount === 0) {
+                MinMessage.Show({
+                  text: '当前文件目录下没有空文件夹',
+                  type: 'war',
+                  timeout: 2e3
+                })
+              } else {
+                MinMessage.Hide()
+                setTimeout(() => {
+                  $('li[menu="delete"]:visible').trigger('click')
+                }, 2e2)
+              }
+              return
+            }
+
+            if (index > G.get('delay.minCount') && index % delayIndex === 0) {
+              delayIndex = random(...randomDelayIndex)
+              await delay()
+            }
+
+            const $currentLi = $li.eq(index)
+
+            handleGetDetail(
+              $currentLi.attr('area_id'),
+              $currentLi.attr('cate_id')
+            ).then(({ size }) => {
+              if (size === '0B') {
+                emptyFolderCount++
+                $currentLi.find('.checkbox').trigger('click')
+              }
+              index++
+              $currentLi.find('.file-size span').text(size)
+              return recursive()
+            })
+          }
+
+          recursive()
+        }
+      },
+      // 单文件夹查重
+      'folder-sha1': {
+        GMConfigKey: 'folderRepeat.addBtn',
+        btnHtml: /*html*/ `<a href="javascript:;" class="button btn-line mm-quick-operation" type="folder-sha1" title="只查询并标记当前目录中的重复文件"><span>单文件夹查重</span></a>`,
+        func() {
+          if (top.USER_INFO.IS_VIP) {
+            return $.alertTip('该功能仅 VIP 用户可用')
+          }
+          const $loadAllFile = $('[menu="load_all_file"]:visible')
+          const isMore = !!$loadAllFile.length
+          const isSelected = G.get('folderRepeat.select')
+
+          const checkSha1 = () => {
+            const SHA1_MAP = {}
+
+            const $li = $('li[file_type="1"]')
+
+            if (!$li.length) {
+              return $.alertTip('当前文件夹下没有可查重文件')
+            }
+            // 重复数统计
+            let repeatCount = 0
+
+            $li.each(function () {
+              const sha1 = $(this).attr('sha1')
+              if (!SHA1_MAP[sha1]) {
+                SHA1_MAP[sha1] = 1
+              } else {
+                repeatCount++
+                $(this).addClass('active')
+                if (isSelected) {
+                  $(this).find('.checkbox').trigger('click')
+                }
+              }
+            })
+
+            const options = { text: '', type: '', timeout: 2e3 }
+            if (repeatCount) {
+              options.text = `当前文件夹下共 ${repeatCount} 个重复文件`
+              options.type = 'suc'
+            } else {
+              options.text = '当前文件夹下没有重复文件'
+              options.type = 'war'
+            }
+            MinMessage.Show(options)
+          }
+
+          if (isMore) {
+            observerChildList((_, { addedNodes }) => {
+              addedNodes.length && checkSha1()
+            }, '#js_data_list .list-contents > ul')
+
+            // 加载全部文件
+            $loadAllFile.trigger('click')
           } else {
-            MinMessage.Hide()
-            setTimeout(() => {
-              $('li[menu="delete"]:visible').trigger('click')
-            }, 2e2)
+            checkSha1()
           }
-          return
         }
-
-        if (index > G.get('delay.minCount') && index % delayIndex === 0) {
-          delayIndex = random(...randomDelayIndex)
-          await delay()
-        }
-
-        const $currentLi = $li.eq(index)
-
-        handleGetDetail(
-          $currentLi.attr('area_id'),
-          $currentLi.attr('cate_id')
-        ).then(({ size }) => {
-          if (size === '0B') {
-            emptyFolderCount++
-            $currentLi.find('.checkbox').trigger('click')
+      },
+      // 加速转码
+      transcoded: {
+        GMConfigKey: 'transcoded.addBtn',
+        btnHtml: /*html*/ `<a href="javascript:;" class="button btn-line mm-quick-operation" type="transcoded" title="对当前页码目录中所有未转码文件进行加速转码（115会自动将第一个文件进行转码）"><span>加速转码</span></a>`,
+        func() {
+          const pickCode = $('li[file_type="1"][iv=1]:first').attr('pick_code')
+          if (!pickCode) {
+            return $.alertTip(`当前目录下没有需要转码的文件哦`)
           }
-          index++
-          $currentLi.find('.file-size span').text(size)
-          return recursive()
-        })
+
+          top.UA$.ajax({
+            url: '//webapi.115.com/files/is_transcoded',
+            type: 'POST',
+            data: {
+              pick_code: pickCode
+            },
+            dataType: 'json',
+            success({ state, data, count }) {
+              if (state && data && data.length) {
+                $.confirm({
+                  text: `此目录下还有 ${count} 个文件未转码，${
+                    data.length < count
+                      ? `是否提交 VIP 加速？<br/>（单次提交最多可加速50个）`
+                      : `是否全部提交 VIP 加速？`
+                  }`,
+                  confirm_text: '全部加速',
+                  callback(e) {
+                    e &&
+                      top.UA$.ajax({
+                        url: '//115.com/?ctl=play&ac=batch_push',
+                        data: {
+                          file_ids: data.join(',')
+                        },
+                        dataType: 'json',
+                        type: 'POST',
+                        xhrFields: { withCredentials: !0 },
+                        success(t) {
+                          t.state || $.alertTip(t.message || t.error)
+                        }
+                      })
+                  }
+                })
+              } else {
+                $.alertTip(`当前目录下没有需要转码的文件哦`)
+              }
+            }
+          })
+        }
       }
-
-      recursive()
     }
 
-    // 单文件夹查重
-    const handleFolderCheckSha1 = () => {
-      const $loadAllFile = $('[menu="load_all_file"]:visible')
-      const isMore = !!$loadAllFile.length
-      const isSelected = G.get('folderRepeat.select')
-
-      const checkSha1 = () => {
-        const SHA1_MAP = {}
-
-        const $li = $('li[file_type="1"]')
-
-        if (!$li.length) {
-          MinMessage.Show({
-            text: '当前文件夹下没有可查重文件',
-            type: 'war',
-            timeout: 2e3
-          })
-          return
+    // 顶部添加快捷操作按钮
+    if (!$('.mm-quick-operation').length) {
+      let operations = ''
+      Object.keys(QUIC_OPERATION_CONFIGS).forEach((key: QuicOperationKey) => {
+        const data = QUIC_OPERATION_CONFIGS[key]
+        if (G.get(data.GMConfigKey)) {
+          operations += data.btnHtml
         }
-        // 重复数统计
-        let repeatCount = 0
-
-        $li.each(function () {
-          const sha1 = $(this).attr('sha1')
-          if (!SHA1_MAP[sha1]) {
-            SHA1_MAP[sha1] = 1
-          } else {
-            repeatCount++
-            $(this).addClass('active')
-            if (isSelected) {
-              $(this).find('.checkbox').trigger('click')
-            }
-          }
-        })
-
-        const options = { text: '', type: '', timeout: 2e3 }
-        if (repeatCount) {
-          options.text = `当前文件夹下共 ${repeatCount} 个重复文件`
-          options.type = 'suc'
-        } else {
-          options.text = '当前文件夹下没有重复文件'
-          options.type = 'war'
-        }
-        MinMessage.Show(options)
-      }
-
-      if (isMore) {
-        observerChildList((_, { addedNodes }) => {
-          addedNodes.length && checkSha1()
-        }, '#js_data_list .list-contents > ul')
-
-        // 加载全部文件
-        $loadAllFile.trigger('click')
-      } else {
-        checkSha1()
-      }
+      })
+      $('#js_path_add_dir').after(operations)
     }
 
     // 路径栏快捷操作
     $(document).on('click', '.mm-quick-operation', function () {
-      const type = $(this).attr('type')
-      if (!type) {
+      const type = $(this).attr('type') as QuicOperationKey
+      if (!type || !QUIC_OPERATION_CONFIGS[type]) {
         return
       }
-      switch (type) {
-        // SHA1 自动查重
-        case 'auto-sha1':
-          return handleAutoCheckSha1()
-        // 删除空文件夹
-        case 'delete-empty':
-          return handleDeleteEmptyFolder()
-        // 单文件夹查重
-        case 'folder-sha1':
-          return handleFolderCheckSha1()
-      }
+      QUIC_OPERATION_CONFIGS[type].func()
     })
   }
 
   /**
    * SHA1 查重列表（支持选中第一个元素）
    */
-  const initRepeatSha1List = (): void => {
+  const initRepeatSha1List = () => {
     const $list = $('#js-list')
     observerChildList(() => {
       // 支持选中第一个元素
@@ -857,6 +927,9 @@
     })
   }
 
+  /**
+   * 布局初始化
+   */
   const initMainLayout = () => {
     const SIDEBAR_SELECTOR = '[mm-layout="sidebar"]'
     const HELPER_SETTING_SELECTOR = '[mm-layout="helper-setting"]'
