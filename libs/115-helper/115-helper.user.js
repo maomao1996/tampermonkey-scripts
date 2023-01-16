@@ -2,14 +2,15 @@
 // ==UserScript==
 // @name          115小助手
 // @namespace     https://github.com/maomao1996/tampermonkey-scripts
-// @version       1.6.1
-// @description   顶部链接任务入口还原、SHA1 快速查重（新页面打开）、SHA1 自动查重、删除空文件夹、一键搜（快捷搜索）、SHA1 查重列表支持选中第一个元素和悬浮菜单展示、搜索列表支持悬浮菜单展示、列表显示文件 SHA1 信息、关闭侧边栏、悬浮菜单移除图标、悬浮菜单支持新标签页打开文件夹
+// @version       1.7.0
+// @description   顶部链接任务入口还原、SHA1 快速查重（新页面打开）、SHA1 自动查重、删除空文件夹、一键搜（快捷搜索）、SHA1 查重列表支持选中第一个元素和悬浮菜单展示、搜索列表支持悬浮菜单展示、列表显示文件 SHA1 信息、关闭侧边栏、悬浮菜单移除图标、悬浮菜单支持新标签页打开文件夹、加速转码
 // @icon      	  https://115.com/favicon.ico
 // @author        maomao1996
 // @include       *://115.com/*
 // @grant         GM_registerMenuCommand
 // @grant         GM_addStyle
 // @grant         GM_openInTab
+// @grant         unsafeWindow
 // @require       https://greasyfork.org/scripts/447340-gm-config-zh/code/GM_config_zh.js
 // @run-at        document-end
 // ==/UserScript==
@@ -50,11 +51,10 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
-var _this = this;
 ;
 (function () {
     'use strict';
-    if (window.self === window.top || typeof TOP === 'undefined') {
+    if (unsafeWindow.self === unsafeWindow.top || typeof TOP === 'undefined') {
         return;
     }
     var search = top.location.search;
@@ -147,6 +147,12 @@ var _this = this;
                 type: 'checkbox',
                 default: false,
                 line: 'end'
+            },
+            'transcoded.addBtn': {
+                label: '网盘路径栏增加加速转码按钮',
+                labelPos: 'right',
+                type: 'checkbox',
+                default: true
             },
             'list.showSha1': {
                 section: ['', '网盘列表相关设置(悬浮菜单不支持缩略图模式)'],
@@ -249,7 +255,7 @@ var _this = this;
                 labelPos: 'right',
                 type: 'button',
                 click: function () {
-                    alert("1. \u4E3A\u4FDD\u8BC1\u8D26\u53F7\u5B89\u5168\uFF0C\u4ECE 1.1.0 \u7248\u672C\u5F00\u59CB\uFF0C\u6240\u6709\u9891\u7E41\u8BF7\u6C42\u63A5\u53E3\u7684\u64CD\u4F5C\u90FD\u4F1A\u52A0\u5165\u968F\u673A\u5EF6\u8FDF\uFF1B\u540C\u65F6 SHA1 \u81EA\u52A8\u67E5\u91CD \u529F\u80FD\u4F1A\u4F7F\u7528\u7F13\u5B58\u673A\u5236\uFF08\u6BCF\u4E2A\u9875\u7801\u76EE\u5F55\u4E0B\u7684\u6587\u4EF6\u53EA\u4F1A\u67E5\u8BE2\u4E00\u6B21\uFF0C\u5982\u9700\u518D\u6B21\u67E5\u8BE2\u8BF7\u4F7F\u7528\u5177\u4F53\u6587\u4EF6\u7684 SHA1\u67E5\u91CD \u6309\u94AE\u6216\u5237\u65B0\u9875\u9762\u540E\u518D\u4F7F\u7528\uFF09\n2. \u811A\u672C\u8BBE\u7F6E\u4FDD\u5B58\u540E\u5C06\u4F1A\u81EA\u52A8\u5237\u65B0\u9875\u9762\n3. \u811A\u672C\u52A0\u8F7D\u6709\u6761\u4EF6\u9650\u5236\u4F1A\u9020\u6210\u8BBE\u7F6E\u5F39\u7A97\u4E0D\u5C45\u4E2D");
+                    alert("1. \u4E3A\u4FDD\u8BC1\u8D26\u53F7\u5B89\u5168\uFF0C\u4ECE 1.1.0 \u7248\u672C\u5F00\u59CB\uFF0C\u6240\u6709\u9891\u7E41\u8BF7\u6C42\u63A5\u53E3\u7684\u64CD\u4F5C\u90FD\u4F1A\u52A0\u5165\u968F\u673A\u5EF6\u8FDF\uFF1B\u540C\u65F6 SHA1 \u81EA\u52A8\u67E5\u91CD \u529F\u80FD\u4F1A\u4F7F\u7528\u7F13\u5B58\u673A\u5236\uFF08\u6BCF\u4E2A\u9875\u7801\u76EE\u5F55\u4E0B\u7684\u6587\u4EF6\u53EA\u4F1A\u67E5\u8BE2\u4E00\u6B21\uFF0C\u5982\u9700\u518D\u6B21\u67E5\u8BE2\u8BF7\u4F7F\u7528\u5177\u4F53\u6587\u4EF6\u7684 SHA1\u67E5\u91CD \u6309\u94AE\u6216\u5237\u65B0\u9875\u9762\u540E\u518D\u4F7F\u7528\uFF09\n2. \u52A0\u901F\u8F6C\u7801\uFF1A\uFF08\u52A0\u901F\u8F6C\u7801\u662F\u4E0D\u6392\u961F\u7684\uFF0C\u666E\u901A\u8F6C\u7801\u9700\u8981\u6392\u961F\uFF09\n   115 \u662F\u901A\u8FC7\u5F53\u524D\u76EE\u5F55\u4E0B\u7B2C\u4E00\u4E2A\u89C6\u9891\u6587\u4EF6\u53BB\u67E5\u8BE2\u5269\u4F59\u672A\u8F6C\u7801\u7684\u89C6\u9891\u6587\u4EF6\uFF0C\u5728\u67E5\u8BE2\u65F6\u4F1A\u5C06\u5F53\u524D\u76EE\u5F55\u4E0B\u7B2C\u4E00\u4E2A\u89C6\u9891\u6587\u4EF6\u81EA\u52A8\u8FDB\u884C\u8F6C\u7801\uFF08\u53EA\u4F1A\u5728\u7B2C\u4E00\u4E2A\u89C6\u9891\u6587\u4EF6\u672A\u8F6C\u7801\u65F6\u89E6\u53D1\uFF09\uFF0C\u6240\u4EE5\u4F1A\u5B58\u5728\u4E0B\u6B21\u67E5\u8BE2\u65F6\u6570\u91CF\u4E0D\u4E00\u81F4\u7684\u95EE\u9898\uFF1B\n  \u5728\u67E5\u8BE2\u65F6\u4F1A\u6709\u7F13\u5B58\u95EE\u9898\uFF0C\u6240\u4EE5\u4F1A\u5B58\u5728\u4E0B\u6B21\u67E5\u8BE2\u65F6\u8FD4\u56DE\u7684\u672A\u8F6C\u7801\u7684\u6570\u91CF\u548C\u4E0A\u6B21\u4E00\u6837\uFF0C\u7B49\u4E00\u4E24\u79D2\u518D\u70B9\u5C31\u884C\uFF08\u63D0\u4EA4\u7684\u52A0\u901F\u8F6C\u7801\u6587\u4EF6\u8FC7\u591A\u4F1A\u88AB 115 \u9650\u5236\uFF0C\u9700\u8981\u7B49\u63D0\u4EA4\u7684\u6587\u4EF6\u8F6C\u7801\u5B8C\u4EE5\u540E\u518D\u8FDB\u884C\u8F6C\u7801\uFF09\n3. \u811A\u672C\u8BBE\u7F6E\u4FDD\u5B58\u540E\u5C06\u4F1A\u81EA\u52A8\u5237\u65B0\u9875\u9762\n4. \u811A\u672C\u52A0\u8F7D\u6709\u6761\u4EF6\u9650\u5236\u4F1A\u9020\u6210\u8BBE\u7F6E\u5F39\u7A97\u4E0D\u5C45\u4E2D");
                 }
             }
         },
@@ -450,19 +456,6 @@ var _this = this;
     };
     var initQuickOperation = function () {
         var autoCheckDisabled = false;
-        if (!$('.mm-quick-operation').length) {
-            var operations = '';
-            if (G.get('autoSha1.addBtn')) {
-                operations += "<a href=\"javascript:;\" class=\"button btn-line mm-quick-operation\" type=\"auto-sha1\" title=\"\u53EA\u67E5\u8BE2\u5F53\u524D\u9875\u7801\u76EE\u5F55\u4E2D\u7684\u6587\u4EF6\"><span>SHA1\u81EA\u52A8\u67E5\u91CD</span></a>";
-            }
-            if (G.get('addDeleteEmptyBtn')) {
-                operations += "<a href=\"javascript:;\" class=\"button btn-line mm-quick-operation\" type=\"delete-empty\" title=\"\u53EA\u5220\u9664\u5F53\u524D\u9875\u7801\u76EE\u5F55\u4E2D\u7684\u6587\u4EF6\u5939\"><span>\u5220\u9664\u7A7A\u6587\u4EF6\u5939</span></a>";
-            }
-            if (G.get('folderRepeat.addBtn')) {
-                operations += "<a href=\"javascript:;\" class=\"button btn-line mm-quick-operation\" type=\"folder-sha1\" title=\"\u53EA\u67E5\u8BE2\u5E76\u6807\u8BB0\u5F53\u524D\u76EE\u5F55\u4E2D\u7684\u91CD\u590D\u6587\u4EF6\"><span>\u5355\u6587\u4EF6\u5939\u67E5\u91CD</span></a>";
-            }
-            $('#js_path_add_dir').after(operations);
-        }
         observerChildList(function () {
             autoCheckDisabled = false;
             if (isThumbnail()) {
@@ -482,206 +475,270 @@ var _this = this;
         });
         var handleGetDetail = function (aid, cid) {
             return new Promise(function (resolve) {
-                top.Core.DataAccess.Dir.GetDetail(aid, cid, function (res) { return resolve(res); });
+                return top.Core.DataAccess.Dir.GetDetail(aid, cid, function (res) { return resolve(res); });
             });
         };
         var SHA1_MAP = {};
         var delayIndex = random.apply(void 0, randomDelayIndex);
-        var handleAutoCheckSha1 = function () {
-            if (autoCheckDisabled) {
-                MinMessage.Show({
-                    text: '已查询过当前页码所有文件，需再次查询请刷新页面',
-                    type: 'war',
-                    timeout: 2e3
-                });
-                return;
-            }
-            var $li = $('li[file_type="1"]');
-            if (!$li.length) {
-                MinMessage.Show({
-                    text: '当前文件夹下没有可查重文件',
-                    type: 'war',
-                    timeout: 2e3
-                });
-                return;
-            }
-            MinMessage.Show({ text: '正在查找', type: 'load', timeout: 0 });
-            var index = 0;
-            var repeatCount = 0;
-            var findRepeat = function () { return __awaiter(_this, void 0, void 0, function () {
-                var isMax, isEnd, options, $currentLi, fileId, sha1;
-                return __generator(this, function (_a) {
-                    switch (_a.label) {
-                        case 0:
-                            isMax = repeatCount >= G.get('autoSha1.maxCount');
-                            isEnd = index >= $li.length;
-                            if (isEnd || isMax) {
-                                isEnd && (autoCheckDisabled = true);
-                                options = { text: '', type: '', timeout: 2e3 };
-                                if (repeatCount) {
-                                    options.text = isMax
-                                        ? "\u5DF2\u67E5\u8BE2\u5230 ".concat(repeatCount, " \u4E2A\u91CD\u590D\u6587\u4EF6")
-                                        : "\u5DF2\u67E5\u8BE2\u5B8C\u5F53\u524D\u5206\u9875\uFF0C\u5171 ".concat(repeatCount, " \u4E2A\u91CD\u590D\u6587\u4EF6");
-                                    options.type = 'suc';
-                                }
-                                else {
-                                    options.text = '当前分页下没有可查重文件';
-                                    options.type = 'war';
-                                }
-                                MinMessage.Show(options);
-                                return [2];
-                            }
-                            $currentLi = $li.eq(index);
-                            fileId = $currentLi.attr('file_id');
-                            sha1 = $currentLi.attr('sha1');
-                            if (!(!SHA1_MAP[sha1] &&
-                                index > G.get('delay.minCount') &&
-                                index % delayIndex === 0)) return [3, 2];
-                            delayIndex = random.apply(void 0, randomDelayIndex);
-                            return [4, delay()];
-                        case 1:
-                            _a.sent();
-                            _a.label = 2;
-                        case 2:
-                            index++;
-                            if (fileId && sha1 && !SHA1_MAP[sha1]) {
-                                SHA1_MAP[sha1] = 1;
-                                return [2, handleRepeatSha1(fileId, true).then(function (flag) {
-                                        if (flag) {
-                                            $currentLi.addClass('active');
-                                            repeatCount++;
+        var QUIC_OPERATION_CONFIGS = {
+            'auto-sha1': {
+                GMConfigKey: 'autoSha1.addBtn',
+                btnHtml: "<a href=\"javascript:;\" class=\"button btn-line mm-quick-operation\" type=\"auto-sha1\" title=\"\u53EA\u67E5\u8BE2\u5F53\u524D\u9875\u7801\u76EE\u5F55\u4E2D\u7684\u6587\u4EF6\"><span>SHA1\u81EA\u52A8\u67E5\u91CD</span></a>",
+                func: function () {
+                    var _this = this;
+                    if (autoCheckDisabled) {
+                        MinMessage.Show({
+                            text: '已查询过当前页码所有文件，需再次查询请刷新页面',
+                            type: 'war',
+                            timeout: 2e3
+                        });
+                        return;
+                    }
+                    var $li = $('li[file_type="1"]');
+                    if (!$li.length) {
+                        MinMessage.Show({
+                            text: '当前文件夹下没有可查重文件',
+                            type: 'war',
+                            timeout: 2e3
+                        });
+                        return;
+                    }
+                    MinMessage.Show({ text: '正在查找', type: 'load', timeout: 0 });
+                    var index = 0;
+                    var repeatCount = 0;
+                    var findRepeat = function () { return __awaiter(_this, void 0, void 0, function () {
+                        var isMax, isEnd, options, $currentLi, fileId, sha1;
+                        return __generator(this, function (_a) {
+                            switch (_a.label) {
+                                case 0:
+                                    isMax = repeatCount >= G.get('autoSha1.maxCount');
+                                    isEnd = index >= $li.length;
+                                    if (isEnd || isMax) {
+                                        isEnd && (autoCheckDisabled = true);
+                                        options = { text: '', type: '', timeout: 2e3 };
+                                        if (repeatCount) {
+                                            options.text = isMax
+                                                ? "\u5DF2\u67E5\u8BE2\u5230 ".concat(repeatCount, " \u4E2A\u91CD\u590D\u6587\u4EF6")
+                                                : "\u5DF2\u67E5\u8BE2\u5B8C\u5F53\u524D\u5206\u9875\uFF0C\u5171 ".concat(repeatCount, " \u4E2A\u91CD\u590D\u6587\u4EF6");
+                                            options.type = 'suc';
                                         }
-                                        return findRepeat();
-                                    })];
+                                        else {
+                                            options.text = '当前分页下没有可查重文件';
+                                            options.type = 'war';
+                                        }
+                                        MinMessage.Show(options);
+                                        return [2];
+                                    }
+                                    $currentLi = $li.eq(index);
+                                    fileId = $currentLi.attr('file_id');
+                                    sha1 = $currentLi.attr('sha1');
+                                    if (!(!SHA1_MAP[sha1] &&
+                                        index > G.get('delay.minCount') &&
+                                        index % delayIndex === 0)) return [3, 2];
+                                    delayIndex = random.apply(void 0, randomDelayIndex);
+                                    return [4, delay()];
+                                case 1:
+                                    _a.sent();
+                                    _a.label = 2;
+                                case 2:
+                                    index++;
+                                    if (fileId && sha1 && !SHA1_MAP[sha1]) {
+                                        SHA1_MAP[sha1] = 1;
+                                        return [2, handleRepeatSha1(fileId, true).then(function (flag) {
+                                                if (flag) {
+                                                    $currentLi.addClass('active');
+                                                    repeatCount++;
+                                                }
+                                                return findRepeat();
+                                            })];
+                                    }
+                                    return [2, findRepeat()];
                             }
-                            return [2, findRepeat()];
-                    }
-                });
-            }); };
-            findRepeat();
-        };
-        var handleDeleteEmptyFolder = function () {
-            var $li = $('li[file_type="0"]');
-            if (!$li.length) {
-                MinMessage.Show({
-                    text: '当前文件目录下没有文件夹',
-                    type: 'war',
-                    timeout: 2e3
-                });
-                return;
-            }
-            MinMessage.Show({ text: '正在查找', type: 'load', timeout: 0 });
-            var index = 0;
-            var emptyFolderCount = 0;
-            var recursive = function () { return __awaiter(_this, void 0, void 0, function () {
-                var $currentLi;
-                return __generator(this, function (_a) {
-                    switch (_a.label) {
-                        case 0:
-                            if (index >= $li.length) {
-                                if (emptyFolderCount === 0) {
-                                    MinMessage.Show({
-                                        text: '当前文件目录下没有空文件夹',
-                                        type: 'war',
-                                        timeout: 2e3
-                                    });
-                                }
-                                else {
-                                    MinMessage.Hide();
-                                    setTimeout(function () {
-                                        $('li[menu="delete"]:visible').trigger('click');
-                                    }, 2e2);
-                                }
-                                return [2];
-                            }
-                            if (!(index > G.get('delay.minCount') && index % delayIndex === 0)) return [3, 2];
-                            delayIndex = random.apply(void 0, randomDelayIndex);
-                            return [4, delay()];
-                        case 1:
-                            _a.sent();
-                            _a.label = 2;
-                        case 2:
-                            $currentLi = $li.eq(index);
-                            handleGetDetail($currentLi.attr('area_id'), $currentLi.attr('cate_id')).then(function (_a) {
-                                var size = _a.size;
-                                if (size === '0B') {
-                                    emptyFolderCount++;
-                                    $currentLi.find('.checkbox').trigger('click');
-                                }
-                                index++;
-                                $currentLi.find('.file-size span').text(size);
-                                return recursive();
-                            });
-                            return [2];
-                    }
-                });
-            }); };
-            recursive();
-        };
-        var handleFolderCheckSha1 = function () {
-            var $loadAllFile = $('[menu="load_all_file"]:visible');
-            var isMore = !!$loadAllFile.length;
-            var isSelected = G.get('folderRepeat.select');
-            var checkSha1 = function () {
-                var SHA1_MAP = {};
-                var $li = $('li[file_type="1"]');
-                if (!$li.length) {
-                    MinMessage.Show({
-                        text: '当前文件夹下没有可查重文件',
-                        type: 'war',
-                        timeout: 2e3
-                    });
-                    return;
+                        });
+                    }); };
+                    findRepeat();
                 }
-                var repeatCount = 0;
-                $li.each(function () {
-                    var sha1 = $(this).attr('sha1');
-                    if (!SHA1_MAP[sha1]) {
-                        SHA1_MAP[sha1] = 1;
+            },
+            'delete-empty': {
+                GMConfigKey: 'addDeleteEmptyBtn',
+                btnHtml: "<a href=\"javascript:;\" class=\"button btn-line mm-quick-operation\" type=\"delete-empty\" title=\"\u53EA\u5220\u9664\u5F53\u524D\u9875\u7801\u76EE\u5F55\u4E2D\u7684\u6587\u4EF6\u5939\"><span>\u5220\u9664\u7A7A\u6587\u4EF6\u5939</span></a>",
+                func: function () {
+                    var _this = this;
+                    var $li = $('li[file_type="0"]');
+                    if (!$li.length) {
+                        MinMessage.Show({
+                            text: '当前文件目录下没有文件夹',
+                            type: 'war',
+                            timeout: 2e3
+                        });
+                        return;
+                    }
+                    MinMessage.Show({ text: '正在查找', type: 'load', timeout: 0 });
+                    var index = 0;
+                    var emptyFolderCount = 0;
+                    var recursive = function () { return __awaiter(_this, void 0, void 0, function () {
+                        var $currentLi;
+                        return __generator(this, function (_a) {
+                            switch (_a.label) {
+                                case 0:
+                                    if (index >= $li.length) {
+                                        if (emptyFolderCount === 0) {
+                                            MinMessage.Show({
+                                                text: '当前文件目录下没有空文件夹',
+                                                type: 'war',
+                                                timeout: 2e3
+                                            });
+                                        }
+                                        else {
+                                            MinMessage.Hide();
+                                            setTimeout(function () {
+                                                $('li[menu="delete"]:visible').trigger('click');
+                                            }, 2e2);
+                                        }
+                                        return [2];
+                                    }
+                                    if (!(index > G.get('delay.minCount') && index % delayIndex === 0)) return [3, 2];
+                                    delayIndex = random.apply(void 0, randomDelayIndex);
+                                    return [4, delay()];
+                                case 1:
+                                    _a.sent();
+                                    _a.label = 2;
+                                case 2:
+                                    $currentLi = $li.eq(index);
+                                    handleGetDetail($currentLi.attr('area_id'), $currentLi.attr('cate_id')).then(function (_a) {
+                                        var size = _a.size;
+                                        if (size === '0B') {
+                                            emptyFolderCount++;
+                                            $currentLi.find('.checkbox').trigger('click');
+                                        }
+                                        index++;
+                                        $currentLi.find('.file-size span').text(size);
+                                        return recursive();
+                                    });
+                                    return [2];
+                            }
+                        });
+                    }); };
+                    recursive();
+                }
+            },
+            'folder-sha1': {
+                GMConfigKey: 'folderRepeat.addBtn',
+                btnHtml: "<a href=\"javascript:;\" class=\"button btn-line mm-quick-operation\" type=\"folder-sha1\" title=\"\u53EA\u67E5\u8BE2\u5E76\u6807\u8BB0\u5F53\u524D\u76EE\u5F55\u4E2D\u7684\u91CD\u590D\u6587\u4EF6\"><span>\u5355\u6587\u4EF6\u5939\u67E5\u91CD</span></a>",
+                func: function () {
+                    if (top.USER_INFO.IS_VIP) {
+                        return $.alertTip('该功能仅 VIP 用户可用');
+                    }
+                    var $loadAllFile = $('[menu="load_all_file"]:visible');
+                    var isMore = !!$loadAllFile.length;
+                    var isSelected = G.get('folderRepeat.select');
+                    var checkSha1 = function () {
+                        var SHA1_MAP = {};
+                        var $li = $('li[file_type="1"]');
+                        if (!$li.length) {
+                            return $.alertTip('当前文件夹下没有可查重文件');
+                        }
+                        var repeatCount = 0;
+                        $li.each(function () {
+                            var sha1 = $(this).attr('sha1');
+                            if (!SHA1_MAP[sha1]) {
+                                SHA1_MAP[sha1] = 1;
+                            }
+                            else {
+                                repeatCount++;
+                                $(this).addClass('active');
+                                if (isSelected) {
+                                    $(this).find('.checkbox').trigger('click');
+                                }
+                            }
+                        });
+                        var options = { text: '', type: '', timeout: 2e3 };
+                        if (repeatCount) {
+                            options.text = "\u5F53\u524D\u6587\u4EF6\u5939\u4E0B\u5171 ".concat(repeatCount, " \u4E2A\u91CD\u590D\u6587\u4EF6");
+                            options.type = 'suc';
+                        }
+                        else {
+                            options.text = '当前文件夹下没有重复文件';
+                            options.type = 'war';
+                        }
+                        MinMessage.Show(options);
+                    };
+                    if (isMore) {
+                        observerChildList(function (_, _a) {
+                            var addedNodes = _a.addedNodes;
+                            addedNodes.length && checkSha1();
+                        }, '#js_data_list .list-contents > ul');
+                        $loadAllFile.trigger('click');
                     }
                     else {
-                        repeatCount++;
-                        $(this).addClass('active');
-                        if (isSelected) {
-                            $(this).find('.checkbox').trigger('click');
-                        }
+                        checkSha1();
                     }
-                });
-                var options = { text: '', type: '', timeout: 2e3 };
-                if (repeatCount) {
-                    options.text = "\u5F53\u524D\u6587\u4EF6\u5939\u4E0B\u5171 ".concat(repeatCount, " \u4E2A\u91CD\u590D\u6587\u4EF6");
-                    options.type = 'suc';
                 }
-                else {
-                    options.text = '当前文件夹下没有重复文件';
-                    options.type = 'war';
+            },
+            transcoded: {
+                GMConfigKey: 'transcoded.addBtn',
+                btnHtml: "<a href=\"javascript:;\" class=\"button btn-line mm-quick-operation\" type=\"transcoded\" title=\"\u5BF9\u5F53\u524D\u9875\u7801\u76EE\u5F55\u4E2D\u6240\u6709\u672A\u8F6C\u7801\u6587\u4EF6\u8FDB\u884C\u52A0\u901F\u8F6C\u7801\uFF08115\u4F1A\u81EA\u52A8\u5C06\u7B2C\u4E00\u4E2A\u6587\u4EF6\u8FDB\u884C\u8F6C\u7801\uFF09\"><span>\u52A0\u901F\u8F6C\u7801</span></a>",
+                func: function () {
+                    var pickCode = $('li[file_type="1"][iv=1]:first').attr('pick_code');
+                    if (!pickCode) {
+                        return $.alertTip("\u5F53\u524D\u76EE\u5F55\u4E0B\u6CA1\u6709\u9700\u8981\u8F6C\u7801\u7684\u6587\u4EF6\u54E6");
+                    }
+                    top.UA$.ajax({
+                        url: '//webapi.115.com/files/is_transcoded',
+                        type: 'POST',
+                        data: {
+                            pick_code: pickCode
+                        },
+                        dataType: 'json',
+                        success: function (_a) {
+                            var state = _a.state, data = _a.data, count = _a.count;
+                            if (state && data && data.length) {
+                                $.confirm({
+                                    text: "\u6B64\u76EE\u5F55\u4E0B\u8FD8\u6709 ".concat(count, " \u4E2A\u6587\u4EF6\u672A\u8F6C\u7801\uFF0C").concat(data.length < count
+                                        ? "\u662F\u5426\u63D0\u4EA4 VIP \u52A0\u901F\uFF1F<br/>\uFF08\u5355\u6B21\u63D0\u4EA4\u6700\u591A\u53EF\u52A0\u901F50\u4E2A\uFF09"
+                                        : "\u662F\u5426\u5168\u90E8\u63D0\u4EA4 VIP \u52A0\u901F\uFF1F"),
+                                    confirm_text: '全部加速',
+                                    callback: function (e) {
+                                        e &&
+                                            top.UA$.ajax({
+                                                url: '//115.com/?ctl=play&ac=batch_push',
+                                                data: {
+                                                    file_ids: data.join(',')
+                                                },
+                                                dataType: 'json',
+                                                type: 'POST',
+                                                xhrFields: { withCredentials: !0 },
+                                                success: function (t) {
+                                                    t.state || $.alertTip(t.message || t.error);
+                                                }
+                                            });
+                                    }
+                                });
+                            }
+                            else {
+                                $.alertTip("\u5F53\u524D\u76EE\u5F55\u4E0B\u6CA1\u6709\u9700\u8981\u8F6C\u7801\u7684\u6587\u4EF6\u54E6");
+                            }
+                        }
+                    });
                 }
-                MinMessage.Show(options);
-            };
-            if (isMore) {
-                observerChildList(function (_, _a) {
-                    var addedNodes = _a.addedNodes;
-                    addedNodes.length && checkSha1();
-                }, '#js_data_list .list-contents > ul');
-                $loadAllFile.trigger('click');
-            }
-            else {
-                checkSha1();
             }
         };
+        if (!$('.mm-quick-operation').length) {
+            var operations_1 = '';
+            Object.keys(QUIC_OPERATION_CONFIGS).forEach(function (key) {
+                var data = QUIC_OPERATION_CONFIGS[key];
+                if (G.get(data.GMConfigKey)) {
+                    operations_1 += data.btnHtml;
+                }
+            });
+            $('#js_path_add_dir').after(operations_1);
+        }
         $(document).on('click', '.mm-quick-operation', function () {
             var type = $(this).attr('type');
-            if (!type) {
+            if (!type || !QUIC_OPERATION_CONFIGS[type]) {
                 return;
             }
-            switch (type) {
-                case 'auto-sha1':
-                    return handleAutoCheckSha1();
-                case 'delete-empty':
-                    return handleDeleteEmptyFolder();
-                case 'folder-sha1':
-                    return handleFolderCheckSha1();
-            }
+            QUIC_OPERATION_CONFIGS[type].func();
         });
     };
     var initRepeatSha1List = function () {
