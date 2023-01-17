@@ -2,7 +2,7 @@
 // ==UserScript==
 // @name          115小助手
 // @namespace     https://github.com/maomao1996/tampermonkey-scripts
-// @version       1.7.0
+// @version       1.7.1
 // @description   顶部链接任务入口还原、SHA1 快速查重（新页面打开）、SHA1 自动查重、删除空文件夹、一键搜（快捷搜索）、SHA1 查重列表支持选中第一个元素和悬浮菜单展示、搜索列表支持悬浮菜单展示、列表显示文件 SHA1 信息、关闭侧边栏、悬浮菜单移除图标、悬浮菜单支持新标签页打开文件夹、加速转码
 // @icon      	  https://115.com/favicon.ico
 // @author        maomao1996
@@ -751,9 +751,6 @@
         GMConfigKey: 'folderRepeat.addBtn',
         btnHtml: /*html*/ `<a href="javascript:;" class="button btn-line mm-quick-operation" type="folder-sha1" title="只查询并标记当前目录中的重复文件"><span>单文件夹查重</span></a>`,
         func() {
-          if (top.USER_INFO.IS_VIP) {
-            return $.alertTip('该功能仅 VIP 用户可用')
-          }
           const $loadAllFile = $('[menu="load_all_file"]:visible')
           const isMore = !!$loadAllFile.length
           const isSelected = G.get('folderRepeat.select')
@@ -810,6 +807,9 @@
         GMConfigKey: 'transcoded.addBtn',
         btnHtml: /*html*/ `<a href="javascript:;" class="button btn-line mm-quick-operation" type="transcoded" title="对当前页码目录中所有未转码文件进行加速转码（115会自动将第一个文件进行转码）"><span>加速转码</span></a>`,
         func() {
+          if (top.USER_INFO.IS_VIP !== 1) {
+            return $.alertTip('该功能仅 115 VIP 用户可用')
+          }
           const pickCode = $('li[file_type="1"][iv=1]:first').attr('pick_code')
           if (!pickCode) {
             return $.alertTip(`当前目录下没有需要转码的文件哦`)
