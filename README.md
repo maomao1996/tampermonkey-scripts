@@ -11,7 +11,6 @@
   - [imooc-helper 慕课小助手](#imooc-helper-慕课小助手)
     - [🔧 插件功能](#-插件功能-1)
     - [💽 安装插件](#-安装插件-1)
-    - [效果图](#效果图)
   - [tieba-helper 贴吧小助手](#tieba-helper-贴吧小助手)
     - [🔧 插件功能](#-插件功能-2)
     - [💽 安装插件](#-安装插件-2)
@@ -19,6 +18,7 @@
     - [🔧 插件功能](#-插件功能-3)
     - [💽 安装插件](#-安装插件-3)
   - [color-restore 黑白网页颜色还原](#color-restore-黑白网页颜色还原)
+    - [🔧 插件功能](#-插件功能-4)
     - [💽 安装插件](#-安装插件-4)
   - [油猴 API 文档](#油猴-api-文档)
   - [赞助](#赞助)
@@ -37,6 +37,9 @@
 - [x] 单文件夹查重
 - [x] 列表显示文件 SHA1 信息
 - [x] 侧边栏关闭
+- [x] 悬浮菜单支持新标签页打开文件夹
+- [x] 悬浮菜单移除图标
+- [x] 加速转码
 
 ### 💽 安装插件
 
@@ -52,13 +55,6 @@
 ### 💽 安装插件
 
 [imooc-helper 插件安装地址](https://greasyfork.org/zh-CN/scripts/396378)
-
-### 效果图
-
-<details>
-  <summary>展开查看</summary>
-  <img src="https://cdn.jsdelivr.net/gh/maomao1996/tampermonkey-scripts/screenshots/imooc-helper/1.png" width="520" alt="慕课网" align="center" />
-</details>
 
 ## tieba-helper 贴吧小助手
 
@@ -88,7 +84,13 @@
 
 ## color-restore 黑白网页颜色还原
 
-移除灰色滤镜，还你一个五彩斑斓的网页
+移除灰度滤镜，还你一个五彩斑斓的网页
+
+### 🔧 插件功能
+
+- [x] 移除使用 `CSS filter` 的所有站点
+- [x] 只移除 `grayscale` （灰度）滤镜，保留其他滤镜
+- [x] 支持移除动态元素的灰度滤镜（支持 SPA 应用）
 
 ### 💽 安装插件
 
