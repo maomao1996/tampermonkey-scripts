@@ -2,7 +2,7 @@
 // ==UserScript==
 // @name          115小助手
 // @namespace     https://github.com/maomao1996/tampermonkey-scripts
-// @version       1.7.0
+// @version       1.7.1
 // @description   顶部链接任务入口还原、SHA1 快速查重（新页面打开）、SHA1 自动查重、删除空文件夹、一键搜（快捷搜索）、SHA1 查重列表支持选中第一个元素和悬浮菜单展示、搜索列表支持悬浮菜单展示、列表显示文件 SHA1 信息、关闭侧边栏、悬浮菜单移除图标、悬浮菜单支持新标签页打开文件夹、加速转码
 // @icon      	  https://115.com/favicon.ico
 // @author        maomao1996
@@ -626,9 +626,6 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
                 GMConfigKey: 'folderRepeat.addBtn',
                 btnHtml: "<a href=\"javascript:;\" class=\"button btn-line mm-quick-operation\" type=\"folder-sha1\" title=\"\u53EA\u67E5\u8BE2\u5E76\u6807\u8BB0\u5F53\u524D\u76EE\u5F55\u4E2D\u7684\u91CD\u590D\u6587\u4EF6\"><span>\u5355\u6587\u4EF6\u5939\u67E5\u91CD</span></a>",
                 func: function () {
-                    if (top.USER_INFO.IS_VIP) {
-                        return $.alertTip('该功能仅 VIP 用户可用');
-                    }
                     var $loadAllFile = $('[menu="load_all_file"]:visible');
                     var isMore = !!$loadAllFile.length;
                     var isSelected = G.get('folderRepeat.select');
@@ -679,6 +676,9 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
                 GMConfigKey: 'transcoded.addBtn',
                 btnHtml: "<a href=\"javascript:;\" class=\"button btn-line mm-quick-operation\" type=\"transcoded\" title=\"\u5BF9\u5F53\u524D\u9875\u7801\u76EE\u5F55\u4E2D\u6240\u6709\u672A\u8F6C\u7801\u6587\u4EF6\u8FDB\u884C\u52A0\u901F\u8F6C\u7801\uFF08115\u4F1A\u81EA\u52A8\u5C06\u7B2C\u4E00\u4E2A\u6587\u4EF6\u8FDB\u884C\u8F6C\u7801\uFF09\"><span>\u52A0\u901F\u8F6C\u7801</span></a>",
                 func: function () {
+                    if (top.USER_INFO.IS_VIP !== 1) {
+                        return $.alertTip('该功能仅 115 VIP 用户可用');
+                    }
                     var pickCode = $('li[file_type="1"][iv=1]:first').attr('pick_code');
                     if (!pickCode) {
                         return $.alertTip("\u5F53\u524D\u76EE\u5F55\u4E0B\u6CA1\u6709\u9700\u8981\u8F6C\u7801\u7684\u6587\u4EF6\u54E6");
