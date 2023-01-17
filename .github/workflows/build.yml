@@ -17,10 +17,21 @@ jobs:
         uses: actions/checkout@v2
         with:
           persist-credentials: false
-      # 编译代码
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 7
+
+      - name: Set node version to 16
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16
+          cache: 'pnpm'
+
       - name: Run Script
-        run: yarn && yarn build
-      # 提交代码
+        run: pnpm install && pnpm build
+
       - name: Push
         uses: github-actions-x/commit@v2.9
         with:
