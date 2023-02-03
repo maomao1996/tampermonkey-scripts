@@ -1,76 +1,56 @@
 /*!
 // ==UserScript==
-// @name         跳转链接修复
+// @name         跳转链接修复（外链直达）
 // @namespace    https://github.com/maomao1996/tampermonkey-scripts
-// @version      0.4.1
-// @description  为知乎、微信、掘金拦截页面增加跳转按钮（支持3秒后自动跳转）
+// @version      1.0.0
+// @description  修复跳转链接为站外直链，免去拦截页面点击步骤可直达站外；拦截页面自动跳转；已适配知乎、掘金、码云、简书、CSDN
 // @author       maomao1996
-// @include      *://weixin110.qq.com/cgi-bin/mmspamsupport-bin/*
-// @include      *://link.zhihu.com/*
-// @include      *://link.juejin.cn/*
-// @grant        GM_notification
-// @require		   https://cdn.jsdelivr.net/npm/jquery@v3.4.1
+// @include      *
+// @grant        none
 // ==/UserScript==
 */
 ;
 (function () {
     'use strict';
-    function getQueryStringArgs(url) {
-        if (url && url.indexOf('?') > -1) {
-            var arr = url.split('?');
-            var qs = arr[1];
-            var args = {};
-            var items = qs.length ? qs.split('&') : [];
-            for (var i = 0; i < items.length; i++) {
-                var item = items[i].split('=');
-                var key = decodeURIComponent(item[0]);
-                var value = decodeURIComponent(item[1]);
-                if (key.length) {
-                    args[key] = value;
-                }
-            }
-            return args;
-        }
-        return {};
-    }
-    var urlCharRE = /^(https|http):\/\/[A-Za-z0-9-_]+\.[A-Za-z0-9]+[\/=\?%\-&_~`@[\]\':+!]*([^<>\"\"])*$/;
-    var params = getQueryStringArgs(location.search);
-    var target = '';
-    var url = '';
-    var insertion = 'after';
-    function initParams(u, t, cls) {
-        if (cls === void 0) { cls = 'button'; }
-        url = u;
-        target = t;
-        return ('<a href="' + u + '" class="' + cls + '">继续访问 (3 秒后自动跳转)</a>');
-    }
-    var fns = {
-        'weixin110.qq.com': function () {
-            return initParams($('.weui-msg .weui-msg__desc')
-                .text()
-                .replace(/非微信官方网页，请确认是否继续访问。/, ''), '.weui-msg', 'weui-btn_cell weui-btn_cell-primary');
+    var SITES = {
+        'www.zhihu.com': {
+            selector: '[href*="link.zhihu.com/?target="]'
         },
-        'link.zhihu.com': function () {
-            insertion = 'html';
-            return initParams(params.target, '.actions');
+        'link.zhihu.com': {
+            type: 'autojump'
         },
-        'link.juejin.cn': function () {
-            url = params.target;
-            $('button.btn').text('继续访问 (3 秒后自动跳转)');
+        'juejin.cn': {
+            selector: '[href*="link.juejin.cn?target="]'
+        },
+        'link.juejin.cn': {
+            type: 'autojump'
+        },
+        'gitee.com': {
+            selector: '[href*="gitee.com/link?target="]'
+        },
+        'www.jianshu.com': {
+            selector: '[href*="links.jianshu.com/go?to="]',
+            separator: 'go?to='
+        },
+        'link.csdn.net': {
+            type: 'autojump'
         }
     };
-    var fn = fns[location.hostname];
-    var html = typeof fn === 'function' ? fn() : '';
-    var isUrl = urlCharRE.test(url);
-    if (isUrl) {
-        if (target && html) {
-            $(target)[insertion](html);
-        }
-        setTimeout(function () {
-            location.href = url;
-        }, 3000);
+    var hostname = location.hostname;
+    var _a = SITES[hostname], selector = _a.selector, _b = _a.type, type = _b === void 0 ? 'transform' : _b, _c = _a.separator, separator = _c === void 0 ? '?target=' : _c, _d = _a.query, query = _d === void 0 ? 'target' : _d;
+    if (type === 'autojump') {
+        var originUrl = new URLSearchParams(location.search).get(query);
+        originUrl && location.replace(originUrl);
     }
-    else {
-        GM_notification({ timeout: 2e3, text: '获取 url 失败！' });
+    else if (selector) {
+        var observer = new MutationObserver(function () {
+            document.querySelectorAll(selector).forEach(function (node) {
+                var _a = node.href.split(separator), originUrl = _a[1];
+                if (originUrl) {
+                    node.href = decodeURIComponent(originUrl);
+                }
+            });
+        });
+        observer.observe(document.body, { childList: true, subtree: true });
     }
 })();
