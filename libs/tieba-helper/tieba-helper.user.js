@@ -2,7 +2,7 @@
 // ==UserScript==
 // @name          贴吧小助手
 // @namespace     https://github.com/maomao1996/tampermonkey-scripts
-// @version       0.6.2
+// @version       0.6.3
 // @description   自动顶贴回复(立即回复)、移除贴吧列表和帖子内部广告、移除碍眼模块
 // @icon          https://tb1.bdstatic.com/tb/favicon.ico
 // @author        maomao1996
@@ -239,8 +239,11 @@
         }
         styles += hideHtmlElement([
             '.bus-top-activity-wrap',
+            '#thread_list > div:not([data-tid])',
             '.fengchao-wrap-feed',
-            '[id="pagelet_frs-aside/pagelet/fengchao_ad"]'
+            '[id="pagelet_frs-aside/pagelet/aside_ad"]',
+            '#aside-ad',
+            '#branding_ads'
         ]);
     }
     GM_addStyle(styles);
