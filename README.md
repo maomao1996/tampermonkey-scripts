@@ -10,8 +10,9 @@
   - [tieba-helper 贴吧小助手](#tieba-helper-贴吧小助手)
   - [access-link 跳转链接修复（外链直达）](#access-link-跳转链接修复外链直达)
   - [color-restore 黑白网页颜色还原](#color-restore-黑白网页颜色还原)
+  - [kill-watermark 杀死水印](#kill-watermark-杀死水印)
   - [油猴 API 文档](#油猴-api-文档)
-  - [赞助](#赞助)
+  - [支持作者](#支持作者)
 
 ## 115-helper 115 小助手
 
@@ -80,11 +81,22 @@
 - [x] 只移除 `grayscale` （灰度）滤镜，保留其他滤镜
 - [x] 支持移除动态元素的灰度滤镜（支持 SPA 应用）
 
+## kill-watermark 杀死水印
+
+[安装 kill-watermark](https://greasyfork.org/zh-CN/scripts/459646)
+
+杀死水印（移除烦人的水印，还你一个干净清爽的页面）
+
+> **已适配站点**
+
+- [x] 稿定设计
+- [x] 腾讯视频
+
 ## 油猴 API 文档
 
 <https://www.tampermonkey.net/documentation.php?ext=dhdg&locale=zh>
 
-## 赞助
+## 支持作者
 
 如果你喜欢 `tampermonkey-scripts` 中的插件，并且它对你确实有帮助，欢迎给我打赏一杯咖啡哈~
 
