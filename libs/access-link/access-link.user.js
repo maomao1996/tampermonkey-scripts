@@ -2,8 +2,8 @@
 // ==UserScript==
 // @name         跳转链接修复（外链直达）
 // @namespace    https://github.com/maomao1996/tampermonkey-scripts
-// @version      1.1.0
-// @description  修复跳转链接为站外直链，免去拦截页面点击步骤可直达站外；拦截页面自动跳转；已适配百度、知乎、知乎专栏、掘金、码云、开源中国、简书、CSDN、力扣（Leetcode）、语雀、微信开放社区、微博
+// @version      1.2.0
+// @description  修复跳转链接为站外直链（移除重定向），免去拦截页面点击步骤可直达站外；拦截页面自动跳转；已适配百度搜索、360 搜索、知乎、知乎专栏、掘金、码云、开源中国、简书、CSDN、力扣（Leetcode）、语雀、微信开放社区、微博、牛客网、豆瓣
 // @author       maomao1996
 // @include      *
 // @grant        none
@@ -18,7 +18,16 @@
                 selector: '#content_left > div',
                 customTransform: function (node) {
                     var originUrl = node.getAttribute('mu');
-                    originUrl && node.querySelector('a').setAttribute('href', originUrl);
+                    originUrl && node.querySelectorAll('a').forEach(function (a) { return a.setAttribute('href', originUrl); });
+                }
+            }
+        },
+        'so.com': {
+            transform: {
+                selector: '.result li.res-list',
+                customTransform: function (node) {
+                    var originUrl = node.querySelector('a[data-mdurl]').getAttribute('data-mdurl');
+                    originUrl && node.querySelectorAll('a').forEach(function (a) { return a.setAttribute('href', originUrl); });
                 }
             }
         },
@@ -51,6 +60,12 @@
                 query: 'url'
             }
         },
+        'my.oschina.net': {
+            transform: {
+                selector: '[href*="oschina.net/action/GoToLink?url="]',
+                separator: 'GoToLink?url='
+            }
+        },
         'jianshu.com': {
             transform: {
                 selector: '[href*="links.jianshu.com/go?to="]',
@@ -75,10 +90,25 @@
         },
         'weibo.cn': {
             autojump: { validator: function () { return pathname === '/sinaurl'; }, query: 'u' }
+        },
+        'nowcoder.com': {
+            transform: {
+                selector: [
+                    '[href*="gw-c.nowcoder.com/api/sparta/jump/link?link="]',
+                    '[href*="hd.nowcoder.com/link.html?target="]'
+                ].join(','),
+                separator: /\?target|link\=/
+            }
+        },
+        'hd.nowcoder.com': {
+            autojump: {}
+        },
+        'douban.com': {
+            autojump: { validator: function () { return pathname === '/link2/'; }, query: 'url' }
         }
     };
     var hostname = location.hostname, pathname = location.pathname;
-    var _a = SITES[hostname.replace(/^www\./, '')], transform = _a.transform, autojump = _a.autojump;
+    var _a = SITES[hostname.replace(/^www\./, '')] || {}, transform = _a.transform, autojump = _a.autojump;
     if (transform) {
         var selector_1 = transform.selector, _b = transform.separator, separator_1 = _b === void 0 ? '?target=' : _b, _c = transform.customTransform, customTransform_1 = _c === void 0 ? function (node) {
             var _a = node.href.split(separator_1), originUrl = _a[1];
