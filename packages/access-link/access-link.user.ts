@@ -2,8 +2,8 @@
 // ==UserScript==
 // @name         跳转链接修复（外链直达）
 // @namespace    https://github.com/maomao1996/tampermonkey-scripts
-// @version      1.1.0
-// @description  修复跳转链接为站外直链，免去拦截页面点击步骤可直达站外；拦截页面自动跳转；已适配百度、知乎、知乎专栏、掘金、码云、开源中国、简书、CSDN、力扣（Leetcode）、语雀、微信开放社区、微博
+// @version      1.2.0
+// @description  修复跳转链接为站外直链（移除重定向），免去拦截页面点击步骤可直达站外；拦截页面自动跳转；已适配百度搜索、360 搜索、知乎、知乎专栏、掘金、码云、开源中国、简书、CSDN、力扣（Leetcode）、语雀、微信开放社区、微博、牛客网、豆瓣
 // @author       maomao1996
 // @include      *
 // @grant        none
@@ -18,7 +18,7 @@
       /* 转换链接 */
       transform?: {
         selector: string
-        separator?: string
+        separator?: string | RegExp
         customTransform?(node: HTMLElement): void
       }
       /* 自动跳转 */
@@ -39,7 +39,20 @@
         selector: '#content_left > div',
         customTransform(node) {
           const originUrl = node.getAttribute('mu')
-          originUrl && node.querySelector('a').setAttribute('href', originUrl)
+          originUrl && node.querySelectorAll('a').forEach((a) => a.setAttribute('href', originUrl))
+        }
+      }
+    },
+    /**
+     * 360 搜索
+     * https://www.so.com/s?q=mmPlayer
+     */
+    'so.com': {
+      transform: {
+        selector: '.result li.res-list',
+        customTransform(node) {
+          const originUrl = node.querySelector('a[data-mdurl]').getAttribute('data-mdurl')
+          originUrl && node.querySelectorAll('a').forEach((a) => a.setAttribute('href', originUrl))
         }
       }
     },
@@ -83,6 +96,7 @@
      * 开源中国
      * https://www.oschina.net/news/226616/fish-shell-be-rewritten-rust
      * https://www.oschina.net/action/GoToLink?url=https%3A%2F%2Fgithub.com%2Fmaomao1996%2Ftampermonkey-scripts
+     * https://my.oschina.net/dingdayu/blog/867680
      */
     'oschina.net': {
       transform: {
@@ -92,6 +106,12 @@
       autojump: {
         validator: () => pathname === '/action/GoToLink',
         query: 'url'
+      }
+    },
+    'my.oschina.net': {
+      transform: {
+        selector: '[href*="oschina.net/action/GoToLink?url="]',
+        separator: 'GoToLink?url='
       }
     },
     /**
@@ -146,11 +166,40 @@
      */
     'weibo.cn': {
       autojump: { validator: () => pathname === '/sinaurl', query: 'u' }
+    },
+    /**
+     * 牛客网
+     * https://www.nowcoder.com/interview/center
+     * https://www.nowcoder.com/discuss/451073381044064256
+     * https://gw-c.nowcoder.com/api/sparta/jump/link?link=https%3A%2F%2Ffe-mm.com
+     * https://hd.nowcoder.com/link.html?target=https%3A%2F%2Ffe-mm.com
+     */
+    'nowcoder.com': {
+      transform: {
+        selector: [
+          // 列表描述信息
+          '[href*="gw-c.nowcoder.com/api/sparta/jump/link?link="]',
+          // 详情和弹窗
+          '[href*="hd.nowcoder.com/link.html?target="]'
+        ].join(','),
+        separator: /\?target|link\=/
+      }
+    },
+    'hd.nowcoder.com': {
+      autojump: {}
+    },
+    /**
+     * 豆瓣
+     * https://www.douban.com/link2/?url=https%3A%2F%2Fgithub.com%2Fmaomao1996%2Ftampermonkey-scripts
+     * https://www.douban.com/link2/?url=https%3A%2F%2Ffe-mm.com
+     */
+    'douban.com': {
+      autojump: { validator: () => pathname === '/link2/', query: 'url' }
     }
   }
 
   const { hostname, pathname } = location
-  const { transform, autojump } = SITES[hostname.replace(/^www\./, '')]
+  const { transform, autojump } = SITES[hostname.replace(/^www\./, '')] || {}
   /* 转换链接 */
   if (transform) {
     const {
