@@ -2,8 +2,8 @@
 // ==UserScript==
 // @name         跳转链接修复（外链直达）
 // @namespace    https://github.com/maomao1996/tampermonkey-scripts
-// @version      1.2.0
-// @description  修复跳转链接为站外直链（移除重定向），免去拦截页面点击步骤可直达站外；拦截页面自动跳转；已适配百度搜索、360 搜索、知乎、知乎专栏、掘金、码云、开源中国、简书、CSDN、力扣（Leetcode）、语雀、微信开放社区、微博、牛客网、豆瓣
+// @version      1.3.0
+// @description  修复跳转链接为站外直链（移除重定向），免去拦截页面点击步骤可直达站外；拦截页面自动跳转；已适配百度搜索、360 搜索、知乎、知乎专栏、掘金、码云、开源中国、简书、CSDN、力扣（Leetcode）、语雀、微信开放社区、微博、牛客网、豆瓣、YouTube
 // @author       maomao1996
 // @include      *
 // @grant        none
@@ -15,15 +15,22 @@
 
   type Sites = {
     [key: string]: {
-      /* 转换链接 */
+      /** 转换链接 */
       transform?: {
+        /** 链接选择器 */
         selector: string
+        /** 查询 url 的键名 */
+        query?: string
+        /** 分隔符 */
         separator?: string | RegExp
+        /** 自定义转换规则 */
         customTransform?(node: HTMLElement): void
       }
-      /* 自动跳转 */
+      /** 自动跳转 */
       autojump?: {
+        /** 跳转前的验证器 */
         validator?(): boolean
+        /** 查询 url 的键名 */
         query?: string
       }
     }
@@ -195,6 +202,16 @@
      */
     'douban.com': {
       autojump: { validator: () => pathname === '/link2/', query: 'url' }
+    },
+    /**
+     * YouTube
+     * https://www.youtube.com/watch?v=c5vGiaTudPc
+     */
+    'youtube.com': {
+      transform: {
+        selector: '[href*="youtube.com/redirect?event="]',
+        query: 'q'
+      }
     }
   }
 
@@ -204,9 +221,13 @@
   if (transform) {
     const {
       selector,
+      query,
       separator = '?target=',
       customTransform = (node: HTMLAnchorElement) => {
-        const [, originUrl] = node.href.split(separator)
+        const originUrl = query
+          ? new URL(node.href).searchParams.get(query)
+          : node.href.split(separator)[1]
+
         if (originUrl) {
           node.href = decodeURIComponent(originUrl)
         }
