@@ -2,7 +2,7 @@
 // ==UserScript==
 // @name         跳转链接修复（外链直达）
 // @namespace    https://github.com/maomao1996/tampermonkey-scripts
-// @version      1.3.0
+// @version      1.3.1
 // @description  修复跳转链接为站外直链（移除重定向），免去拦截页面点击步骤可直达站外；拦截页面自动跳转；已适配百度搜索、360 搜索、知乎、知乎专栏、掘金、码云、开源中国、简书、CSDN、力扣（Leetcode）、语雀、微信开放社区、微博、牛客网、豆瓣、YouTube
 // @author       maomao1996
 // @include      *
@@ -12,6 +12,19 @@
 
 ;(() => {
   'use strict'
+
+  /** 工具方法 - 验证 URL 是否有效 */
+  const isUrl = (string: unknown): boolean => {
+    if (typeof string !== 'string') {
+      return false
+    }
+    try {
+      new URL(string)
+      return true
+    } catch (err) {
+      return false
+    }
+  }
 
   type Sites = {
     [key: string]: {
@@ -40,26 +53,37 @@
     /**
      * 百度
      * https://www.baidu.com/s?wd=mmPlayer
+     * https://www.baidu.com/s?wd=es6
+     * https://www.baidu.com/s?wd=武林外传
      */
     'baidu.com': {
       transform: {
-        selector: '#content_left > div',
+        selector: '#content_left > [mu]',
         customTransform(node) {
           const originUrl = node.getAttribute('mu')
-          originUrl && node.querySelectorAll('a').forEach((a) => a.setAttribute('href', originUrl))
+          if (isUrl(originUrl) && !originUrl.includes('nourl.ubs.baidu.com')) {
+            node.querySelectorAll('a[href]').forEach((a) => a.setAttribute('href', originUrl))
+          }
         }
       }
     },
     /**
      * 360 搜索
      * https://www.so.com/s?q=mmPlayer
+     * https://www.so.com/s?q=es6
+     * https://www.so.com/s?q=武林外传
      */
     'so.com': {
       transform: {
         selector: '.result li.res-list',
         customTransform(node) {
-          const originUrl = node.querySelector('a[data-mdurl]').getAttribute('data-mdurl')
-          originUrl && node.querySelectorAll('a').forEach((a) => a.setAttribute('href', originUrl))
+          const originUrl = node.querySelector('a[data-mdurl]')?.getAttribute('data-mdurl')
+          if (isUrl(originUrl)) {
+            const isVideo = node.querySelector('[data-mohe-type="svideo_top"]')
+            node
+              .querySelectorAll(isVideo ? 'h3 a' : 'a')
+              .forEach((a) => a.setAttribute('href', originUrl))
+          }
         }
       }
     },
@@ -246,6 +270,6 @@
       return
     }
     const originUrl = new URLSearchParams(location.search).get(query)
-    originUrl && location.replace(originUrl)
+    isUrl(originUrl) && location.replace(originUrl)
   }
 })()
