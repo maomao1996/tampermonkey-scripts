@@ -2,7 +2,7 @@
 // ==UserScript==
 // @name         跳转链接修复（外链直达）
 // @namespace    https://github.com/maomao1996/tampermonkey-scripts
-// @version      1.3.0
+// @version      1.3.1
 // @description  修复跳转链接为站外直链（移除重定向），免去拦截页面点击步骤可直达站外；拦截页面自动跳转；已适配百度搜索、360 搜索、知乎、知乎专栏、掘金、码云、开源中国、简书、CSDN、力扣（Leetcode）、语雀、微信开放社区、微博、牛客网、豆瓣、YouTube
 // @author       maomao1996
 // @include      *
@@ -12,13 +12,27 @@
 ;
 (function () {
     'use strict';
+    var isUrl = function (string) {
+        if (typeof string !== 'string') {
+            return false;
+        }
+        try {
+            new URL(string);
+            return true;
+        }
+        catch (err) {
+            return false;
+        }
+    };
     var SITES = {
         'baidu.com': {
             transform: {
-                selector: '#content_left > div',
+                selector: '#content_left > [mu]',
                 customTransform: function (node) {
                     var originUrl = node.getAttribute('mu');
-                    originUrl && node.querySelectorAll('a').forEach(function (a) { return a.setAttribute('href', originUrl); });
+                    if (isUrl(originUrl) && !originUrl.includes('nourl.ubs.baidu.com')) {
+                        node.querySelectorAll('a[href]').forEach(function (a) { return a.setAttribute('href', originUrl); });
+                    }
                 }
             }
         },
@@ -26,8 +40,14 @@
             transform: {
                 selector: '.result li.res-list',
                 customTransform: function (node) {
-                    var originUrl = node.querySelector('a[data-mdurl]').getAttribute('data-mdurl');
-                    originUrl && node.querySelectorAll('a').forEach(function (a) { return a.setAttribute('href', originUrl); });
+                    var _a;
+                    var originUrl = (_a = node.querySelector('a[data-mdurl]')) === null || _a === void 0 ? void 0 : _a.getAttribute('data-mdurl');
+                    if (isUrl(originUrl)) {
+                        var isVideo = node.querySelector('[data-mohe-type="svideo_top"]');
+                        node
+                            .querySelectorAll(isVideo ? 'h3 a' : 'a')
+                            .forEach(function (a) { return a.setAttribute('href', originUrl); });
+                    }
                 }
             }
         },
@@ -135,6 +155,6 @@
             return;
         }
         var originUrl = new URLSearchParams(location.search).get(query);
-        originUrl && location.replace(originUrl);
+        isUrl(originUrl) && location.replace(originUrl);
     }
 })();
