@@ -1,9 +1,9 @@
 /*!
 // ==UserScript==
-// @name         跳转链接修复（外链直达）
+// @name         跳转链接修复（移除重定向外链直达）
 // @namespace    https://github.com/maomao1996/tampermonkey-scripts
-// @version      1.3.1
-// @description  修复跳转链接为站外直链（移除重定向），免去拦截页面点击步骤可直达站外；拦截页面自动跳转；已适配百度搜索、360 搜索、知乎、知乎专栏、掘金、码云、开源中国、简书、CSDN、力扣（Leetcode）、语雀、微信开放社区、微博、牛客网、豆瓣、YouTube
+// @version      1.4.0
+// @description  修复跳转链接为站外直链（移除重定向），免去拦截页面点击步骤可直达站外；拦截页面自动跳转；已适配百度搜索、360 搜索、知乎、知乎专栏、掘金、码云、开源中国、简书、CSDN、力扣（Leetcode）、语雀、微信开放社区、微博、牛客网、豆瓣、YouTube、花瓣网、51CTO 博客
 // @author       maomao1996
 // @include      *
 // @grant        none
@@ -43,8 +43,12 @@
       autojump?: {
         /** 跳转前的验证器 */
         validator?(): boolean
+        /** 点击跳转的选择器  */
+        click?: string
         /** 查询 url 的键名 */
         query?: string
+        /** 分隔符 */
+        separator?: string | RegExp
       }
     }
   }
@@ -236,6 +240,26 @@
         selector: '[href*="youtube.com/redirect?event="]',
         query: 'q'
       }
+    },
+    /**
+     * 花瓣网
+     * https://huaban.com/pins/5108412769
+     */
+    'huaban.com': {
+      autojump: {
+        validator: () => pathname === '/go',
+        click: '.wrapper button.ant-btn'
+      }
+    },
+    /**
+     * 51CTO 博客
+     * https://blog.51cto.com/bashrc/6042107
+     */
+    'blog.51cto.com': {
+      autojump: {
+        validator: () => pathname === '/transfer',
+        separator: '?'
+      }
     }
   }
 
@@ -265,11 +289,16 @@
 
   /* 自动跳转 */
   if (autojump) {
-    const { validator, query = 'target' } = autojump
+    const { validator, click, separator, query = 'target' } = autojump
     if (validator && !validator()) {
       return
     }
-    const originUrl = new URLSearchParams(location.search).get(query)
+    if (click && document.querySelector(click)) {
+      return (document.querySelector(click) as HTMLElement).click()
+    }
+    const originUrl = separator
+      ? location.search.split(separator)[1]
+      : new URLSearchParams(location.search).get(query)
     isUrl(originUrl) && location.replace(originUrl)
   }
 })()
