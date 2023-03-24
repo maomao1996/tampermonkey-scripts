@@ -2,7 +2,7 @@
 // ==UserScript==
 // @name          ChatGPT小助手
 // @namespace     https://github.com/maomao1996/tampermonkey-scripts
-// @version       0.0.2
+// @version       0.0.3
 // @description   ChatGPT 小助手可以为你带来更好的使用体验：添加快捷指令（prompts）
 // @author        maomao1996
 // @match         *://chat.openai.com/*
@@ -12,6 +12,10 @@
 
 ;(() => {
   'use strict'
+
+  if (document.querySelector('#chatgptHelper')) {
+    return
+  }
 
   const SHORTCUTS = [
     [
@@ -484,47 +488,45 @@
     ]
   ]
 
-  if (!document.querySelector('#chatgptHelper')) {
-    const rootEle = document.createElement('div')
+  const rootEle = document.createElement('div')
 
-    rootEle.id = 'chatgptHelper'
-    rootEle.innerHTML = /* html */ `<div id="chatgptHelperOpen" class="fixed top-1/2 right-1 z-50 p-3 rounded-md transition-colors duration-200 text-white cursor-pointer border border-white/20 bg-gray-900 hover:bg-gray-700 -translate-y-1/2">快<br>捷<br>指<br>令</div><div id="chatgptHelperMain" class="fixed top-0 right-0 bottom-0 z-50 flex flex-col px-3 w-96 text-gray-100 bg-gray-900" style="transform: translateX(100%); transition: transform 0.2s;"><div class="py-4 pl-3"><a href="https://github.com/maomao1996/tampermonkey-scripts" target="_blank">ChatGPT 小助手（快捷指令）</a></div><ul class="flex flex-1 overflow-y-auto py-4 border-y border-white/20 text-sm" style="flex-wrap: wrap">${SHORTCUTS.map(
-      ([label, value]) =>
-        `<li class="mr-2 mb-2 py-1 px-3 rounded-md hover:bg-gray-700 cursor-pointer" data-value="${encodeURI(
-          value
-        )}">${label}</li>`
-    ).join(
-      ''
-    )}</ul><div class="flex items-center py-4"><div id="chatgptHelperClose" class="py-2 px-3 rounded-md cursor-pointer hover:bg-gray-700">关闭</div><div class="flex-1 pr-3 text-right text-sm"><a class="py-2 px-3 rounded-md hover:bg-gray-700" href="https://gitee.com/fe-mm/picture/raw/main/sponsor/sponsor.jpg" target="_blank">犒劳作者</a></div></div></div></div>`
+  rootEle.id = 'chatgptHelper'
+  rootEle.innerHTML = /* html */ `<div id="chatgptHelperOpen" class="fixed top-1/2 right-1 z-50 p-3 rounded-md transition-colors duration-200 text-white cursor-pointer border border-white/20 bg-gray-900 hover:bg-gray-700 -translate-y-1/2">快<br>捷<br>指<br>令</div><div id="chatgptHelperMain" class="fixed top-0 right-0 bottom-0 z-50 flex flex-col px-3 w-96 text-gray-100 bg-gray-900" style="transform: translateX(100%); transition: transform 0.2s;"><div class="py-4 pl-3"><a href="https://github.com/maomao1996/tampermonkey-scripts" target="_blank">ChatGPT 小助手（快捷指令）</a></div><ul class="flex flex-1 overflow-y-auto py-4 border-y border-white/20 text-sm" style="flex-wrap: wrap">${SHORTCUTS.map(
+    ([label, value]) =>
+      `<li class="mr-2 mb-2 py-1 px-3 rounded-md hover:bg-gray-700 cursor-pointer" data-value="${encodeURI(
+        value
+      )}">${label}</li>`
+  ).join(
+    ''
+  )}</ul><div class="flex items-center py-4"><div id="chatgptHelperClose" class="py-2 px-3 rounded-md cursor-pointer hover:bg-gray-700">关闭</div><div class="flex-1 pr-3 text-right text-sm"><a class="py-2 px-3 rounded-md hover:bg-gray-700" href="https://gitee.com/fe-mm/picture/raw/main/sponsor/sponsor.jpg" target="_blank">犒劳作者</a></div></div></div></div>`
 
-    rootEle.querySelector('ul').addEventListener('click', (event: Event) => {
-      const target = event.target as HTMLLIElement
-      if (target.nodeName === 'LI') {
-        const value = target.getAttribute('data-value')
+  rootEle.querySelector('ul').addEventListener('click', (event: Event) => {
+    const target = event.target as HTMLLIElement
+    if (target.nodeName === 'LI') {
+      const value = target.getAttribute('data-value')
 
-        if (value) {
-          const textareaEle = document.querySelector('textarea')
+      if (value) {
+        const textareaEle = document.querySelector('textarea')
 
-          textareaEle.value = decodeURI(value)
-          textareaEle.dispatchEvent(new Event('input', { bubbles: true }))
+        textareaEle.value = decodeURI(value)
+        textareaEle.dispatchEvent(new Event('input', { bubbles: true }))
 
-          setTimeout(() => {
-            textareaEle.focus()
-          }, 1e3)
-        }
+        setTimeout(() => {
+          textareaEle.focus()
+        }, 1e3)
       }
+    }
 
-      chatgptHelperMain.style.transform = 'translateX(100%)'
-    })
+    chatgptHelperMain.style.transform = 'translateX(100%)'
+  })
 
-    document.body.appendChild(rootEle)
+  document.body.appendChild(rootEle)
 
-    const chatgptHelperMain = document.querySelector<HTMLDivElement>('#chatgptHelperMain')
-    document.querySelector('#chatgpt-helper-open').addEventListener('click', () => {
-      chatgptHelperMain.style.transform = 'translateX(0)'
-    })
-    document.querySelector('#chatgptHelperClose').addEventListener('click', () => {
-      chatgptHelperMain.style.transform = 'translateX(100%)'
-    })
-  }
+  const chatgptHelperMain = document.querySelector<HTMLDivElement>('#chatgptHelperMain')
+  document.querySelector('#chatgptHelperOpen').addEventListener('click', () => {
+    chatgptHelperMain.style.transform = 'translateX(0)'
+  })
+  document.querySelector('#chatgptHelperClose').addEventListener('click', () => {
+    chatgptHelperMain.style.transform = 'translateX(100%)'
+  })
 })()
