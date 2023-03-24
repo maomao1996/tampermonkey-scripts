@@ -2,7 +2,7 @@
 // ==UserScript==
 // @name          ChatGPT小助手
 // @namespace     https://github.com/maomao1996/tampermonkey-scripts
-// @version       0.0.1
+// @version       0.0.2
 // @description   ChatGPT 小助手可以为你带来更好的使用体验：添加快捷指令（prompts）
 // @author        maomao1996
 // @match         *://chat.openai.com/*
@@ -484,7 +484,7 @@
     ]
   ]
 
-  if (document.querySelector('#chatgptHelper')) {
+  if (!document.querySelector('#chatgptHelper')) {
     const rootEle = document.createElement('div')
 
     rootEle.id = 'chatgptHelper'
