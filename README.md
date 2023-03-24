@@ -5,6 +5,7 @@
 使用前请确保已先安装 [Tampermonkey](https://chrome.google.com/webstore/detail/tampermonkey/dhdgffkkebhmkfjojejmpbldmpobfkfo)
 
 - [tampermonkey-scripts](#tampermonkey-scripts)
+  - [chatgpt-helper ChatGPT 小助手](#chatgpt-helper-chatgpt-小助手)
   - [115-helper 115 小助手](#115-helper-115-小助手)
   - [imooc-helper 慕课小助手](#imooc-helper-慕课小助手)
   - [tieba-helper 贴吧小助手](#tieba-helper-贴吧小助手)
@@ -14,7 +15,23 @@
   - [油猴 API 文档](#油猴-api-文档)
   - [支持作者](#支持作者)
 
+## chatgpt-helper ChatGPT 小助手
+
+![chatgpt-helper](https://img.shields.io/greasyfork/v/462447)
+
+[安装 chatgpt-helper](https://greasyfork.org/zh-CN/scripts/462447)
+
+> 暂时只适配了官方站点（如有其他热门站点欢迎反馈）
+
+- 添加快捷指令（prompts）
+
+**感谢**：
+
+指令来源于 [ChatGPT 中文调教指南](https://github.com/PlexPt/awesome-chatgpt-prompts-zh)
+
 ## 115-helper 115 小助手
+
+![115-helper](https://img.shields.io/greasyfork/v/413142)
 
 [安装 115-helper](https://greasyfork.org/zh-CN/scripts/413142)
 
@@ -34,12 +51,16 @@
 
 ## imooc-helper 慕课小助手
 
+![imooc-helper](https://img.shields.io/greasyfork/v/396378)
+
 [安装 imooc-helper](https://greasyfork.org/zh-CN/scripts/396378)
 
 - [x] 问答区快速查看问答详情
 - [x] 自动播放下一节视频
 
 ## tieba-helper 贴吧小助手
+
+![tieba-helper](https://img.shields.io/greasyfork/v/419001)
 
 [安装 tieba-helper](https://greasyfork.org/zh-CN/scripts/419001)
 
@@ -51,6 +72,8 @@
 
 ## access-link 跳转链接修复（外链直达）
 
+![access-link](https://img.shields.io/greasyfork/v/395970)
+
 [安装 access-link](https://greasyfork.org/zh-CN/scripts/395970)
 
 - [x] 修复跳转链接为站外直链，免去拦截页面点击步骤可直达站外
@@ -58,7 +81,8 @@
 
 > **已适配站点**
 
-- [x] 百度
+- [x] 百度搜索
+- [x] 360 搜索
 - [x] 知乎
 - [x] 知乎专栏
 - [x] 掘金
@@ -70,8 +94,13 @@
 - [x] 语雀
 - [x] 微信开放社区
 - [x] 微博
+- [x] 牛客网
+- [x] 豆瓣
+- [x] 少数派
 
 ## color-restore 黑白网页颜色还原
+
+![color-restore](https://img.shields.io/greasyfork/v/455825)
 
 [安装 color-restore](https://greasyfork.org/zh-CN/scripts/455825)
 
@@ -82,6 +111,8 @@
 - [x] 支持移除动态元素的灰度滤镜（支持 SPA 应用）
 
 ## kill-watermark 杀死水印
+
+![kill-watermark](https://img.shields.io/greasyfork/v/459646)
 
 [安装 kill-watermark](https://greasyfork.org/zh-CN/scripts/459646)
 

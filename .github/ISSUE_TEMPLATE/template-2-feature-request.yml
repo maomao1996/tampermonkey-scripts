@@ -8,6 +8,7 @@ body:
       label: 脚本
       description: 使用的脚本是？
       options:
+        - chatgpt-helper ChatGPT 小助手
         - 115-helper 115 小助手
         - imooc-helper 慕课小助手
         - tieba-helper 贴吧小助手
