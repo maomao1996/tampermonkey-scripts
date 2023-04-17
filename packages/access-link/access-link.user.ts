@@ -2,8 +2,8 @@
 // ==UserScript==
 // @name         跳转链接修复（移除重定向外链直达）
 // @namespace    https://github.com/maomao1996/tampermonkey-scripts
-// @version      1.6.0
-// @description  修复跳转链接为站外直链（移除重定向），免去拦截页面点击步骤可直达站外；拦截页面自动跳转；已适配百度搜索、360 搜索、知乎、知乎专栏、掘金、码云、开源中国、简书、CSDN、力扣（Leetcode）、语雀、微信开放社区、微博、牛客网、豆瓣、YouTube、花瓣网、51CTO 博客、少数派、QQ 邮箱
+// @version      1.7.0
+// @description  修复跳转链接为站外直链（移除重定向），免去拦截页面点击步骤可直达站外；拦截页面自动跳转；已适配百度搜索、360 搜索、知乎、知乎专栏、掘金、码云、开源中国、简书、CSDN、力扣（Leetcode）、语雀、微信开放社区、微博、牛客网、豆瓣、YouTube、花瓣网、51CTO 博客、少数派、PC 版 QQ、QQ 邮箱
 // @author       maomao1996
 // @include      *
 // @grant        none
@@ -280,6 +280,16 @@
         validator: () => pathname === '/cgi-bin/readtemplate',
         click: 'div.c-footer a.c-footer-a1',
         query: 'gourl'
+      }
+    },
+    /**
+     * PC 版 QQ
+     * https://c.pc.qq.com/middlem.html?pfurl=https%3A%2F%2Fgithub.com%2Fmaomao1996%2Ftampermonkey-scripts
+     */
+    'c.pc.qq.com': {
+      autojump: {
+        validator: () => pathname === '/middlem.html',
+        query: 'pfurl'
       }
     }
   }
