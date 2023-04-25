@@ -2,8 +2,8 @@
 // ==UserScript==
 // @name         跳转链接修复（移除重定向外链直达）
 // @namespace    https://github.com/maomao1996/tampermonkey-scripts
-// @version      1.7.1
-// @description  修复跳转链接为站外直链（移除重定向），免去拦截页面点击步骤可直达站外；拦截页面自动跳转；已适配百度搜索、360 搜索、知乎、知乎专栏、掘金、码云、开源中国、简书、CSDN、力扣（Leetcode）、语雀、微信开放社区、微博、牛客网、豆瓣、YouTube、花瓣网、51CTO 博客、少数派、PC 版 QQ、QQ 邮箱
+// @version      1.8.0
+// @description  修复跳转链接为站外直链（移除重定向），免去拦截页面点击步骤可直达站外；拦截页面自动跳转；已适配百度搜索、360 搜索、知乎、知乎专栏、掘金、码云、开源中国、简书、CSDN、力扣（Leetcode）、语雀、微信开放社区、微博、牛客网、豆瓣、YouTube、花瓣网、51CTO 博客、少数派、PC 版 QQ、QQ 邮箱、微信
 // @author       maomao1996
 // @include      *
 // @grant        none
@@ -160,6 +160,14 @@
                 validator: function () { return pathname === '/middlem.html'; },
                 query: 'pfurl'
             }
+        },
+        'weixin110.qq.com': {
+            autojump: {
+                validator: function () { return pathname === '/cgi-bin/mmspamsupport-bin/newredirectconfirmcgi'; },
+                getOriginUrl: function () {
+                    return document.querySelector('.weui-msg p.weui-msg__desc').textContent;
+                }
+            }
         }
     };
     var hostname = location.hostname, pathname = location.pathname;
@@ -179,9 +187,13 @@
         observer.observe(document.body, { childList: true, subtree: true });
     }
     if (autojump) {
-        var validator = autojump.validator, click = autojump.click, separator = autojump.separator, _d = autojump.query, query = _d === void 0 ? 'target' : _d;
+        var validator = autojump.validator, getOriginUrl = autojump.getOriginUrl, click = autojump.click, separator = autojump.separator, _d = autojump.query, query = _d === void 0 ? 'target' : _d;
         if (validator && !validator()) {
             return;
+        }
+        if (typeof getOriginUrl === 'function') {
+            var originUrl_1 = getOriginUrl();
+            return isUrl(originUrl_1) && location.replace(originUrl_1);
         }
         if (click && document.querySelector(click)) {
             return document.querySelector(click).click();
