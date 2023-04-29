@@ -2,7 +2,7 @@
 // ==UserScript==
 // @name         跳转链接修复（移除重定向外链直达）
 // @namespace    https://github.com/maomao1996/tampermonkey-scripts
-// @version      1.8.0
+// @version      1.8.1
 // @description  修复跳转链接为站外直链（移除重定向），免去拦截页面点击步骤可直达站外；拦截页面自动跳转；已适配百度搜索、360 搜索、知乎、知乎专栏、掘金、码云、开源中国、简书、CSDN、力扣（Leetcode）、语雀、微信开放社区、微博、牛客网、豆瓣、YouTube、花瓣网、51CTO 博客、少数派、PC 版 QQ、QQ 邮箱、微信
 // @author       maomao1996
 // @include      *
@@ -301,13 +301,17 @@
     },
     /**
      * 微信
+     * 无跳转按钮
      * https://weixin110.qq.com/cgi-bin/mmspamsupport-bin/newredirectconfirmcgi?midpagecode=e2faa0ee03e19e6efecf869b7f9ca0522c68d4854df6fbfa04376e4e5a76fb68051eaf8948fea39790a1cd7df4a64a26&bancode=89d3568371f79149d12922166481d28a6da76ea9bfcc9e3cdaf42f8eede7f10b
+     * 有跳转按钮
+     * https://weixin110.qq.com/cgi-bin/mmspamsupport-bin/newredirectconfirmcgi?midpagecode=67377a2adb44e17c1b0adb24b5cf2bd12c34d9b56e06ccd6dd4c291b423b5bd7ff6dabdc557c992f5d60d892b6870f746be01453da89926dc75a288449d95675652f50f2dd8613b8c0898d7a4ff50cd6a8a6ee035f2795d1b47d37610595ed36a216a3feb0e7c625dacf7da1ce72ca0d27ebe250ee33a4fffe70fb8109ce95d1&bancode=bd156c95934ef352f7478771d0b739c7d1d06b36a093e9591226c240bbb591b4
      */
     'weixin110.qq.com': {
       autojump: {
         validator: () => pathname === '/cgi-bin/mmspamsupport-bin/newredirectconfirmcgi',
         getOriginUrl: () =>
-          document.querySelector<HTMLElement>('.weui-msg p.weui-msg__desc').textContent
+          document.querySelector<HTMLElement>('.weui-msg p.weui-msg__desc').textContent,
+        click: 'a.weui-btn.weui-btn_default'
       }
     }
   }
@@ -344,7 +348,7 @@
     }
     if (typeof getOriginUrl === 'function') {
       const originUrl = getOriginUrl()
-      return isUrl(originUrl) && location.replace(originUrl)
+      if (isUrl(originUrl)) return location.replace(originUrl)
     }
     if (click && document.querySelector(click)) {
       return (document.querySelector(click) as HTMLElement).click()
