@@ -2,8 +2,8 @@
 // ==UserScript==
 // @name         跳转链接修复（移除重定向外链直达）
 // @namespace    https://github.com/maomao1996/tampermonkey-scripts
-// @version      1.10.0
-// @description  修复跳转链接为站外直链（移除重定向），免去拦截页面点击步骤可直达站外；拦截页面自动跳转；已适配百度搜索、360 搜索、知乎、知乎专栏、掘金、码云、开源中国、简书、CSDN、力扣（Leetcode）、语雀、微信开放社区、微博、牛客网、豆瓣、YouTube、花瓣网、51CTO 博客、少数派、PC 版 QQ、QQ 邮箱、微信、腾讯文档、爱发电
+// @version      1.11.0
+// @description  修复跳转链接为站外直链（移除重定向），免去拦截页面点击步骤可直达站外；拦截页面自动跳转；已适配百度搜索、360 搜索、知乎、知乎专栏、掘金、码云、开源中国、简书、CSDN、力扣（Leetcode）、语雀、微信开放社区、微博、牛客网、豆瓣、YouTube、花瓣网、51CTO 博客、少数派、PC 版 QQ、QQ 邮箱、微信、腾讯文档、腾讯云开发者社区、爱发电
 // @author       maomao1996
 // @include      *
 // @grant        none
@@ -324,6 +324,17 @@
         validator: () => pathname === '/scenario/link.html',
         // click: '.url-tips .url-click',
         query: 'url'
+      }
+    },
+    /**
+     * 腾讯云开发者社区
+     * https://cloud.tencent.com/developer/article/1829900
+     * https://cloud.tencent.com/developer/tools/blog-entry?target=https%3A%2F%2Fgithub.com%2Fmaomao1996%2Ftampermonkey-scripts
+     */
+    'cloud.tencent.com': {
+      autojump: {
+        validator: () => pathname === '/developer/tools/blog-entry'
+        // click: '.mod-external-link-btn a'
       }
     },
     /**
