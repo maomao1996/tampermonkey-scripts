@@ -2,8 +2,8 @@
 // ==UserScript==
 // @name         跳转链接修复（移除重定向外链直达）
 // @namespace    https://github.com/maomao1996/tampermonkey-scripts
-// @version      1.11.0
-// @description  修复跳转链接为站外直链（移除重定向），免去拦截页面点击步骤可直达站外；拦截页面自动跳转；已适配百度搜索、360 搜索、知乎、知乎专栏、掘金、码云、开源中国、简书、CSDN、力扣（Leetcode）、语雀、微信开放社区、微博、牛客网、豆瓣、YouTube、花瓣网、51CTO 博客、少数派、PC 版 QQ、QQ 邮箱、微信、腾讯文档、腾讯云开发者社区、爱发电
+// @version      1.12.0
+// @description  修复跳转链接为站外直链（移除重定向），免去拦截页面点击步骤可直达站外；拦截页面自动跳转；已适配百度搜索、360 搜索、知乎、知乎专栏、掘金、码云、开源中国、简书、CSDN、力扣（Leetcode）、语雀、微信开放社区、微博、牛客网、豆瓣、YouTube、花瓣网、51CTO 博客、少数派、PC 版 QQ、QQ 邮箱、微信、腾讯文档、腾讯云开发者社区、爱发电、pixiv
 // @author       maomao1996
 // @include      *
 // @grant        none
@@ -184,6 +184,17 @@
         'afdian.net': {
             transform: { selector: '[href*="afdian.net/link?target="]' },
             autojump: { validator: function () { return pathname === '/link'; } }
+        },
+        'pixiv.net': {
+            transform: {
+                selector: '[href*="/jump.php?"]',
+                separator: '?'
+            },
+            autojump: {
+                validator: function () { return pathname === '/jump.php'; },
+                click: 'a[href]',
+                separator: '?'
+            }
         }
     };
     var hostname = location.hostname, pathname = location.pathname;
@@ -215,9 +226,9 @@
         if (click && document.querySelector(click)) {
             return document.querySelector(click).click();
         }
-        var originUrl = separator
+        var originUrl = decodeURIComponent(separator
             ? location.search.split(separator)[1]
-            : new URLSearchParams(location.search).get(query);
+            : new URLSearchParams(location.search).get(query));
         isUrl(originUrl) && location.replace(originUrl);
     }
 })();
