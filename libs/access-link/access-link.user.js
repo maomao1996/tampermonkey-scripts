@@ -108,6 +108,9 @@
                 query: 'href'
             }
         },
+        'weibo.com': {
+            transform: { selector: '[href*="weibo.cn/sinaurl?u="]', query: 'u' }
+        },
         'weibo.cn': {
             autojump: { validator: function () { return pathname === '/sinaurl'; }, query: 'u' }
         },
