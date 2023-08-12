@@ -203,9 +203,13 @@
     },
     /**
      * 微博
+     * https://weibo.com/u/1400854834
      * https://weibo.cn/sinaurl?u=https%3A%2F%2Fgithub.com%2Fmaomao1996%2Ftampermonkey-scripts
      * https://weibo.cn/sinaurl?u=https%3A%2F%2Ffe-mm.com
      */
+    'weibo.com': {
+      transform: { selector: '[href*="weibo.cn/sinaurl?u="]', query: 'u' }
+    },
     'weibo.cn': {
       autojump: { validator: () => pathname === '/sinaurl', query: 'u' }
     },
