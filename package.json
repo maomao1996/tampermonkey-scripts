@@ -1,6 +1,7 @@
 {
   "name": "tampermonkey-scripts",
   "version": "1.0.0",
+  "private": true,
   "description": "油猴插件库",
   "homepage": "https://github.com/maomao1996/tampermonkey-scripts#readme",
   "bugs": {
@@ -12,6 +13,7 @@
   },
   "license": "MIT",
   "author": "maomao <1714487678@qq.com>",
+  "type": "module",
   "scripts": {
     "build": "rimraf libs && tsc",
     "c": "node scripts/create.js",
