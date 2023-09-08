@@ -18,7 +18,7 @@
    */
   const observerChildList = (
     callback: (observer: MutationObserver, mutation: MutationRecord) => void,
-    selector: Node
+    selector: Node,
   ): MutationObserver => {
     const observer = new MutationObserver(([mutation]) => {
       mutation.type === 'childList' && callback(observer, mutation)
@@ -28,24 +28,17 @@
   }
 
   const { style } = document.documentElement
-  const filterKey = [
-    'filter',
-    '-webkit-filter',
-    '-moz-filter',
-    '-ms-filter',
-    '-o-filter'
-  ].find((prop) => typeof style[prop] === 'string')
+  const filterKey = ['filter', '-webkit-filter', '-moz-filter', '-ms-filter', '-o-filter'].find(
+    (prop) => typeof style[prop] === 'string',
+  )
 
   const restore = () => {
-    Array.prototype.forEach.call(
-      document.querySelectorAll('*'),
-      (el: HTMLElement) => {
-        const filterValue = document.defaultView.getComputedStyle(el)[filterKey]
-        if (filterValue.match('grayscale')) {
-          el.style.setProperty(filterKey, 'initial', 'important')
-        }
+    Array.prototype.forEach.call(document.querySelectorAll('*'), (el: HTMLElement) => {
+      const filterValue = document.defaultView.getComputedStyle(el)[filterKey]
+      if (filterValue.match('grayscale')) {
+        el.style.setProperty(filterKey, 'initial', 'important')
       }
-    )
+    })
   }
   observerChildList(restore, document.querySelector('body'))
   restore()

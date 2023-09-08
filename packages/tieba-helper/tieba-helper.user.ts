@@ -26,7 +26,7 @@
     frameStyle: {
       zIndex: '1314520',
       width: '400px',
-      height: '520px'
+      height: '520px',
     },
     fields: {
       removeAd: {
@@ -34,13 +34,13 @@
         label: '移除列表和详情页广告',
         labelPos: 'right',
         type: 'checkbox',
-        default: true
+        default: true,
       },
       removeEyesore: {
         label: '移除碍眼模块（app下载、勋章、送礼物、游戏按钮等）',
         labelPos: 'right',
         type: 'checkbox',
-        default: true
+        default: true,
       },
       responseTimeMin: {
         section: ['', '自动顶贴相关设置'],
@@ -48,38 +48,38 @@
         labelPos: 'left',
         type: 'unsigned int',
         min: 1,
-        default: 1
+        default: 1,
       },
       responseTimeMax: {
         label: '顶帖最大间隔（分钟）',
         type: 'unsigned int',
         min: 1,
-        default: 30
+        default: 30,
       },
       responseMode: {
         label: '顶贴模式选择',
         labelPos: 'left',
         type: 'select',
         options: ['自定义模式', '网络语句模式'],
-        default: '网络语句模式'
+        default: '网络语句模式',
       },
       customResponseText: {
         label: '自定义模式回复内容（请按如下格式输入）',
         type: 'textarea',
         default: `沙发
 顶
-顶~`
-      }
+顶~`,
+      },
     },
     events: {
       save() {
         location.reload()
         G.close()
-      }
-    }
+      },
+    },
   }
 
-  type GetKey = keyof typeof GMConfigOptions['fields']
+  type GetKey = keyof (typeof GMConfigOptions)['fields']
   interface MGMConfig extends GMConfig {
     get(key: GetKey): any
   }
@@ -102,7 +102,7 @@
     TEXT: G.get('customResponseText').split('\n'),
     // ===== 非配置项 =====
     // 定时器
-    timer: null
+    timer: null,
   }
 
   const { pathname } = location
@@ -122,10 +122,7 @@
     if (floating) {
       const rand = Math.random()
       const randLength = `${rand}`.length - 1
-      return Math.min(
-        lower + rand * (upper - lower + parseFloat(`1e-${randLength}`)),
-        upper
-      )
+      return Math.min(lower + rand * (upper - lower + parseFloat(`1e-${randLength}`)), upper)
     }
     return lower + Math.floor(Math.random() * (upper - lower + 1))
   }
@@ -151,7 +148,7 @@
   let styles = [
     '.core_title.core_title_theme_bright, .core_title.core_title_theme_bright .quick_reply {display: flex;}',
     '.core_title.core_title_theme_bright .core_title_txt {flex: 1}',
-    '.core_title.core_title_theme_bright .btn-small {margin-left: 10px;padding-top: 3px;padding-bottom: 3px;}'
+    '.core_title.core_title_theme_bright .btn-small {margin-left: 10px;padding-top: 3px;padding-bottom: 3px;}',
   ].join('')
 
   /** 移除碍眼模块 */
@@ -178,7 +175,7 @@
       // 送TA礼物按钮
       '.post-foot-send-gift-btn',
       // 开通超级会员发贴6倍经验
-      '.tb_poster_placeholder'
+      '.tb_poster_placeholder',
     ])
   }
 
@@ -195,12 +192,12 @@
         $('#quick_reply').after(
           `<a id="ding_btn" rel="noopener" class="btn-sub btn-small">${
             CONFIG.STATUS ? '关闭' : '开启'
-          }自动顶贴回复</a>`
+          }自动顶贴回复</a>`,
         )
       }
       if (CONFIG.STATUS && !$('#reply_immediate').length) {
         $('#ding_btn').after(
-          '<a id="reply_immediate" rel="noopener" class="btn-sub btn-small">立即回复(重新计时)</a>'
+          '<a id="reply_immediate" rel="noopener" class="btn-sub btn-small">立即回复(重新计时)</a>',
         )
       }
     }
@@ -216,7 +213,7 @@
       })
     })
     responseObserver.observe($titleBtn[0], {
-      childList: true
+      childList: true,
     })
 
     // 执行顶贴回复
@@ -229,7 +226,7 @@
         // 输入框选择器
         editor: '#j_editor_for_container',
         // 提交按钮选择器
-        submit: '.lzl_panel_submit.j_lzl_p_sb'
+        submit: '.lzl_panel_submit.j_lzl_p_sb',
       }
 
       try {
@@ -279,7 +276,7 @@
           },
           error(_jqXHR, textStatus, errorThrown) {
             console.error(textStatus, errorThrown)
-          }
+          },
         })
       }
       // 自定义模式
@@ -348,7 +345,7 @@
       // 右侧广告
       '[id="pagelet_frs-aside/pagelet/aside_ad"]',
       '#aside-ad',
-      '#branding_ads'
+      '#branding_ads',
     ])
   }
   GM_addStyle(styles)

@@ -59,7 +59,7 @@ function GM_configInit(config, args) {
           "#GM_config input[type='number'] { width: 60px; }",
           '#GM_config .nav-tabs { margin: 10 0}',
           '#GM_config .nav-tabs > div { display: inline; padding: 3px 10px; }',
-          '#pv-prefs .section_header_holder { padding-left: 10px; }'
+          '#pv-prefs .section_header_holder { padding-left: 10px; }',
         ].join('\n') + '\n',
       skin_tab:
         [
@@ -75,7 +75,7 @@ function GM_configInit(config, args) {
           '#GM_config .nav-tabs { margin: 20 0}',
           '#GM_config .nav-tabs > div { font-size: 15px; color: #999; cursor: pointer; padding: 10px 20px; }',
           '#GM_config .nav-tabs > .active { cursor: default; color: #FFF; }',
-          '#GM_config .nav-tabs > div:hover { color: #FFF; }'
+          '#GM_config .nav-tabs > div:hover { color: #FFF; }',
         ].join('\n') + '\n',
       skin_1:
         [
@@ -87,18 +87,14 @@ function GM_configInit(config, args) {
           '#GM_config .field_label { display: inline-block; font-weight: normal; }',
           '#GM_config { padding: 20px 30px; margin: 0; }',
           '#GM_config .config_header { margin-bottom: 10px; }',
-          '#GM_config div.config_var { padding: 7px 0; }'
+          '#GM_config div.config_var { padding: 7px 0; }',
         ].join('\n') + '\n',
       basicPrefix: 'GM_config',
-      stylish: ''
+      stylish: '',
     }
   }
 
-  if (
-    args.length == 1 &&
-    typeof args[0].id == 'string' &&
-    typeof args[0].appendChild != 'function'
-  )
+  if (args.length == 1 && typeof args[0].id == 'string' && typeof args[0].appendChild != 'function')
     var settings = args[0]
   else {
     // Provide backwards-compatibility with argument style intialization
@@ -136,8 +132,7 @@ function GM_configInit(config, args) {
           break
         case 'string': // could be custom CSS or the title string
           // if (/[\w\.]+\s*\{\s*[\w-]+\s*:\s*\w+[\s|\S]*\}/.test(arg))
-          if (/[\w\.]+\s*\{\s*[\w-]+\s*:[\s|\S]*\}/.test(arg))
-            settings.css = arg
+          if (/[\w\.]+\s*\{\s*[\w-]+\s*:[\s|\S]*\}/.test(arg)) settings.css = arg
           else if (arg) settings.title = arg
           break
       }
@@ -171,8 +166,7 @@ function GM_configInit(config, args) {
   // Set the event callbacks
   if (settings.events) {
     var events = settings.events
-    for (var e in events)
-      config['on' + e.charAt(0).toUpperCase() + e.slice(1)] = events[e]
+    for (var e in events) config['on' + e.charAt(0).toUpperCase() + e.slice(1)] = events[e]
   }
 
   // Create the fields
@@ -186,12 +180,7 @@ function GM_configInit(config, args) {
 
       // for each field definition create a field object
       if (field)
-        config.fields[id] = new GM_configField(
-          field,
-          stored[id],
-          id,
-          customTypes[field.type]
-        )
+        config.fields[id] = new GM_configField(field, stored[id], id, customTypes[field.type])
       else if (config.fields[id]) delete config.fields[id]
     }
   }
@@ -200,7 +189,7 @@ function GM_configInit(config, args) {
   if (config.id != config.css.basicPrefix) {
     config.css.basic = config.css.basic.replace(
       new RegExp('#' + config.css.basicPrefix, 'gm'),
-      '#' + config.id
+      '#' + config.id,
     )
     config.css.basicPrefix = config.id
   }
@@ -218,8 +207,7 @@ GM_configStruct.prototype = {
     // Die if the menu is already open on this page
     // You can have multiple instances but you can't open the same instance twice
     var match = top.document.getElementById(this.id)
-    if (match && (match.tagName == 'IFRAME' || match.childNodes.length > 0))
-      return
+    if (match && (match.tagName == 'IFRAME' || match.childNodes.length > 0)) return
 
     // Sometimes "this" gets overwritten so create an alias
     var config = this
@@ -235,8 +223,8 @@ GM_configStruct.prototype = {
       head.appendChild(
         create('style', {
           type: 'text/css',
-          textContent: config.css.basic + config.css.stylish
-        })
+          textContent: config.css.basic + config.css.stylish,
+        }),
       )
 
       // Add header and title
@@ -245,10 +233,10 @@ GM_configStruct.prototype = {
           'div',
           {
             id: configId + '_header',
-            className: 'config_header block center'
+            className: 'config_header block center',
           },
-          config.title
-        )
+          config.title,
+        ),
       )
 
       // Append elements
@@ -266,14 +254,11 @@ GM_configStruct.prototype = {
           section = bodyWrapper.appendChild(
             create('div', {
               className: 'section_header_holder',
-              id: configId + '_section_' + secNum
-            })
+              id: configId + '_section_' + secNum,
+            }),
           )
 
-          if (
-            Object.prototype.toString.call(settings.section) !==
-            '[object Array]'
-          )
+          if (Object.prototype.toString.call(settings.section) !== '[object Array]')
             settings.section = [settings.section]
 
           if (settings.section[0])
@@ -282,10 +267,10 @@ GM_configStruct.prototype = {
                 'div',
                 {
                   className: 'section_header center',
-                  id: configId + '_section_header_' + secNum
+                  id: configId + '_section_header_' + secNum,
                 },
-                settings.section[0]
-              )
+                settings.section[0],
+              ),
             )
 
           if (settings.section[1])
@@ -294,10 +279,10 @@ GM_configStruct.prototype = {
                 'p',
                 {
                   className: 'section_desc center',
-                  id: configId + '_section_desc_' + secNum
+                  id: configId + '_section_desc_' + secNum,
                 },
-                settings.section[1]
-              )
+                settings.section[1],
+              ),
             )
           ++secNum
         }
@@ -309,7 +294,7 @@ GM_configStruct.prototype = {
 
         // Create field elements and append to current section
         ;(lastParentNode || section).appendChild(
-          (field.wrapper = field.toNode(configId, lastParentNode))
+          (field.wrapper = field.toNode(configId, lastParentNode)),
         )
 
         if (settings.line == 'start') {
@@ -334,7 +319,7 @@ GM_configStruct.prototype = {
             onclick: function () {
               config.save()
               config.close()
-            }
+            },
           }),
 
           create('button', {
@@ -344,7 +329,7 @@ GM_configStruct.prototype = {
             className: 'saveclose_buttons',
             onclick: function () {
               config.close()
-            }
+            },
           }),
 
           create(
@@ -361,10 +346,10 @@ GM_configStruct.prototype = {
               onclick: function (e) {
                 e.preventDefault()
                 config.reset()
-              }
-            })
-          )
-        )
+              },
+            }),
+          ),
+        ),
       )
 
       body.appendChild(bodyWrapper) // Paint everything to window at once
@@ -375,7 +360,7 @@ GM_configStruct.prototype = {
       config.onOpen(
         config.frame.contentDocument || config.frame.ownerDocument,
         config.frame.contentWindow || window,
-        config.frame
+        config.frame,
       )
 
       if (config.isTabs) {
@@ -388,7 +373,7 @@ GM_configStruct.prototype = {
         function () {
           config.close()
         },
-        false
+        false,
       )
 
       // Now that everything is loaded, make it visible
@@ -407,17 +392,14 @@ GM_configStruct.prototype = {
     if (this.frame) {
       this.frame.id = this.id // Allows for prefixing styles with the config id
       this.frame.setAttribute('style', defaultStyle)
-      buildConfigWin(
-        this.frame,
-        this.frame.ownerDocument.getElementsByTagName('head')[0]
-      )
+      buildConfigWin(this.frame, this.frame.ownerDocument.getElementsByTagName('head')[0])
     } else {
       // Create frame
       top.document.body.appendChild(
         (this.frame = this.create('iframe', {
           id: this.id,
-          style: defaultStyle
-        }))
+          style: defaultStyle,
+        })),
       )
 
       if (this.frameStyle) {
@@ -435,12 +417,9 @@ GM_configStruct.prototype = {
           var frame = config.frame
           var body = frame.contentDocument.getElementsByTagName('body')[0]
           body.id = config.id // Allows for prefixing styles with the config id
-          buildConfigWin(
-            body,
-            frame.contentDocument.getElementsByTagName('head')[0]
-          )
+          buildConfigWin(body, frame.contentDocument.getElementsByTagName('head')[0])
         },
-        false
+        false,
       )
     }
   },
@@ -548,20 +527,15 @@ GM_configStruct.prototype = {
         var A = document.createElement(arguments[0]),
           B = arguments[1]
         for (var b in B) {
-          if (b.indexOf('on') == 0)
-            A.addEventListener(b.substring(2), B[b], false)
+          if (b.indexOf('on') == 0) A.addEventListener(b.substring(2), B[b], false)
           else if (
-            ',style,accesskey,id,name,src,href,which,for'.indexOf(
-              ',' + b.toLowerCase()
-            ) != -1
+            ',style,accesskey,id,name,src,href,which,for'.indexOf(',' + b.toLowerCase()) != -1
           )
             A.setAttribute(b, B[b])
           else if (typeof B[b] != 'undefined') A[b] = B[b]
         }
         if (typeof arguments[2] == 'string') A.innerHTML = arguments[2]
-        else
-          for (var i = 2, len = arguments.length; i < len; ++i)
-            A.appendChild(arguments[i])
+        else for (var i = 2, len = arguments.length; i < len; ++i) A.appendChild(arguments[i])
     }
     return A
   },
@@ -584,10 +558,7 @@ GM_configStruct.prototype = {
 
   toTabs: function () {
     // 转为 tab 的形式
-    var body =
-        this.frame.tagName == 'IFRAME'
-          ? this.frame.contentWindow.document
-          : this.frame,
+    var body = this.frame.tagName == 'IFRAME' ? this.frame.contentWindow.document : this.frame,
       configId = this.id
     var $ = function (id) {
       return body.getElementById(configId + '_' + id)
@@ -598,7 +569,7 @@ GM_configStruct.prototype = {
 
     var anch = this.create('div', {
       // id: configId + '_tab_holder',
-      className: 'nav-tabs'
+      className: 'nav-tabs',
     })
 
     for (var i = 0, header; i < headers.length; i++) {
@@ -617,40 +588,29 @@ GM_configStruct.prototype = {
     this.toggleTab(parseInt(curTab, 10))
   },
   toggleTab: function (e) {
-    var body =
-        this.frame.tagName == 'IFRAME'
-          ? this.frame.contentWindow.document
-          : this.frame,
+    var body = this.frame.tagName == 'IFRAME' ? this.frame.contentWindow.document : this.frame,
       configId = this.id
 
     var curTab = typeof e == 'number' ? e : /\_(\d+)/.exec(e.target.id)[1]
 
-    ;[].forEach.call(
-      body.querySelectorAll('.section_header'),
-      function (header, i) {
-        if (i == curTab) {
-          header.classList.add('active')
-        } else {
-          header.classList.remove('active')
-        }
+    ;[].forEach.call(body.querySelectorAll('.section_header'), function (header, i) {
+      if (i == curTab) {
+        header.classList.add('active')
+      } else {
+        header.classList.remove('active')
       }
-    )
-    ;[].forEach.call(
-      body.querySelectorAll('.section_header_holder'),
-      function (holder, i) {
-        holder.style.display = i == curTab ? 'block' : 'none'
-      }
-    )
+    })
+    ;[].forEach.call(body.querySelectorAll('.section_header_holder'), function (holder, i) {
+      holder.style.display = i == curTab ? 'block' : 'none'
+    })
 
     localStorage.setItem('picviewerCE.config.curTab', curTab)
-  }
+  },
 }
 
 // Define a bunch of API stuff
 ;(function () {
-  var isGM =
-      typeof GM_getValue != 'undefined' &&
-      typeof GM_getValue('a', 'b') != 'undefined',
+  var isGM = typeof GM_getValue != 'undefined' && typeof GM_getValue('a', 'b') != 'undefined',
     setValue,
     getValue,
     stringify,
@@ -786,8 +746,7 @@ GM_configField.prototype = {
           parentNode.appendChild(labelEl)
           break
         default:
-          if (pos == 'above')
-            parentNode.insertBefore(create('br', {}), beforeEl)
+          if (pos == 'above') parentNode.insertBefore(create('br', {}), beforeEl)
           parentNode.insertBefore(labelEl, beforeEl)
       }
     }
@@ -795,7 +754,7 @@ GM_configField.prototype = {
     var retNode = create('div', {
         className: 'config_var',
         id: configId + '_' + id + '_var',
-        title: field.title || ''
+        title: field.title || '',
       }),
       firstProp
 
@@ -812,9 +771,9 @@ GM_configField.prototype = {
             {
               id: configId + '_' + id + '_field_label',
               for: configId + '_field_' + id,
-              className: 'field_label'
+              className: 'field_label',
             },
-            field.label
+            field.label,
           )
         : null
 
@@ -826,7 +785,7 @@ GM_configField.prototype = {
           innerHTML: field.label,
           className: 'field_label',
           title: field.title,
-          style: field.style
+          style: field.style,
         })
         retNode = this.node
         break
@@ -838,14 +797,14 @@ GM_configField.prototype = {
             className: 'block' + (field.className ? ' ' + field.className : ''),
             cols: field.cols ? field.cols : 20,
             rows: field.rows ? field.rows : 2,
-            placeholder: field.placeholder
-          }))
+            placeholder: field.placeholder,
+          })),
         )
         break
       case 'radio':
         var wrap = create('div', {
           id: configId + '_field_' + id,
-          className: field.className
+          className: field.className,
         })
         this.node = wrap
 
@@ -853,9 +812,9 @@ GM_configField.prototype = {
           var radLabel = create(
             'label',
             {
-              className: 'radio_label'
+              className: 'radio_label',
             },
-            options[i]
+            options[i],
           )
 
           var rad = wrap.appendChild(
@@ -863,8 +822,8 @@ GM_configField.prototype = {
               value: options[i],
               type: 'radio',
               name: id,
-              checked: options[i] == value
-            })
+              checked: options[i] == value,
+            }),
           )
 
           var radLabelPos =
@@ -881,7 +840,7 @@ GM_configField.prototype = {
         break
       case 'select':
         var wrap = create('select', {
-          id: configId + '_field_' + id
+          id: configId + '_field_' + id,
         })
         this.node = wrap
 
@@ -892,10 +851,10 @@ GM_configField.prototype = {
               'option',
               {
                 value: option,
-                selected: option == value
+                selected: option == value,
               },
-              option
-            )
+              option,
+            ),
           )
         }
 
@@ -906,7 +865,7 @@ GM_configField.prototype = {
         var props = {
           id: configId + '_field_' + id,
           type: type,
-          value: type == 'button' ? field.label : value
+          value: type == 'button' ? field.label : value,
         }
 
         switch (type) {
@@ -932,8 +891,7 @@ GM_configField.prototype = {
     if (label) {
       // If the label is passed first, insert it before the field
       // else insert it after
-      if (!labelPos)
-        labelPos = firstProp == 'label' || type == 'radio' ? 'left' : 'right'
+      if (!labelPos) labelPos = firstProp == 'label' || type == 'radio' ? 'left' : 'right'
 
       addLabel(labelPos, label, retNode)
     }
@@ -974,12 +932,7 @@ GM_configField.prototype = {
       case 'float':
       case 'number':
         var num = Number(node.value)
-        var warn =
-          '字符 "' +
-          field.label +
-          '" 必须输入' +
-          (unsigned ? ' 正 ' : 'n ') +
-          '整数值'
+        var warn = '字符 "' + field.label + '" 必须输入' + (unsigned ? ' 正 ' : 'n ') + '整数值'
 
         if (
           isNaN(num) ||
@@ -1056,7 +1009,7 @@ GM_configField.prototype = {
       return null
     }
     return true
-  }
+  },
 }
 
 // Create default instance of GM_config

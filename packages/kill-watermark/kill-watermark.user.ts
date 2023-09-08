@@ -23,13 +23,13 @@
      * 腾讯视频右上角 logo
      * https://v.qq.com/x/cover/mzc0020027yzd9e/q0043cz9x20.html
      */
-    'txpdiv.txp-watermark'
+    'txpdiv.txp-watermark',
   ]
 
   const rules = [
     'display: none !important',
     'z-index: -999 !important',
-    'filter: opacity(0) !important'
+    'filter: opacity(0) !important',
   ]
   GM_addStyle(`${selectors} {${rules.join(';')}}`)
 })()

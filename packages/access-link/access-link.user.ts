@@ -75,8 +75,8 @@
           if (isUrl(originUrl) && !originUrl.includes('.baidu.com')) {
             node.querySelectorAll('a[href]').forEach((a) => a.setAttribute('href', originUrl))
           }
-        }
-      }
+        },
+      },
     },
     /**
      * 360 搜索
@@ -95,8 +95,8 @@
               .querySelectorAll(isVideo ? 'h3 a' : 'a')
               .forEach((a) => a.setAttribute('href', originUrl))
           }
-        }
-      }
+        },
+      },
     },
     /**
      * 知乎
@@ -106,13 +106,13 @@
      * https://zhuanlan.zhihu.com/p/472361432
      */
     'zhihu.com': {
-      transform: { selector: '[href*="link.zhihu.com/?target="]' }
+      transform: { selector: '[href*="link.zhihu.com/?target="]' },
     },
     'zhuanlan.zhihu.com': {
-      transform: { selector: '[href*="link.zhihu.com/?target="]' }
+      transform: { selector: '[href*="link.zhihu.com/?target="]' },
     },
     'link.zhihu.com': {
-      autojump: {}
+      autojump: {},
     },
     /**
      * 掘金
@@ -120,10 +120,10 @@
      * https://link.juejin.cn/?target=https%3A%2F%2Fgithub.com%2Fmaomao1996%2Ftampermonkey-scripts
      */
     'juejin.cn': {
-      transform: { selector: '[href*="link.juejin.cn?target="]' }
+      transform: { selector: '[href*="link.juejin.cn?target="]' },
     },
     'link.juejin.cn': {
-      autojump: {}
+      autojump: {},
     },
     /**
      * 码云
@@ -132,7 +132,7 @@
      */
     'gitee.com': {
       transform: { selector: '[href*="gitee.com/link?target="]' },
-      autojump: { validator: () => pathname === '/link' }
+      autojump: { validator: () => pathname === '/link' },
     },
     /**
      * 开源中国
@@ -143,18 +143,18 @@
     'oschina.net': {
       transform: {
         selector: '[href*="oschina.net/action/GoToLink?url="]',
-        separator: 'GoToLink?url='
+        separator: 'GoToLink?url=',
       },
       autojump: {
         validator: () => pathname === '/action/GoToLink',
-        query: 'url'
-      }
+        query: 'url',
+      },
     },
     'my.oschina.net': {
       transform: {
         selector: '[href*="oschina.net/action/GoToLink?url="]',
-        separator: 'GoToLink?url='
-      }
+        separator: 'GoToLink?url=',
+      },
     },
     /**
      * 简书
@@ -165,30 +165,30 @@
     'jianshu.com': {
       transform: {
         selector: '[href*="links.jianshu.com/go?to="]',
-        separator: 'go?to='
+        separator: 'go?to=',
       },
-      autojump: { validator: () => pathname === '/go-wild', query: 'url' }
+      autojump: { validator: () => pathname === '/go-wild', query: 'url' },
     },
     /**
      * CSDN
      * https://link.csdn.net/?target=https%3A%2F%2Fgithub.com%2Fmaomao1996%2Ftampermonkey-scripts
      */
     'link.csdn.net': {
-      autojump: {}
+      autojump: {},
     },
     /**
      * 力扣（Leetcode）
      * https://leetcode.cn/problems/merge-intervals/solutions/204805/chi-jing-ran-yi-yan-miao-dong-by-sweetiee/
      */
     'leetcode.cn': {
-      transform: { selector: '[href*="/link/?target="]' }
+      transform: { selector: '[href*="/link/?target="]' },
     },
     /**
      * 语雀
      * https://www.yuque.com/r/goto?url=https%3A%2F%2Ffe-mm.com
      */
     'yuque.com': {
-      autojump: { validator: () => pathname === '/r/goto', query: 'url' }
+      autojump: { validator: () => pathname === '/r/goto', query: 'url' },
     },
     /**
      * 微信开放社区
@@ -198,8 +198,8 @@
     'developers.weixin.qq.com': {
       autojump: {
         validator: () => pathname === '/community/middlepage/href',
-        query: 'href'
-      }
+        query: 'href',
+      },
     },
     /**
      * 微博
@@ -208,10 +208,10 @@
      * https://weibo.cn/sinaurl?u=https%3A%2F%2Ffe-mm.com
      */
     'weibo.com': {
-      transform: { selector: '[href*="weibo.cn/sinaurl?u="]', query: 'u' }
+      transform: { selector: '[href*="weibo.cn/sinaurl?u="]', query: 'u' },
     },
     'weibo.cn': {
-      autojump: { validator: () => pathname === '/sinaurl', query: 'u' }
+      autojump: { validator: () => pathname === '/sinaurl', query: 'u' },
     },
     /**
      * 牛客网
@@ -226,13 +226,13 @@
           // 列表描述信息
           '[href*="gw-c.nowcoder.com/api/sparta/jump/link?link="]',
           // 详情和弹窗
-          '[href*="hd.nowcoder.com/link.html?target="]'
+          '[href*="hd.nowcoder.com/link.html?target="]',
         ].join(','),
-        separator: /\?target|link\=/
-      }
+        separator: /\?target|link\=/,
+      },
     },
     'hd.nowcoder.com': {
-      autojump: {}
+      autojump: {},
     },
     /**
      * 豆瓣
@@ -240,7 +240,7 @@
      * https://www.douban.com/link2/?url=https%3A%2F%2Ffe-mm.com
      */
     'douban.com': {
-      autojump: { validator: () => pathname === '/link2/', query: 'url' }
+      autojump: { validator: () => pathname === '/link2/', query: 'url' },
     },
     /**
      * YouTube
@@ -249,8 +249,8 @@
     'youtube.com': {
       transform: {
         selector: '[href*="youtube.com/redirect?event="]',
-        query: 'q'
-      }
+        query: 'q',
+      },
     },
     /**
      * 花瓣网
@@ -259,8 +259,8 @@
     'huaban.com': {
       autojump: {
         validator: () => pathname === '/go',
-        click: '.wrapper button.ant-btn'
-      }
+        click: '.wrapper button.ant-btn',
+      },
     },
     /**
      * 51CTO 博客
@@ -269,8 +269,8 @@
     'blog.51cto.com': {
       autojump: {
         validator: () => pathname === '/transfer',
-        separator: '?'
-      }
+        separator: '?',
+      },
     },
     /**
      * 少数派
@@ -280,7 +280,7 @@
      */
     'sspai.com': {
       transform: { selector: '[href*="sspai.com/link?target="]' },
-      autojump: { validator: () => pathname === '/link' }
+      autojump: { validator: () => pathname === '/link' },
     },
     /**
      * QQ 邮箱
@@ -290,8 +290,8 @@
       autojump: {
         validator: () => pathname === '/cgi-bin/readtemplate',
         click: 'div.c-footer a.c-footer-a1',
-        query: 'gourl'
-      }
+        query: 'gourl',
+      },
     },
     /**
      * PC 版 QQ
@@ -300,8 +300,8 @@
     'c.pc.qq.com': {
       autojump: {
         validator: () => pathname === '/middlem.html',
-        query: 'pfurl'
-      }
+        query: 'pfurl',
+      },
     },
     /**
      * 微信
@@ -315,8 +315,8 @@
         validator: () => pathname === '/cgi-bin/mmspamsupport-bin/newredirectconfirmcgi',
         getOriginUrl: () =>
           document.querySelector<HTMLElement>('.weui-msg p.weui-msg__desc').textContent,
-        click: 'a.weui-btn.weui-btn_default'
-      }
+        click: 'a.weui-btn.weui-btn_default',
+      },
     },
     /**
      * 腾讯文档
@@ -327,8 +327,8 @@
       autojump: {
         validator: () => pathname === '/scenario/link.html',
         // click: '.url-tips .url-click',
-        query: 'url'
-      }
+        query: 'url',
+      },
     },
     /**
      * 腾讯云开发者社区
@@ -337,9 +337,9 @@
      */
     'cloud.tencent.com': {
       autojump: {
-        validator: () => pathname === '/developer/tools/blog-entry'
+        validator: () => pathname === '/developer/tools/blog-entry',
         // click: '.mod-external-link-btn a'
-      }
+      },
     },
     /**
      * 爱发电
@@ -349,7 +349,7 @@
      */
     'afdian.net': {
       transform: { selector: '[href*="afdian.net/link?target="]' },
-      autojump: { validator: () => pathname === '/link' }
+      autojump: { validator: () => pathname === '/link' },
     },
     /**
      * pixiv
@@ -358,14 +358,14 @@
     'pixiv.net': {
       transform: {
         selector: '[href*="/jump.php?"]',
-        separator: '?'
+        separator: '?',
       },
       autojump: {
         validator: () => pathname === '/jump.php',
         click: 'a[href]',
-        separator: '?'
-      }
-    }
+        separator: '?',
+      },
+    },
   }
 
   const { hostname, pathname } = location
@@ -384,7 +384,7 @@
         if (originUrl) {
           node.href = decodeURIComponent(originUrl)
         }
-      }
+      },
     } = transform
     const observer = new MutationObserver(() => {
       document.querySelectorAll(selector).forEach(customTransform)
@@ -408,7 +408,7 @@
     const originUrl = decodeURIComponent(
       separator
         ? location.search.split(separator)[1]
-        : new URLSearchParams(location.search).get(query)
+        : new URLSearchParams(location.search).get(query),
     )
     isUrl(originUrl) && location.replace(originUrl)
   }

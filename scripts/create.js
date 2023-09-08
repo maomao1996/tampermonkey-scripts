@@ -30,7 +30,7 @@ const promptList = [
     name: 'name',
     filter(value) {
       return value.replace(/\s+/g, '')
-    }
+    },
   },
   {
     type: 'input',
@@ -54,18 +54,14 @@ const promptList = [
         return
       }
       done(null, true)
-    }
-  }
+    },
+  },
 ]
 inquirer.prompt(promptList).then(({ name, filename }) => {
-  fs.outputFile(
-    `./packages/${filename}/${filename}.user.ts`,
-    getTemplate(name),
-    (err) => {
-      if (err) {
-        return log(err)
-      }
-      log(chalk.green(`脚本 '${name}' 创建成功咯，快去写代码吧`))
+  fs.outputFile(`./packages/${filename}/${filename}.user.ts`, getTemplate(name), (err) => {
+    if (err) {
+      return log(err)
     }
-  )
+    log(chalk.green(`脚本 '${name}' 创建成功咯，快去写代码吧`))
+  })
 })

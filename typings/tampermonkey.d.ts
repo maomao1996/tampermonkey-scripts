@@ -70,7 +70,7 @@ declare function GM_openInTab(
      * 使标签页在无痕模式下打开
      */
     incognito?: boolean
-  }
+  },
 ): void
 
 /**
@@ -85,7 +85,7 @@ declare function GM_registerMenuCommand(
    * 点击菜单的回调
    */
   fn?: () => void,
-  accessKey?: string
+  accessKey?: string,
 ): number
 
 /**

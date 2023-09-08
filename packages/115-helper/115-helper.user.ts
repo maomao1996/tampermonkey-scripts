@@ -40,7 +40,7 @@
     frameStyle: {
       height: '560px',
       width: '520px',
-      zIndex: '13145201996'
+      zIndex: '13145201996',
     },
     fields: {
       'delay.minCount': {
@@ -50,14 +50,14 @@
         type: 'int',
         min: 5,
         max: 50,
-        default: 15
+        default: 15,
       },
       'delay.minTime': {
         label: '最小延迟时间(毫秒)',
         type: 'int',
         min: 100,
         max: 1e3,
-        default: 200
+        default: 200,
       },
       'delay.maxTime': {
         label: '最大延迟时间(毫秒)',
@@ -65,26 +65,26 @@
         min: 300,
         max: 3e3,
         default: 400,
-        line: 'end'
+        line: 'end',
       },
       'layout.hideSidebar': {
         section: ['', '界面布局相关设置'],
         label: '关闭存储侧边栏',
         labelPos: 'right',
         type: 'checkbox',
-        default: false
+        default: false,
       },
       'layout.addSettingBtn': {
         label: '侧边栏增加插件设置按钮',
         labelPos: 'right',
         type: 'checkbox',
-        default: true
+        default: true,
       },
       'layout.addTaskBtn': {
         label: '网盘顶部菜单增加链接任务按钮',
         labelPos: 'right',
         type: 'checkbox',
-        default: true
+        default: true,
       },
       'autoSha1.addBtn': {
         section: ['', '网盘路径栏相关设置'],
@@ -92,7 +92,7 @@
         labelPos: 'right',
         type: 'checkbox',
         default: true,
-        line: 'start'
+        line: 'start',
       },
       'autoSha1.maxCount': {
         label: '每次最多打开的标签页数量',
@@ -100,13 +100,13 @@
         min: 1,
         max: 50,
         default: 25,
-        line: 'end'
+        line: 'end',
       },
       addDeleteEmptyBtn: {
         label: '网盘路径栏增加删除空文件夹按钮',
         labelPos: 'right',
         type: 'checkbox',
-        default: true
+        default: true,
       },
       // 单文件查重相关设置
       'folderRepeat.addBtn': {
@@ -114,45 +114,45 @@
         labelPos: 'right',
         type: 'checkbox',
         default: true,
-        line: 'start'
+        line: 'start',
       },
       'folderRepeat.select': {
         label: '选中重复文件',
         labelPos: 'right',
         type: 'checkbox',
         default: false,
-        line: 'end'
+        line: 'end',
       },
       'transcoded.addBtn': {
         label: '网盘路径栏增加加速转码按钮',
         labelPos: 'right',
         type: 'checkbox',
-        default: true
+        default: true,
       },
       'list.showSha1': {
         section: ['', '网盘列表相关设置(悬浮菜单不支持缩略图模式)'],
         label: '列表显示文件SHA1信息(包含标签页)',
         labelPos: 'right',
         type: 'checkbox',
-        default: true
+        default: true,
       },
       'floatOperation.removeIcon': {
         label: '悬浮菜单移除图标',
         labelPos: 'right',
         type: 'checkbox',
-        default: false
+        default: false,
       },
       'floatOperation.newTab.addBtn': {
         label: '悬浮菜单增加新标签页打开按钮',
         labelPos: 'right',
         type: 'checkbox',
-        default: true
+        default: true,
       },
       'floatOperation.sha1.addBtn': {
         label: '悬浮菜单增加SHA1查重按钮',
         labelPos: 'right',
         type: 'checkbox',
-        default: true
+        default: true,
       },
       // 一键搜相关（快捷搜索）
       'quickSearch.addBtn': {
@@ -160,52 +160,52 @@
         labelPos: 'right',
         type: 'checkbox',
         default: true,
-        line: 'start'
+        line: 'start',
       },
       'quickSearch.edit': {
         label: '打开编辑弹窗再搜索',
         labelPos: 'right',
         type: 'checkbox',
-        default: false
+        default: false,
       },
       'quickSearch.isAll': {
         label: '默认搜索全部',
         labelPos: 'right',
         type: 'checkbox',
         default: false,
-        line: 'end'
+        line: 'end',
       },
       'sha1Repeat.addCheckbox': {
         section: ['', 'SHA1 查重列表模块(重复文件列表)'],
         label: '增加第一个文件选中按钮',
         labelPos: 'right',
         type: 'checkbox',
-        default: true
+        default: true,
       },
       'sha1Repeat.addMenu': {
         label: '列表增加悬浮菜单',
         labelPos: 'right',
         type: 'checkbox',
-        default: true
+        default: true,
       },
       'sha1Repeat.select': {
         label: '打开后默认选中',
         labelPos: 'right',
         type: 'checkbox',
-        default: true
+        default: true,
       },
       'search.addMenu': {
         section: ['', '网盘搜索列表模块'],
         label: '列表增加悬浮菜单',
         labelPos: 'right',
         type: 'checkbox',
-        default: true
+        default: true,
       },
       'search.showSha1': {
         label: '列表显示文件SHA1信息',
         labelPos: 'right',
         type: 'checkbox',
-        default: true
+        default: true,
       },
       sponsor: {
         section: ['', '其他'],
@@ -213,11 +213,10 @@
         labelPos: 'right',
         type: 'button',
         click() {
-          GM_openInTab(
-            'https://gitee.com/fe-mm/picture/raw/main/sponsor/sponsor.jpg',
-            { active: true }
-          )
-        }
+          GM_openInTab('https://gitee.com/fe-mm/picture/raw/main/sponsor/sponsor.jpg', {
+            active: true,
+          })
+        },
       },
       joinGroup: {
         label: '加入 QQ 群',
@@ -225,9 +224,9 @@
         type: 'button',
         click() {
           GM_openInTab('https://jq.qq.com/?_wv=1027&k=ToOoVmku', {
-            active: true
+            active: true,
           })
-        }
+        },
       },
       reminder: {
         label: '温馨提示',
@@ -240,19 +239,19 @@
    115 是通过当前目录下第一个视频文件去查询剩余未转码的视频文件，在查询时会将当前目录下第一个视频文件自动进行转码（只会在第一个视频文件未转码时触发），所以会存在下次查询时数量不一致的问题；
   在查询时会有缓存问题，所以会存在下次查询时返回的未转码的数量和上次一样，等一两秒再点就行（提交的加速转码文件过多会被 115 限制，需要等提交的文件转码完以后再进行转码）
 3. 脚本设置保存后将会自动刷新页面
-4. 脚本加载有条件限制会造成设置弹窗不居中`
+4. 脚本加载有条件限制会造成设置弹窗不居中`,
           )
-        }
-      }
+        },
+      },
     },
     events: {
       save() {
         top.location.reload()
-      }
-    }
+      },
+    },
   }
 
-  type GetKey = keyof typeof GMConfigOptions['fields']
+  type GetKey = keyof (typeof GMConfigOptions)['fields']
   interface MGMConfig extends GMConfig {
     get(key: GetKey): any
   }
@@ -271,7 +270,7 @@
    */
   const observerChildList = (
     callback: (observer: MutationObserver, mutation: MutationRecord) => void,
-    selector: JQuery | JQuery.Selector = '#js_data_list'
+    selector: JQuery | JQuery.Selector = '#js_data_list',
   ): MutationObserver => {
     const observer = new MutationObserver(([mutation]) => {
       mutation.type === 'childList' && callback(observer, mutation)
@@ -291,10 +290,7 @@
     if (floating) {
       const rand = Math.random()
       const randLength = `${rand}`.length - 1
-      return Math.min(
-        lower + rand * (upper - lower + parseFloat(`1e-${randLength}`)),
-        upper
-      )
+      return Math.min(lower + rand * (upper - lower + parseFloat(`1e-${randLength}`)), upper)
     }
     return lower + Math.floor(Math.random() * (upper - lower + 1))
   }
@@ -355,8 +351,8 @@
     // 悬浮菜单样式
     getStyles(
       /*css*/ `.file-opr [class|="icon"]{display:none!important;}`,
-      'floatOperation.removeIcon'
-    )
+      'floatOperation.removeIcon',
+    ),
   ].join('')
   GM_addStyle(styles)
 
@@ -365,17 +361,14 @@
    */
   const addLinkTaskBtn = () => {
     $('#js_filter_btn').after(
-      /*html*/ `<a href="javascript:;" class="button btn-line btn-upload" menu="offline_task"><i class="icon-operate ifo-linktask"></i><span>链接任务</span></a>`
+      /*html*/ `<a href="javascript:;" class="button btn-line btn-upload" menu="offline_task"><i class="icon-operate ifo-linktask"></i><span>链接任务</span></a>`,
     )
   }
 
   /**
    * SHA1 查重
    */
-  const handleRepeatSha1 = (
-    file_id: string,
-    isAll = false
-  ): Promise<boolean> => {
+  const handleRepeatSha1 = (file_id: string, isAll = false): Promise<boolean> => {
     return new Promise((resolve) => {
       !isAll && MinMessage.Show({ text: '正在查找', type: 'load', timeout: 0 })
       top.UA$.ajax({
@@ -398,11 +391,11 @@
               MinMessage.Show({
                 text: '没有重复文件',
                 type: 'war',
-                timeout: 2e3
+                timeout: 2e3,
               })
             resolve(false)
           }
-        }
+        },
       })
     })
   }
@@ -413,7 +406,7 @@
     delete: /*html*/ `<a href="javascript:;" menu="delete" btn="del"><i class="icon-operate ifo-remove" menu="delete"></i><span menu="delete">删除</span></a>`,
     search: /*html*/ `<a href="javascript:;" class="mm-operation" type="search"><span>一键搜</span></a>`,
     sha1: /*html*/ `<a href="javascript:;" class="mm-operation" type="sha1"><span>SHA1查重</span></a>`,
-    new_tab: /*html*/ `<a href="$href" target="_blank" class="mm-operation"><span>新标签页打开</span></a>`
+    new_tab: /*html*/ `<a href="$href" target="_blank" class="mm-operation"><span>新标签页打开</span></a>`,
   }
   type MenuKey = keyof typeof MENU_MAP
   const CONTROLLED_MENU: MenuKey[] = ['new_tab', 'search', 'sha1']
@@ -424,7 +417,7 @@
     fileType,
     menuKeys = CONTROLLED_MENU,
     isAddWrap,
-    cid
+    cid,
   }: {
     fileType: string
     menuKeys?: MenuKey[]
@@ -434,20 +427,9 @@
     const menu = menuKeys.reduce((prev, key) => {
       if (key === 'search' && G.get('quickSearch.addBtn')) {
         prev += MENU_MAP.search
-      } else if (
-        key === 'new_tab' &&
-        G.get('floatOperation.newTab.addBtn') &&
-        fileType === '0'
-      ) {
-        prev += MENU_MAP.new_tab.replace(
-          '$href',
-          `/?cid=${cid}&offset=0&mode=wangpan`
-        )
-      } else if (
-        key === 'sha1' &&
-        G.get('floatOperation.sha1.addBtn') &&
-        fileType === '1'
-      ) {
+      } else if (key === 'new_tab' && G.get('floatOperation.newTab.addBtn') && fileType === '0') {
+        prev += MENU_MAP.new_tab.replace('$href', `/?cid=${cid}&offset=0&mode=wangpan`)
+      } else if (key === 'sha1' && G.get('floatOperation.sha1.addBtn') && fileType === '1') {
         prev += MENU_MAP.sha1
       } else if (!CONTROLLED_MENU.includes(key)) {
         prev += MENU_MAP[key]
@@ -476,12 +458,10 @@
             `/?aid=${aid}&cid=${
               G.get('quickSearch.isAll') ? 0 : cid
             }&old_cid=${cid}&old_cid_name=${encodeURIComponent(
-              name
-            )}&search_value=${encodeURIComponent(
-              value
-            )}&ct=file&ac=search&is_wl_tpl=1`
+              name,
+            )}&search_value=${encodeURIComponent(value)}&ct=file&ac=search&is_wl_tpl=1`,
           )}`,
-          { active: true }
+          { active: true },
         )
       }
 
@@ -491,7 +471,7 @@
       }
 
       const content = $(
-        /*html*/ `<div class="dialog-input"><textarea rel="txt"></textarea></div><div class="dialog-action"><a href="javascript:;" class="dgac-confirm" btn="confirm">搜索</a></div>`
+        /*html*/ `<div class="dialog-input"><textarea rel="txt"></textarea></div><div class="dialog-action"><a href="javascript:;" class="dgac-confirm" btn="confirm">搜索</a></div>`,
       )
       const $input = content.find("[rel='txt']")
 
@@ -499,7 +479,7 @@
 
       const $dialog = new top.Core.DialogBase({
         title: '115 小助手(编辑一键搜)',
-        content
+        content,
       })
       const confirm = () => {
         openSearch(($input.val() as string).trim())
@@ -542,10 +522,7 @@
   const listShowSHA1 = ($listItem: JQuery) => {
     const sha1 = $listItem.attr('sha1')
     if (sha1 && !$listItem.find('[show-sha1]').length) {
-      $listItem
-        .find('.file-name')
-        .addClass('h-auto')
-        .append(`<small show-sha1>${sha1}</small>`)
+      $listItem.find('.file-name').addClass('h-auto').append(`<small show-sha1>${sha1}</small>`)
     }
   }
 
@@ -573,28 +550,22 @@
             .prepend(
               getFloatMenu({
                 fileType: $(this).attr('file_type'),
-                cid: $(this).attr('cate_id')
-              })
+                cid: $(this).attr('cate_id'),
+              }),
             )
         }
       })
     })
 
     const handleGetDetail = (aid: string, cid: string): Promise<any> =>
-      new Promise((resolve) =>
-        top.Core.DataAccess.Dir.GetDetail(aid, cid, (res) => resolve(res))
-      )
+      new Promise((resolve) => top.Core.DataAccess.Dir.GetDetail(aid, cid, (res) => resolve(res)))
 
     // SHA1 自动查重
     const SHA1_MAP = {}
     // 随机延迟索引
     let delayIndex = random(...randomDelayIndex)
 
-    type QuicOperationKey =
-      | 'auto-sha1'
-      | 'delete-empty'
-      | 'folder-sha1'
-      | 'transcoded'
+    type QuicOperationKey = 'auto-sha1' | 'delete-empty' | 'folder-sha1' | 'transcoded'
     type QuicOperationConfigs = {
       [P in QuicOperationKey]: {
         GMConfigKey: GetKey
@@ -612,7 +583,7 @@
             MinMessage.Show({
               text: '已查询过当前页码所有文件，需再次查询请刷新页面',
               type: 'war',
-              timeout: 2e3
+              timeout: 2e3,
             })
             return
           }
@@ -623,7 +594,7 @@
             MinMessage.Show({
               text: '当前文件夹下没有可查重文件',
               type: 'war',
-              timeout: 2e3
+              timeout: 2e3,
             })
             return
           }
@@ -657,11 +628,7 @@
             const fileId = $currentLi.attr('file_id')
             const sha1 = $currentLi.attr('sha1')
 
-            if (
-              !SHA1_MAP[sha1] &&
-              index > G.get('delay.minCount') &&
-              index % delayIndex === 0
-            ) {
+            if (!SHA1_MAP[sha1] && index > G.get('delay.minCount') && index % delayIndex === 0) {
               delayIndex = random(...randomDelayIndex)
               await delay()
             }
@@ -682,7 +649,7 @@
           }
 
           findRepeat()
-        }
+        },
       },
       // 删除空文件夹
       'delete-empty': {
@@ -694,7 +661,7 @@
             MinMessage.Show({
               text: '当前文件目录下没有文件夹',
               type: 'war',
-              timeout: 2e3
+              timeout: 2e3,
             })
             return
           }
@@ -711,7 +678,7 @@
                 MinMessage.Show({
                   text: '当前文件目录下没有空文件夹',
                   type: 'war',
-                  timeout: 2e3
+                  timeout: 2e3,
                 })
               } else {
                 MinMessage.Hide()
@@ -729,22 +696,21 @@
 
             const $currentLi = $li.eq(index)
 
-            handleGetDetail(
-              $currentLi.attr('area_id'),
-              $currentLi.attr('cate_id')
-            ).then(({ size }) => {
-              if (size === '0B') {
-                emptyFolderCount++
-                $currentLi.find('.checkbox').trigger('click')
-              }
-              index++
-              $currentLi.find('.file-size span').text(size)
-              return recursive()
-            })
+            handleGetDetail($currentLi.attr('area_id'), $currentLi.attr('cate_id')).then(
+              ({ size }) => {
+                if (size === '0B') {
+                  emptyFolderCount++
+                  $currentLi.find('.checkbox').trigger('click')
+                }
+                index++
+                $currentLi.find('.file-size span').text(size)
+                return recursive()
+              },
+            )
           }
 
           recursive()
-        }
+        },
       },
       // 单文件夹查重
       'folder-sha1': {
@@ -800,7 +766,7 @@
           } else {
             checkSha1()
           }
-        }
+        },
       },
       // 加速转码
       transcoded: {
@@ -819,7 +785,7 @@
             url: '//webapi.115.com/files/is_transcoded',
             type: 'POST',
             data: {
-              pick_code: pickCode
+              pick_code: pickCode,
             },
             dataType: 'json',
             success({ state, data, count }) {
@@ -836,24 +802,24 @@
                       top.UA$.ajax({
                         url: '//115.com/?ctl=play&ac=batch_push',
                         data: {
-                          file_ids: data.join(',')
+                          file_ids: data.join(','),
                         },
                         dataType: 'json',
                         type: 'POST',
                         xhrFields: { withCredentials: !0 },
                         success(t) {
                           t.state || $.alertTip(t.message || t.error)
-                        }
+                        },
                       })
-                  }
+                  },
                 })
               } else {
                 $.alertTip(`当前目录下没有需要转码的文件哦`)
               }
-            }
+            },
           })
-        }
-      }
+        },
+      },
     }
 
     // 顶部添加快捷操作按钮
@@ -908,8 +874,8 @@
               getFloatMenu({
                 fileType: that.attr('file_type'),
                 menuKeys: ['move', 'edit_name', 'delete'],
-                isAddWrap: true
-              })
+                isAddWrap: true,
+              }),
             )
           }
         })
@@ -919,11 +885,7 @@
     // 点击菜单调用对应 115 方法
     $list.on('click', '.file-opr a', function (event) {
       event.stopPropagation()
-      top.Core.FileMenu.DoEvent(
-        [$(this).parents('li')],
-        $(this).attr('menu'),
-        checkRepaatApi.load
-      )
+      top.Core.FileMenu.DoEvent([$(this).parents('li')], $(this).attr('menu'), checkRepaatApi.load)
     })
   }
 
@@ -946,7 +908,7 @@
         .append(
           /*html*/ `<li mm-layout="sidebar"><a href="javascript:;"><p id="mm-sidebar">${
             top.$('.wrap-hflow .sub-hflow').is(':visible') ? '关闭' : '打开'
-          }</p><p>侧边栏</p></a></li>`
+          }</p><p>侧边栏</p></a></li>`,
         )
         .find(SIDEBAR_SELECTOR)
         .on('click', function () {
@@ -965,7 +927,7 @@
 
       $mainSidebar
         .append(
-          /*html*/ `<li mm-layout="helper-setting"><a href="javascript:;"><p>小助手</p><p>设置</p></a></li>`
+          /*html*/ `<li mm-layout="helper-setting"><a href="javascript:;"><p>小助手</p><p>设置</p></a></li>`,
         )
         .find(HELPER_SETTING_SELECTOR)
         .on('click', () => (G.isOpen ? G.close() : G.open()))
@@ -1002,17 +964,10 @@
             $(this).append(
               getFloatMenu({
                 fileType: $(this).attr('file_type'),
-                menuKeys: [
-                  'new_tab',
-                  'search',
-                  'sha1',
-                  'move',
-                  'edit_name',
-                  'delete'
-                ],
+                menuKeys: ['new_tab', 'search', 'sha1', 'move', 'edit_name', 'delete'],
                 isAddWrap: true,
-                cid: $(this).attr('cate_id')
-              })
+                cid: $(this).attr('cate_id'),
+              }),
             )
           }
         })

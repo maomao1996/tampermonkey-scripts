@@ -64,7 +64,7 @@ interface StyleMap {
       font-size: 24px;
       text-align: center;
       line-height: 480px;
-    }`
+    }`,
   }
 
   function addStyle(type: string): void {
