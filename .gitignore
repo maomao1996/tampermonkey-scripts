@@ -1,22 +1,31 @@
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
-# Editor directories and files
+# editor directories and files
 .idea
-*.suo
-*.ntvs*
-*.njsproj
-*.sln
+.vscode
 
-# Log files
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-
-# Dependencies
+# dependencies
 node_modules
 
-# Development
-libs-dev
+# compiled output
+dist
+dist-dev
+build
+cache
+.cache
+.temp
+.tmp
 
-# Other
-packages/**/*.js
+# log and lock files
+*.log
+yarn.lock
+package-lock.json
+
+# local env files
+.env.local
+.env.*.local
+
+# misc
+.DS_Store
+
+# user-specific files

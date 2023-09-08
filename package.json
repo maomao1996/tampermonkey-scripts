@@ -2,27 +2,40 @@
   "name": "tampermonkey-scripts",
   "version": "1.0.0",
   "description": "油猴插件库",
-  "author": "maomao1996 <1714487678@qq.com>",
-  "scripts": {
-    "dev": "tsc -w -p tsconfig.dev.json",
-    "build": "rimraf libs && tsc",
-    "clean": "rimraf libs",
-    "c": "node scripts/create.js"
+  "homepage": "https://github.com/maomao1996/tampermonkey-scripts#readme",
+  "bugs": {
+    "url": "https://github.com/maomao1996/tampermonkey-scripts/issues"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/maomao1996/tampermonkey-scripts.git"
   },
   "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/maomao1996/tampermonkey-scripts/issues"
+  "author": "maomao <1714487678@qq.com>",
+  "scripts": {
+    "build": "rimraf libs && tsc",
+    "c": "node scripts/create.js",
+    "clean": "rimraf libs",
+    "dev": "tsc -w -p tsconfig.dev.json",
+    "format": "prettier --write .",
+    "prepare": "husky install"
   },
-  "homepage": "https://github.com/maomao1996/tampermonkey-scripts#readme",
+  "lint-staged": {
+    "*.{html,js,ts,tsx,vue,css,md,json,yaml}": [
+      "prettier --write"
+    ]
+  },
+  "prettier": "@femm/prettier",
   "devDependencies": {
+    "@femm/prettier": "^1.1.0",
+    "@femm/verify-commit": "^1.0.1",
     "@types/jquery": "^3.5.6",
     "chalk": "^4.1.2",
     "fs-extra": "^10.0.0",
+    "husky": "^8.0.3",
     "inquirer": "^7.3.3",
+    "lint-staged": "^13.2.2",
+    "prettier": "^2.8.8",
     "rimraf": "^3.0.2",
     "typescript": "^4.4.3"
   }
