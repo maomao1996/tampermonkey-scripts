@@ -15,10 +15,10 @@
   "author": "maomao <1714487678@qq.com>",
   "type": "module",
   "scripts": {
-    "build": "rimraf libs && tsc",
+    "build": "pnpm -r build",
     "c": "node scripts/create.js",
     "clean": "rimraf libs",
-    "dev": "tsc -w -p tsconfig.dev.json",
+    "dev": "pnpm -r dev",
     "format": "prettier --write .",
     "prepare": "husky install"
   },

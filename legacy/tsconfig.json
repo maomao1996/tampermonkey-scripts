@@ -1,0 +1,7 @@
+{
+  "extends": "../tsconfig.legacy.json",
+  "compilerOptions": {
+    "outDir": "../libs"
+  },
+  "include": ["packages/**/*.user.ts", "typings/**/*.d.ts"]
+}

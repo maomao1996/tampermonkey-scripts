@@ -1,0 +1,14 @@
+{
+  "name": "legacy",
+  "version": "1.0.0",
+  "description": "油猴插件库",
+  "scripts": {
+    "build": "rimraf ../libs && tsc",
+    "dev": "tsc -w -p tsconfig.dev.json"
+  },
+  "devDependencies": {
+    "@types/jquery": "^3.5.6",
+    "rimraf": "^3.0.2",
+    "typescript": "^4.4.3"
+  }
+}
