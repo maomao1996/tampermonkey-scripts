@@ -20,6 +20,7 @@
     "clean": "rimraf libs",
     "dev": "pnpm -r dev",
     "format": "prettier --write .",
+    "changeset": "changeset",
     "prepare": "husky install"
   },
   "lint-staged": {
@@ -29,6 +30,7 @@
   },
   "prettier": "@femm/prettier",
   "devDependencies": {
+    "@changesets/cli": "^2.26.2",
     "@femm/prettier": "^1.1.0",
     "@femm/verify-commit": "^1.0.1",
     "@types/jquery": "^3.5.6",
