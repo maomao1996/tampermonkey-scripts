@@ -1,67 +1,104 @@
-const inquirer = require('inquirer')
-const chalk = require('chalk')
-const fs = require('fs-extra')
+import * as path from 'node:path'
 
-const { log } = console
+import prompts from 'prompts'
+import fs from 'fs-extra'
+import chalk from 'chalk'
 
-// 脚本初始模板
-const getTemplate = (name) => `/*!
-// ==UserScript==
-// @name          ${name}
-// @namespace     https://github.com/maomao1996/tampermonkey-scripts
-// @version       0.0.1
-// @description   脚本描述
-// @author        maomao1996
-// @include       *
-// @grant         none
-// ==/UserScript==
-*/
+function isValidPackageName(projectName) {
+  return /^(?:@[a-z0-9-*~][a-z0-9-*._~]*\/)?[a-z0-9-~][a-z0-9-._~]*$/.test(projectName)
+}
 
-;(() => {
-  'use strict'
-  const { pathname } = location
-})()
-`
-
-const promptList = [
+const { tampermonkeyName, packageName, needsCss } = await prompts([
   {
-    type: 'input',
-    message: '请输入脚本名:',
-    name: 'name',
-    filter(value) {
-      return value.replace(/\s+/g, '')
-    },
+    name: 'tampermonkeyName',
+    type: 'text',
+    message: '请输入脚本名 (tampermonkey name):',
+    onState: (state) => String(state.value).trim(),
   },
   {
-    type: 'input',
-    message: '请输入文件名:',
-    name: 'filename',
-    filter(value) {
-      return value.replace(/\s+/g, '')
-    },
-    validate(value) {
-      const done = this.async()
-      if (!value) {
-        done(`请输入${value}名`)
-        return
-      }
-      if (!/^[a-zA-Z0-9_-]{1,}$/.test(value)) {
-        done(`文件名格式不正确`)
-        return
-      }
-      if (fs.existsSync(`./packages/${value}/`)) {
-        done(`文件夹 [${value}] 已存在`)
-        return
-      }
-      done(null, true)
-    },
+    name: 'packageName',
+    type: 'text',
+    message: '请输入包名 (package name):',
+    validate: (dir) =>
+      isValidPackageName(dir)
+        ? fs.existsSync(path.join(process.cwd(), 'packages', dir))
+          ? `文件夹【${dir}】已存在`
+          : true
+        : `文件名格式不正确`,
   },
-]
-inquirer.prompt(promptList).then(({ name, filename }) => {
-  fs.outputFile(`./packages/${filename}/${filename}.user.ts`, getTemplate(name), (err) => {
-    if (err) {
-      return log(err)
-    }
-    log(chalk.green(`脚本 '${name}' 创建成功咯，快去写代码吧`))
-  })
-})
+  {
+    name: 'needsCss',
+    type: 'toggle',
+    message: '是否需要 CSS ?',
+    initial: false,
+    active: 'Yes',
+    inactive: 'No',
+  },
+])
+
+const root = path.join(process.cwd(), 'packages', packageName)
+
+// package.json
+fs.outputFileSync(
+  `${root}/package.json`,
+  JSON.stringify(
+    {
+      name: packageName,
+      version: '0.0.0',
+      type: 'module',
+      scripts: {
+        build: 'rollup -c',
+        dev: 'rollup --environment BUILD:development -c --watch',
+      },
+    },
+    null,
+    2,
+  ),
+)
+
+// rollup.config.js
+fs.outputFileSync(
+  `${root}/rollup.config.js`,
+  `import { createRollupConfig } from '@femm/shared-rollup-config'
+
+import pkg from './package.json' assert { type: 'json' }
+
+export default createRollupConfig({ pkg })
+`,
+)
+
+// metablock.json
+fs.outputFileSync(
+  `${root}/metablock.json`,
+  JSON.stringify(
+    {
+      name: tampermonkeyName,
+      namespace: '',
+      version: '0.0.0',
+      description: '',
+      author: '',
+      homepage: '',
+      supportURL: '',
+      updateURL: '',
+      downloadURL: '',
+      license: '',
+      match: [],
+      exclude: [],
+      require: [],
+      connect: [],
+      grant: [],
+    },
+    null,
+    2,
+  ),
+)
+
+// README.md
+fs.outputFileSync(`${root}/README.md`, `# ${tampermonkeyName}\n`)
+
+// src
+fs.outputFileSync(`${root}/src/index.ts`, needsCss ? `import './styles/index.css'\n` : '\n')
+
+needsCss && fs.outputFileSync(`${root}/src/styles/index.css`, '\n')
+
+console.log(chalk.green(`脚本【${packageName}】创建成功咯，快去写代码吧`))

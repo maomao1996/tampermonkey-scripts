@@ -16,11 +16,10 @@
   "type": "module",
   "scripts": {
     "build": "pnpm -r build",
-    "c": "node scripts/create.js",
-    "clean": "rimraf libs",
+    "changeset": "changeset",
+    "create-package": "node scripts/create.js",
     "dev": "pnpm -r dev",
     "format": "prettier --write .",
-    "changeset": "changeset",
     "prepare": "husky install"
   },
   "lint-staged": {
@@ -34,14 +33,13 @@
     "@femm/prettier": "^1.1.0",
     "@femm/shared-rollup-config": "workspace:^",
     "@femm/verify-commit": "^1.0.1",
-    "@types/jquery": "^3.5.6",
-    "chalk": "^4.1.2",
-    "fs-extra": "^10.0.0",
+    "@types/fs-extra": "^11.0.2",
+    "chalk": "^5.3.0",
+    "fs-extra": "^11.1.1",
     "husky": "^8.0.3",
-    "inquirer": "^7.3.3",
     "lint-staged": "^13.2.2",
     "prettier": "^2.8.8",
-    "rimraf": "^3.0.2",
+    "prompts": "^2.4.2",
     "rollup": "^3.28.1",
     "typescript": "^5.2.2"
   }
