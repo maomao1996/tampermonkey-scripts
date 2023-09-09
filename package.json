@@ -32,6 +32,7 @@
   "devDependencies": {
     "@changesets/cli": "^2.26.2",
     "@femm/prettier": "^1.1.0",
+    "@femm/shared-rollup-config": "workspace:^",
     "@femm/verify-commit": "^1.0.1",
     "@types/jquery": "^3.5.6",
     "chalk": "^4.1.2",
@@ -41,6 +42,7 @@
     "lint-staged": "^13.2.2",
     "prettier": "^2.8.8",
     "rimraf": "^3.0.2",
+    "rollup": "^3.28.1",
     "typescript": "^5.2.2"
   }
 }

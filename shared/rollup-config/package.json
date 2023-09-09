@@ -1,0 +1,12 @@
+{
+  "name": "@femm/shared-rollup-config",
+  "version": "1.0.0",
+  "type": "module",
+  "main": "src/index.js",
+  "dependencies": {
+    "@rollup/plugin-terser": "^0.4.3",
+    "rollup-plugin-postcss": "^4.0.2",
+    "rollup-plugin-swc3": "^0.9.1",
+    "rollup-plugin-userscript-metablock": "^0.3.3"
+  }
+}
