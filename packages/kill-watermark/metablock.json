@@ -2,10 +2,10 @@
   "name": "杀死水印（Kill Watermark）",
   "namespace": "",
   "version": "0.0.2",
-  "description": "杀死水印（移除烦人的水印，还你一个干净清爽的页面）；已适配稿定设计、腾讯视频",
+  "description": "杀死水印（移除烦人的水印，还你一个干净清爽的页面）；已适配稿定设计、腾讯视频、爱奇艺",
   "author": "",
   "license": "",
   "supportURL": "",
   "installURL": "",
-  "match": ["*://*.gaoding.com/*", "*://v.qq.com/x/cover/*"]
+  "match": ["*://*.gaoding.com/*", "*://v.qq.com/x/cover/*", "*://www.iqiyi.com/*"]
 }
