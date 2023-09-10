@@ -1,0 +1,9 @@
+{
+  "name": "kill-watermark",
+  "version": "0.0.2",
+  "type": "module",
+  "scripts": {
+    "build": "rollup -c",
+    "dev": "rollup --environment BUILD:development -c --watch"
+  }
+}
