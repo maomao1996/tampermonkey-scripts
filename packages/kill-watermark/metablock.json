@@ -7,5 +7,10 @@
   "license": "",
   "supportURL": "",
   "installURL": "",
-  "match": ["*://*.gaoding.com/*", "*://v.qq.com/x/cover/*", "*://www.iqiyi.com/*"]
+  "match": [
+    "*://*.gaoding.com/*",
+    "*://v.qq.com/x/cover/*",
+    "*://www.iqiyi.com/*",
+    "*://v.youku.com/*"
+  ]
 }

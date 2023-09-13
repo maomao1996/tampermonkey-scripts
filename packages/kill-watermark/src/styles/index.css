@@ -24,3 +24,11 @@ txpdiv.txp-watermark {
 .iqp-logo-bottom {
   display: none !important;
 }
+
+/*
+ * 优酷播放页 logo
+ * https://www.iqiyi.com/v_xkt6z3z798.html
+ ******************************************************************************/
+watermark-layer {
+  opacity: 0 !important;
+}
