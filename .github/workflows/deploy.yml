@@ -1,0 +1,42 @@
+name: GitHub Actions Deploy
+
+on:
+  push:
+    branches:
+      - master
+    # 只在下列路径变更时触发
+    paths:
+      - 'packages/**'
+
+# 设置权限
+permissions: write-all
+
+jobs:
+  bot:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 8
+
+      - name: Set node version to 18
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+          cache: 'pnpm'
+
+      - name: Run Script
+        run: pnpm install && pnpm build
+
+      - name: Copy files
+        run: cp README.md ./dist/
+
+      - name: Deploy
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          branch: gh-pages
+          folder: dist
