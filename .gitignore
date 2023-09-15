@@ -10,7 +10,6 @@ node_modules
 # compiled output
 dist
 dist-dev
-libs-dev
 build
 cache
 .cache

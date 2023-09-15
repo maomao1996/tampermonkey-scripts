@@ -15,7 +15,7 @@
   "author": "maomao <1714487678@qq.com>",
   "type": "module",
   "scripts": {
-    "build": "pnpm -r build",
+    "build": "rimraf dist && pnpm -r build",
     "changeset": "changeset",
     "create-package": "node scripts/create.js",
     "dev": "pnpm -r dev",
@@ -40,6 +40,7 @@
     "lint-staged": "^13.2.2",
     "prettier": "^2.8.8",
     "prompts": "^2.4.2",
+    "rimraf": "^5.0.1",
     "rollup": "^3.28.1",
     "typescript": "^5.2.2"
   }
