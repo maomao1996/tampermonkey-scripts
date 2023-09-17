@@ -2,7 +2,7 @@
   "name": "杀死水印（Kill Watermark）",
   "namespace": "",
   "version": "0.0.2",
-  "description": "杀死水印（移除烦人的水印，还你一个干净清爽的页面）；已适配稿定设计、腾讯视频、爱奇艺",
+  "description": "杀死水印（移除烦人的水印，还你一个干净清爽的页面）；已适配稿定设计、腾讯视频、爱奇艺、优酷、哔哩哔哩直播",
   "author": "",
   "license": "",
   "supportURL": "",
@@ -11,6 +11,7 @@
     "*://*.gaoding.com/*",
     "*://v.qq.com/x/cover/*",
     "*://www.iqiyi.com/*",
-    "*://v.youku.com/*"
+    "*://v.youku.com/*",
+    "*://live.bilibili.com/*"
   ]
 }
