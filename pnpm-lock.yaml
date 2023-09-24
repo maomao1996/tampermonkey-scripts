@@ -13,6 +13,9 @@ importers:
       '@femm/shared-rollup-config':
         specifier: workspace:^
         version: link:shared/rollup-config
+      '@femm/shared-tsconfig':
+        specifier: workspace:^
+        version: link:shared/tsconfig
       '@femm/verify-commit':
         specifier: ^1.0.1
         version: 1.0.1
@@ -72,6 +75,8 @@ importers:
       rollup-plugin-userscript-metablock:
         specifier: ^0.3.3
         version: 0.3.3
+
+  shared/tsconfig: {}
 
 packages:
 
