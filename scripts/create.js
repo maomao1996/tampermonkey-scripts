@@ -74,7 +74,9 @@ fs.outputFileSync(
   JSON.stringify(
     {
       name: tampermonkeyName,
-      namespace: '',
+      'name:zh-CN': tampermonkeyName,
+      'name:zh-TW': tampermonkeyName,
+      namespace: `maomao1996.${packageName}`,
       version: '0.0.0',
       description: '',
       author: '',

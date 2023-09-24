@@ -39,8 +39,8 @@ export function createRollupConfig({ pkg, plugins = [] }) {
       }),
       metablock({
         override: {
+          /* https://greasyfork.org/zh-CN/help/meta-keys */
           version: pkg.version,
-          namespace: 'https://github.com/maomao1996/tampermonkey-scripts',
           author: 'maomao1996',
           homepage: 'https://github.com/maomao1996/tampermonkey-scripts',
           supportURL: 'https://github.com/maomao1996/tampermonkey-scripts/issues',
