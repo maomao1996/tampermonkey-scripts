@@ -11,7 +11,7 @@
   - [tieba-helper 贴吧小助手](#tieba-helper-贴吧小助手)
   - [access-link 跳转链接修复（外链直达）](#access-link-跳转链接修复外链直达)
   - [color-restore 黑白网页颜色还原](#color-restore-黑白网页颜色还原)
-  - [kill-watermark 杀死水印](#kill-watermark-杀死水印)
+  - [kill-watermark 删除水印](#kill-watermark-删除水印)
   - [油猴 API 文档](#油猴-api-文档)
   - [支持作者](#支持作者)
 
@@ -110,13 +110,13 @@
 - [x] 只移除 `grayscale` （灰度）滤镜，保留其他滤镜
 - [x] 支持移除动态元素的灰度滤镜（支持 SPA 应用）
 
-## kill-watermark 杀死水印
+## kill-watermark 删除水印
 
 ![kill-watermark](https://img.shields.io/greasyfork/v/459646)
 
 [安装 kill-watermark](https://greasyfork.org/zh-CN/scripts/459646)
 
-杀死水印（移除烦人的水印，还你一个干净清爽的页面）
+删除水印（移除烦人的水印，还你一个干净清爽的页面）
 
 > **已适配站点**
 

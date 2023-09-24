@@ -14,7 +14,7 @@ body:
         - tieba-helper 贴吧小助手
         - access-link 跳转链接修复
         - color-restore 黑白网页颜色还原
-        - kill-watermark 杀死水印
+        - kill-watermark 删除水印
         - 其他
     validations:
       required: true
