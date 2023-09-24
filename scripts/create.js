@@ -45,6 +45,7 @@ fs.outputFileSync(
     {
       name: packageName,
       version: '0.0.0',
+      private: true,
       type: 'module',
       scripts: {
         build: 'rollup -c',
