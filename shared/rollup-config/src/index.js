@@ -5,7 +5,7 @@ import { swc } from 'rollup-plugin-swc3'
 import terser from '@rollup/plugin-terser'
 import metablock from 'rollup-plugin-userscript-metablock'
 
-export function createRollupConfig({ pkg }) {
+export function createRollupConfig({ pkg, plugins = [] }) {
   const file = path.resolve(
     '../../',
     process.env.BUILD === 'development' ? 'dist-dev' : 'dist',
@@ -19,6 +19,7 @@ export function createRollupConfig({ pkg }) {
       format: 'iife',
     },
     plugins: [
+      ...plugins,
       postcss({ minimize: true }),
       swc({
         jsc: { target: 'es5' },
