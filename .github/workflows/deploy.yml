@@ -4,9 +4,9 @@ on:
   push:
     branches:
       - master
-    # 只在下列路径变更时触发
+    # 只在下列文件变更时触发
     paths:
-      - 'packages/**'
+      - 'packages/**/CHANGELOG.md'
 
 # 设置权限
 permissions: write-all
