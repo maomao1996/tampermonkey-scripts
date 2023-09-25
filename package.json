@@ -39,6 +39,7 @@
     "@femm/shared-tsconfig": "workspace:^",
     "@femm/verify-commit": "^1.0.1",
     "@types/fs-extra": "^11.0.2",
+    "@types/shared-types": "workspace:^",
     "chalk": "^5.3.0",
     "fs-extra": "^11.1.1",
     "husky": "^8.0.3",
