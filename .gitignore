@@ -15,6 +15,7 @@ cache
 .cache
 .temp
 .tmp
+.turbo
 
 # log and lock files
 *.log

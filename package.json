@@ -15,11 +15,15 @@
   "author": "maomao <1714487678@qq.com>",
   "type": "module",
   "scripts": {
-    "build": "rimraf dist && pnpm -r build",
-    "changeset": "changeset",
-    "create-package": "node scripts/create.js",
-    "dev": "pnpm -r dev",
+    "build": "turbo run build",
+    "dev": "turbo run dev",
+    "clean": "pnpm clean:turbo && pnpm clean:node-modules && pnpm clean:dist && pnpm install --hoist",
+    "clean:turbo": "turbo clean && rimraf ./node_modules/.cache/turbo",
+    "clean:node-modules": "rimraf ./packages/**/node_modules && rimraf ./shared/**/node_modules && rm -rf ./node_modules",
+    "clean:dist": "rimraf ./dist && rimraf ./dist-dev",
     "format": "prettier --write .",
+    "create-package": "node scripts/create.js",
+    "changeset": "changeset",
     "prepare": "husky install"
   },
   "lint-staged": {
@@ -43,6 +47,7 @@
     "prompts": "^2.4.2",
     "rimraf": "^5.0.1",
     "rollup": "^3.28.1",
+    "turbo": "^1.10.14",
     "typescript": "^5.2.2"
   }
 }
