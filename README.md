@@ -115,6 +115,10 @@
 
 指令来源于 [ChatGPT 中文调教指南](https://github.com/PlexPt/awesome-chatgpt-prompts-zh)
 
+## 参与贡献
+
+你好！我真的很高兴您有兴趣为 tampermonkey-scripts 做出贡献。在提交您的贡献之前，请务必花点时间阅读[贡献指南](/.github/CONTRIBUTING.md)
+
 ## 支持作者
 
 如果你喜欢 `tampermonkey-scripts` 中的插件，并且它对你确实有帮助，欢迎给我打赏一杯咖啡哈~
