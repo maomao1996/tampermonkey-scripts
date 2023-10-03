@@ -56,3 +56,12 @@ watermark-layer {
 #main > div.wm {
   display: none !important;
 }
+
+/*
+ * 腾讯文档
+ * https://docs.qq.com
+ ******************************************************************************/
+
+.watermark-bg-wrapper {
+  display: none !important;
+}

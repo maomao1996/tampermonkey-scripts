@@ -5,7 +5,7 @@
   "name:en": "Kill Watermark",
   "namespace": "maomao1996.kill-watermark",
   "version": "0.0.2",
-  "description": "删除水印（移除烦人的水印，还你一个干净清爽的页面）；已适配稿定设计、腾讯视频、爱奇艺、优酷、哔哩哔哩直播、腾讯课堂、语雀",
+  "description": "删除水印（移除烦人的水印，还你一个干净清爽的页面）；已适配稿定设计、腾讯视频、爱奇艺、优酷、哔哩哔哩直播、腾讯课堂、语雀、腾讯文档",
   "author": "",
   "homepage": "",
   "supportURL": "",
@@ -19,6 +19,7 @@
     "*://v.youku.com/*",
     "*://live.bilibili.com/*",
     "*://ke.qq.com/course/*",
-    "*://*.yuque.com/*"
+    "*://*.yuque.com/*",
+    "*://docs.qq.com/*"
   ]
 }
