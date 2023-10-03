@@ -1,5 +1,16 @@
 # kill-watermark
 
+## 0.2.0
+
+### Minor Changes
+
+- c44d02d: 适配语雀
+- 36b0d1d: 适配腾讯文档
+
+### Patch Changes
+
+- 0678aa0: 优化 meta 配置
+
 ## 0.1.0
 
 ### Minor Changes
