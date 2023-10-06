@@ -17,7 +17,7 @@
   "scripts": {
     "build": "turbo run build",
     "dev": "turbo run dev",
-    "clean": "pnpm clean:turbo && pnpm clean:node-modules && pnpm clean:dist && pnpm install --hoist",
+    "clean": "pnpm clean:turbo && pnpm clean:dist && pnpm clean:node-modules && pnpm install --hoist",
     "clean:turbo": "turbo clean && rimraf ./node_modules/.cache/turbo",
     "clean:node-modules": "rimraf ./packages/**/node_modules && rimraf ./shared/**/node_modules && rm -rf ./node_modules",
     "clean:dist": "rimraf ./dist && rimraf ./dist-dev",
