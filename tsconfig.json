@@ -1,5 +1,14 @@
 {
-  "extends": "@femm/shared-tsconfig",
-  "include": ["packages/**/*.ts", "shared/**/*.ts", "types/*.d.ts"],
-  "exclude": ["node_modules", "dist", "legacy"]
+  "extends": "@femm/shared-tsconfig/tsconfig",
+
+  "references": [
+    {
+      "path": "./packages/kill-watermark/tsconfig.json"
+    }
+  ],
+
+  // 防止提示 Referenced project may not disable emit
+  "files": [],
+
+  "exclude": ["node_modules", "dist", "dist-dev", "legacy"]
 }
