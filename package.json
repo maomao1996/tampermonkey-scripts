@@ -24,6 +24,7 @@
     "format": "prettier --write .",
     "create-package": "node scripts/create.js",
     "changeset": "changeset",
+    "packages-version": "changeset version",
     "prepare": "husky install"
   },
   "lint-staged": {
