@@ -57,6 +57,30 @@ fs.outputFileSync(
   ),
 )
 
+// tsconfig.json
+fs.outputFileSync(
+  `${root}/tsconfig.json`,
+  JSON.stringify(
+    {
+      extends: '../../tsconfig.json',
+      compilerOptions: {
+        composite: true,
+
+        baseUrl: '',
+        paths: {
+          /**
+           * 别名 @ 和 npm 组织包容易冲突，故直接使用 src
+           */
+          'src/*': ['src/*'],
+        },
+      },
+      include: ['src', 'types'],
+    },
+    null,
+    2,
+  ),
+)
+
 // rollup.config.js
 fs.outputFileSync(
   `${root}/rollup.config.js`,
