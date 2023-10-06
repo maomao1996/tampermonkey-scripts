@@ -1,7 +1,7 @@
 import path from 'node:path'
 import { defineConfig } from 'rollup'
 import postcss from 'rollup-plugin-postcss'
-import { swc } from 'rollup-plugin-swc3'
+import { swc, defineRollupSwcOption } from 'rollup-plugin-swc3'
 import terser from '@rollup/plugin-terser'
 import metablock from 'rollup-plugin-userscript-metablock'
 
@@ -21,9 +21,14 @@ export function createRollupConfig({ pkg, plugins = [] }) {
     plugins: [
       ...plugins,
       postcss({ minimize: true }),
-      swc({
-        jsc: { target: 'es5' },
-      }),
+      swc(
+        defineRollupSwcOption({
+          jsc: {
+            target: 'es5',
+            baseUrl: process.cwd(),
+          },
+        }),
+      ),
       terser({
         mangle: {
           keep_fnames: true,
