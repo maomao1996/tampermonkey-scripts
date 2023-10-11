@@ -1,0 +1,9 @@
+/*
+ * 爱奇艺播放页 logo
+ * https://www.iqiyi.com/v_xkt6z3z798.html
+ ******************************************************************************/
+.iqp-logo-box,
+.iqp-logo-top,
+.iqp-logo-bottom {
+  display: none !important;
+}

@@ -65,7 +65,11 @@ importers:
         specifier: ^4.4.3
         version: 4.4.3
 
-  packages/kill-watermark: {}
+  packages/kill-watermark:
+    devDependencies:
+      camelcase:
+        specifier: ^8.0.0
+        version: 8.0.0
 
   shared/rollup-config:
     dependencies:
@@ -934,6 +938,11 @@ packages:
   /camelcase@5.3.1:
     resolution: {integrity: sha512-L28STB170nwWS63UjtlEOE3dldQApaJXZkOI1uMFfzf3rRuPegHaHesyee+YxQ+W6SvRDQV6UrdOdRiR153wJg==}
     engines: {node: '>=6'}
+    dev: true
+
+  /camelcase@8.0.0:
+    resolution: {integrity: sha512-8WB3Jcas3swSvjIeA2yvCJ+Miyz5l1ZmB6HFb9R1317dt9LCQoswg/BGrmAmkWVEszSrrg4RwmO46qIm2OEnSA==}
+    engines: {node: '>=16'}
     dev: true
 
   /caniuse-api@3.0.0:

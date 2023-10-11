@@ -21,5 +21,6 @@
     "*://ke.qq.com/course/*",
     "*://*.yuque.com/*",
     "*://docs.qq.com/*"
-  ]
+  ],
+  "grant": ["GM_addStyle"]
 }

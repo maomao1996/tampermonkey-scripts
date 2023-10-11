@@ -19,3 +19,4 @@ yarn.lock
 
 # user-specific files
 libs
+packages/kill-watermark/src/site/index.ts

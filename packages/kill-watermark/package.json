@@ -6,5 +6,8 @@
   "scripts": {
     "build": "rollup -c",
     "dev": "rollup --environment BUILD:development -c --watch"
+  },
+  "devDependencies": {
+    "camelcase": "^8.0.0"
   }
 }

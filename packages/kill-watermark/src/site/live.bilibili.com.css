@@ -1,0 +1,7 @@
+/*
+ * 哔哩哔哩直播左上角 logo
+ * https://live.bilibili.com/
+ ******************************************************************************/
+.web-player-icon-roomStatus {
+  opacity: 0 !important;
+}
