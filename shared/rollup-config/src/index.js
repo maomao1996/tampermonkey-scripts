@@ -5,7 +5,7 @@ import { swc, defineRollupSwcOption } from 'rollup-plugin-swc3'
 import terser from '@rollup/plugin-terser'
 import metablock from 'rollup-plugin-userscript-metablock'
 
-export function createRollupConfig({ pkg, plugins = [] }) {
+export function createRollupConfig({ pkg, postcss: postcssOptions = {}, plugins = [] }) {
   const file = path.resolve(
     '../../',
     process.env.BUILD === 'development' ? 'dist-dev' : 'dist',
@@ -20,7 +20,7 @@ export function createRollupConfig({ pkg, plugins = [] }) {
     },
     plugins: [
       ...plugins,
-      postcss({ minimize: true }),
+      postcssOptions && postcss({ minimize: true, ...postcssOptions }),
       swc(
         defineRollupSwcOption({
           jsc: {
