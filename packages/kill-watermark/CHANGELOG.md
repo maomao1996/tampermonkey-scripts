@@ -1,5 +1,16 @@
 # kill-watermark
 
+## 0.3.0
+
+### Minor Changes
+
+- 23d20bc: 分离各网站样式，防止冲突
+- 6e86745: 适配腾讯视频播放页暂停时的弹窗广告
+
+### Patch Changes
+
+- e969594: 还原名称为【杀死水印（Kill Watermark）】
+
 ## 0.2.0
 
 ### Minor Changes
