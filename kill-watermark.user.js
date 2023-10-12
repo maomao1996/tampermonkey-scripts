@@ -1,8 +1,8 @@
 // ==UserScript==
-// @name        删除水印
-// @description 删除水印（移除烦人的水印，还你一个干净清爽的页面）；已适配稿定设计、腾讯视频、爱奇艺、优酷、哔哩哔哩直播、腾讯课堂、语雀、腾讯文档
+// @name        杀死水印（Kill Watermark）
+// @description 杀死水印（移除烦人的水印，还你一个干净清爽的页面）；已适配稿定设计、腾讯视频、爱奇艺、优酷、哔哩哔哩直播、腾讯课堂、语雀、腾讯文档
 // @namespace   maomao1996.kill-watermark
-// @version     0.2.0
+// @version     0.3.0
 // @author      maomao1996
 // @homepage    https://github.com/maomao1996/tampermonkey-scripts
 // @supportURL  https://github.com/maomao1996/tampermonkey-scripts/issues
@@ -15,20 +15,72 @@
 // @match       *://ke.qq.com/course/*
 // @match       *://*.yuque.com/*
 // @match       *://docs.qq.com/*
-// @grant       none
+// @grant       GM_addStyle
 // ==/UserScript==
 (function() {
   "use strict";
-  function styleInject(t, e) {
-    if (e === void 0) e = {};
-    var i = e.insertAt;
-    if (!t || typeof document === "undefined") return;
-    var o = document.head || document.getElementsByTagName("head")[0];
-    var a = document.createElement("style");
-    a.type = "text/css";
-    if (i === "top") if (o.firstChild) o.insertBefore(a, o.firstChild); else o.appendChild(a); else o.appendChild(a);
-    if (a.styleSheet) a.styleSheet.cssText = t; else a.appendChild(document.createTextNode(t));
+  var r = ".watermark-bg-wrapper{display:none!important}";
+  var t = ".editor-watermark{display:none!important;filter:opacity(0)!important;z-index:-1996!important}";
+  var a = ".iqp-logo-bottom,.iqp-logo-box,.iqp-logo-top{display:none!important}";
+  var e = '#loki-player div[style*="position: absolute;"]{display:none!important}';
+  var o = ".web-player-icon-roomStatus{opacity:0!important}";
+  var i = "txpdiv.txp-watermark{opacity:0!important}txpdiv[data-role=creative-player-pause-layer]{display:none!important}";
+  var n = "watermark-layer{opacity:0!important}";
+  var l = "#main>div.wm{display:none!important}";
+  var y = [ [ "docs.qq.com", r ], [ "gaoding.com", t ], [ "iqiyi.com", a ], [ "ke.qq.com", e ], [ "live.bilibili.com", o ], [ "v.qq.com", i ], [ "v.youku.com", n ], [ "yuque.com", l ] ];
+  function _array_like_to_array(r, t) {
+    if (t == null || t > r.length) t = r.length;
+    for (var a = 0, e = new Array(t); a < t; a++) e[a] = r[a];
+    return e;
   }
-  var t = '.editor-watermark{display:none!important;filter:opacity(0)!important;z-index:-1996!important}txpdiv.txp-watermark{opacity:0!important}.iqp-logo-bottom,.iqp-logo-box,.iqp-logo-top{display:none!important}.web-player-icon-roomStatus,watermark-layer{opacity:0!important}#loki-player div[style*="position: absolute;"],#main>div.wm,.watermark-bg-wrapper{display:none!important}';
-  styleInject(t);
+  function _array_with_holes(r) {
+    if (Array.isArray(r)) return r;
+  }
+  function _iterable_to_array_limit(r, t) {
+    var a = r == null ? null : typeof Symbol !== "undefined" && r[Symbol.iterator] || r["@@iterator"];
+    if (a == null) return;
+    var e = [];
+    var o = true;
+    var i = false;
+    var n, l;
+    try {
+      for (a = a.call(r); !(o = (n = a.next()).done); o = true) {
+        e.push(n.value);
+        if (t && e.length === t) break;
+      }
+    } catch (r) {
+      i = true;
+      l = r;
+    } finally {
+      try {
+        if (!o && a["return"] != null) a["return"]();
+      } finally {
+        if (i) throw l;
+      }
+    }
+    return e;
+  }
+  function _non_iterable_rest() {
+    throw new TypeError("Invalid attempt to destructure non-iterable instance.\\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.");
+  }
+  function _sliced_to_array(r, t) {
+    return _array_with_holes(r) || _iterable_to_array_limit(r, t) || _unsupported_iterable_to_array(r, t) || _non_iterable_rest();
+  }
+  function _unsupported_iterable_to_array(r, t) {
+    if (!r) return;
+    if (typeof r === "string") return _array_like_to_array(r, t);
+    var a = Object.prototype.toString.call(r).slice(8, -1);
+    if (a === "Object" && r.constructor) a = r.constructor.name;
+    if (a === "Map" || a === "Set") return Array.from(a);
+    if (a === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(a)) return _array_like_to_array(r, t);
+  }
+  var u = location.hostname;
+  var _ = y.find((function(r) {
+    var t = _sliced_to_array(r, 1), a = t[0];
+    return u.includes(a);
+  }));
+  if (_) {
+    var p = _sliced_to_array(_, 2), c = p[1];
+    c && GM_addStyle(c);
+  }
 })();
