@@ -38,6 +38,7 @@
     "@femm/prettier": "^1.1.0",
     "@femm/shared-rollup-config": "workspace:^",
     "@femm/shared-tsconfig": "workspace:^",
+    "@femm/shared-utils": "workspace:^",
     "@femm/verify-commit": "^1.0.1",
     "@types/fs-extra": "^11.0.2",
     "@types/shared-types": "workspace:^",

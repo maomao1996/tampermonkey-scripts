@@ -16,6 +16,9 @@ importers:
       '@femm/shared-tsconfig':
         specifier: workspace:^
         version: link:shared/tsconfig
+      '@femm/shared-utils':
+        specifier: workspace:^
+        version: link:shared/utils
       '@femm/verify-commit':
         specifier: ^1.0.1
         version: 1.0.1
@@ -92,6 +95,8 @@ importers:
   shared/tsconfig: {}
 
   shared/types: {}
+
+  shared/utils: {}
 
 packages:
 
