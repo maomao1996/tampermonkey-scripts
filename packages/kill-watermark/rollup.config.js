@@ -1,6 +1,8 @@
 import { createRollupConfig } from '@femm/shared-rollup-config'
 import { readdirSync, writeFileSync } from 'node:fs'
 import camelCase from 'camelcase'
+import * as prettier from 'prettier'
+import prettierConfig from '@femm/prettier'
 
 import pkg from './package.json' assert { type: 'json' }
 
@@ -9,9 +11,9 @@ export default createRollupConfig({
   postcss: { minimize: true, inject: false },
   plugins: [
     {
-      name: 'write-site-module',
+      name: 'write-site-default-export-module',
       transform() {
-        const files = readdirSync('./src/site')
+        const files = readdirSync('./src/sites')
         const exportDefault = []
         const source = files.reduce((str, file) => {
           if (file.endsWith('.css')) {
@@ -24,7 +26,18 @@ export default createRollupConfig({
           return str
         }, '')
 
-        writeFileSync('./src/site/index.ts', `${source}\nexport default [${exportDefault}]`)
+        const filepath = './src/sites/index.ts'
+        writeFileSync(
+          filepath,
+          prettier.format(`${source}\nexport default [${exportDefault}]`, {
+            ...prettierConfig,
+            /**
+             * 配置 filepath 字段，防止控制台弹出如下提示
+             *  No parser and no filepath given, using 'babel' the parser now but this will throw an error in the future. Please specify a parser or a filepath so one can be inferred.
+             */
+            filepath,
+          }),
+        )
       },
     },
   ],

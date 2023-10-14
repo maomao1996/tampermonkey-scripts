@@ -1,4 +1,4 @@
-import sites from 'src/site'
+import sites from 'src/sites'
 
 const hostname = location.hostname
 const currentSite = (sites as [string, string][]).find(([url]) => hostname.includes(url))

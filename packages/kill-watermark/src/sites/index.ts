@@ -7,4 +7,13 @@ import { default as vQqCom } from './v.qq.com.css'
 import { default as vYoukuCom } from './v.youku.com.css'
 import { default as yuqueCom } from './yuque.com.css'
 
-export default [["docs.qq.com", docsQqCom],["gaoding.com", gaodingCom],["iqiyi.com", iqiyiCom],["ke.qq.com", keQqCom],["live.bilibili.com", liveBilibiliCom],["v.qq.com", vQqCom],["v.youku.com", vYoukuCom],["yuque.com", yuqueCom]]
+export default [
+  ['docs.qq.com', docsQqCom],
+  ['gaoding.com', gaodingCom],
+  ['iqiyi.com', iqiyiCom],
+  ['ke.qq.com', keQqCom],
+  ['live.bilibili.com', liveBilibiliCom],
+  ['v.qq.com', vQqCom],
+  ['v.youku.com', vYoukuCom],
+  ['yuque.com', yuqueCom],
+]
