@@ -1,5 +1,6 @@
 import path from 'node:path'
 import { defineConfig } from 'rollup'
+import { nodeResolve } from '@rollup/plugin-node-resolve'
 import postcss from 'rollup-plugin-postcss'
 import { swc, defineRollupSwcOption } from 'rollup-plugin-swc3'
 import terser from '@rollup/plugin-terser'
@@ -20,6 +21,7 @@ export function createRollupConfig({ pkg, postcss: postcssOptions = {}, plugins 
     },
     plugins: [
       ...plugins,
+      nodeResolve(),
       postcssOptions && postcss({ minimize: true, ...postcssOptions }),
       swc(
         defineRollupSwcOption({

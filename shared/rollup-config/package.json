@@ -5,6 +5,7 @@
   "type": "module",
   "main": "src/index.js",
   "dependencies": {
+    "@rollup/plugin-node-resolve": "^15.2.3",
     "@rollup/plugin-terser": "^0.4.3",
     "rollup-plugin-postcss": "^4.0.2",
     "rollup-plugin-swc3": "^0.9.1",
