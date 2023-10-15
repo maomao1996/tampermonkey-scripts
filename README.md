@@ -10,15 +10,15 @@
 
 ## 脚本列表
 
-| 脚本                                                        | 版本                                                                      | 描述                                                                                                                                     | 安装                                                                                                                                                            |
-| :---------------------------------------------------------- | ------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| [杀死水印（Kill Watermark）](/packages/kill-watermark)      | ![杀死水印（Kill Watermark）](https://img.shields.io/greasyfork/v/459646) | 移除烦人的水印，还你一个干净清爽的页面<br />详细功能描述请点击脚本标题或查看 [更新日志 CHANGELOG](/packages/kill-watermark/CHANGELOG.md) | [GreasyFork](https://greasyfork.org/zh-CN/scripts/459646)<br />[GitHub](https://github.com/maomao1996/tampermonkey-scripts/raw/gh-pages/kill-watermark.user.js) |
-| [移除重定向（外链直达）](#access-link-跳转链接修复外链直达) | ![移除重定向（外链直达）](https://img.shields.io/greasyfork/v/395970)     | 修复跳转链接为站外直链，免去拦截页面点击步骤可直达站外；拦截页面自动跳转                                                                 | [greasyfork](https://greasyfork.org/zh-CN/scripts/395970)                                                                                                       |
-| [115 小助手](#115-helper-115-小助手)                        | ![115 小助手](https://img.shields.io/greasyfork/v/413142)                 | 115 网盘体验增强（还原顶部菜单栏链接任务入口、一键搜索、SHA1 快速查重/自动查重、删除空文件夹、列表显示文件 SHA1 信息）                   | [greasyfork](https://greasyfork.org/zh-CN/scripts/413142)                                                                                                       |
-| [慕课网小助手](#imooc-helper-慕课小助手)                    | ![慕课网小助手](https://img.shields.io/greasyfork/v/396378)               | 问答区快速查看问答详情、自动播放下一节视频                                                                                               | [greasyfork](https://greasyfork.org/zh-CN/scripts/396378)                                                                                                       |
-| [贴吧小助手](#tieba-helper-贴吧小助手)                      | ![贴吧小助手](https://img.shields.io/greasyfork/v/419001)                 | 自动顶贴回复、移除广告和碍眼模块                                                                                                         | [greasyfork](https://greasyfork.org/zh-CN/scripts/419001)                                                                                                       |
-| [黑白网页颜色还原](#color-restore-黑白网页颜色还原)         | ![贴吧小助手](https://img.shields.io/greasyfork/v/455825)                 | 移除灰度滤镜，还你一个五彩斑斓的网页                                                                                                     | [greasyfork](https://greasyfork.org/zh-CN/scripts/455825)                                                                                                       |
-| [ChatGPT 小助手](#chatgpt-helper-chatgpt-小助手)            | ![贴吧小助手](https://img.shields.io/greasyfork/v/462447)                 | 添加快捷指令（prompts）                                                                                                                  | [greasyfork](https://greasyfork.org/zh-CN/scripts/462447)                                                                                                       |
+| 脚本                                                    | 版本                                                                      | 描述                                                                                                                                                       | 安装                                                                                                                                                             |
+| :------------------------------------------------------ | ------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| [杀死水印（Kill Watermark）](/packages/kill-watermark)  | ![杀死水印（Kill Watermark）](https://img.shields.io/greasyfork/v/459646) | 移除烦人的水印，还你一个干净清爽的页面<br />已适配站点请查看[更新日志 CHANGELOG](/packages/kill-watermark/CHANGELOG.md)                                    | [GreasyFork](https://greasyfork.org/zh-CN/scripts/459646)<br />[GitHub](https://github.com/maomao1996/tampermonkey-scripts/raw/gh-pages/kill-watermark.user.js)  |
+| [跳转链接修复（移除重定向）](/packages/remove-redirect) | ![跳转链接修复（移除重定向）](https://img.shields.io/greasyfork/v/395970) | 修复跳转链接为站外直链，免去拦截页面点击步骤可直达站外；拦截页面自动跳转<br />已适配站点请查看[更新日志 CHANGELOG](/packages/remove-redirect/CHANGELOG.md) | [GreasyFork](https://greasyfork.org/zh-CN/scripts/395970)<br />[GitHub](https://github.com/maomao1996/tampermonkey-scripts/raw/gh-pages/remove-redirect.user.js) |
+| [115 小助手](#115-helper-115-小助手)                    | ![115 小助手](https://img.shields.io/greasyfork/v/413142)                 | 115 网盘体验增强（还原顶部菜单栏链接任务入口、一键搜索、SHA1 快速查重/自动查重、删除空文件夹、列表显示文件 SHA1 信息）                                     | [GreasyFork](https://greasyfork.org/zh-CN/scripts/413142)                                                                                                        |
+| [慕课网小助手](#imooc-helper-慕课小助手)                | ![慕课网小助手](https://img.shields.io/greasyfork/v/396378)               | 问答区快速查看问答详情、自动播放下一节视频                                                                                                                 | [GreasyFork](https://greasyfork.org/zh-CN/scripts/396378)                                                                                                        |
+| [贴吧小助手](#tieba-helper-贴吧小助手)                  | ![贴吧小助手](https://img.shields.io/greasyfork/v/419001)                 | 自动顶贴回复、移除广告和碍眼模块                                                                                                                           | [GreasyFork](https://greasyfork.org/zh-CN/scripts/419001)                                                                                                        |
+| [黑白网页颜色还原](#color-restore-黑白网页颜色还原)     | ![黑白网页颜色还原](https://img.shields.io/greasyfork/v/455825)           | 移除灰度滤镜，还你一个五彩斑斓的网页                                                                                                                       | [GreasyFork](https://greasyfork.org/zh-CN/scripts/455825)                                                                                                        |
+| [ChatGPT 小助手](#chatgpt-helper-chatgpt-小助手)        | ![ChatGPT 小助手](https://img.shields.io/greasyfork/v/462447)             | 添加快捷指令（prompts）                                                                                                                                    | [GreasyFork](https://greasyfork.org/zh-CN/scripts/462447)                                                                                                        |
 
 ## 115-helper 115 小助手
 
@@ -60,34 +60,6 @@
 - [x] 移除碍眼模块（会员、app 下载等）
 
 当帖子没有评论时，直接回复楼主会刷新页面，需要再次开启自动顶贴回复
-
-## access-link 跳转链接修复（外链直达）
-
-![access-link](https://img.shields.io/greasyfork/v/395970)
-
-[安装 access-link](https://greasyfork.org/zh-CN/scripts/395970)
-
-- [x] 修复跳转链接为站外直链，免去拦截页面点击步骤可直达站外
-- [x] 拦截页面自动跳转
-
-> **已适配站点**
-
-- [x] 百度搜索
-- [x] 360 搜索
-- [x] 知乎
-- [x] 知乎专栏
-- [x] 掘金
-- [x] 码云
-- [x] 开源中国
-- [x] 简书
-- [x] CSDN
-- [x] 力扣（Leetcode）
-- [x] 语雀
-- [x] 微信开放社区
-- [x] 微博
-- [x] 牛客网
-- [x] 豆瓣
-- [x] 少数派
 
 ## color-restore 黑白网页颜色还原
 

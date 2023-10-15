@@ -1,8 +1,8 @@
 // ==UserScript==
 // @name        杀死水印（Kill Watermark）
-// @description 杀死水印（移除烦人的水印，还你一个干净清爽的页面）；已适配稿定设计、腾讯视频、爱奇艺、优酷、哔哩哔哩直播、腾讯课堂、语雀、腾讯文档
+// @description 杀死水印（移除烦人的水印，还你一个干净清爽的页面）；已适配稿定设计、腾讯视频、爱奇艺、优酷、哔哩哔哩直播、腾讯课堂、语雀、腾讯文档、CSDN C 知道
 // @namespace   maomao1996.kill-watermark
-// @version     0.3.0
+// @version     0.4.0
 // @author      maomao1996
 // @homepage    https://github.com/maomao1996/tampermonkey-scripts
 // @supportURL  https://github.com/maomao1996/tampermonkey-scripts/issues
@@ -15,6 +15,7 @@
 // @match       *://ke.qq.com/course/*
 // @match       *://*.yuque.com/*
 // @match       *://docs.qq.com/*
+// @match       *://so.csdn.net/so/*
 // @grant       GM_addStyle
 // ==/UserScript==
 (function() {
@@ -24,10 +25,11 @@
   var a = ".iqp-logo-bottom,.iqp-logo-box,.iqp-logo-top{display:none!important}";
   var e = '#loki-player div[style*="position: absolute;"]{display:none!important}';
   var o = ".web-player-icon-roomStatus{opacity:0!important}";
-  var i = "txpdiv.txp-watermark{opacity:0!important}txpdiv[data-role=creative-player-pause-layer]{display:none!important}";
-  var n = "watermark-layer{opacity:0!important}";
-  var l = "#main>div.wm{display:none!important}";
-  var y = [ [ "docs.qq.com", r ], [ "gaoding.com", t ], [ "iqiyi.com", a ], [ "ke.qq.com", e ], [ "live.bilibili.com", o ], [ "v.qq.com", i ], [ "v.youku.com", n ], [ "yuque.com", l ] ];
+  var i = ".username_mask_cover[style]{display:none!important}";
+  var n = "txpdiv.txp-watermark{opacity:0!important}txpdiv[data-role=creative-player-pause-layer]{display:none!important}";
+  var l = "watermark-layer{opacity:0!important}";
+  var y = "#main>div.wm{display:none!important}";
+  var _ = [ [ "docs.qq.com", r ], [ "gaoding.com", t ], [ "iqiyi.com", a ], [ "ke.qq.com", e ], [ "live.bilibili.com", o ], [ "so.csdn.net", i ], [ "v.qq.com", n ], [ "v.youku.com", l ], [ "yuque.com", y ] ];
   function _array_like_to_array(r, t) {
     if (t == null || t > r.length) t = r.length;
     for (var a = 0, e = new Array(t); a < t; a++) e[a] = r[a];
@@ -75,12 +77,12 @@
     if (a === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(a)) return _array_like_to_array(r, t);
   }
   var u = location.hostname;
-  var _ = y.find((function(r) {
+  var p = _.find((function(r) {
     var t = _sliced_to_array(r, 1), a = t[0];
     return u.includes(a);
   }));
-  if (_) {
-    var p = _sliced_to_array(_, 2), c = p[1];
-    c && GM_addStyle(c);
+  if (p) {
+    var c = _sliced_to_array(p, 2), s = c[1];
+    s && GM_addStyle(s);
   }
 })();
