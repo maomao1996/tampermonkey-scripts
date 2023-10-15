@@ -1,0 +1,10 @@
+{
+  "name": "remove-redirect",
+  "version": "1.12.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "rollup -c",
+    "dev": "rollup --environment BUILD:development -c --watch"
+  }
+}

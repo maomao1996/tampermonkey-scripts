@@ -4,6 +4,9 @@
   "references": [
     {
       "path": "./packages/kill-watermark/tsconfig.json"
+    },
+    {
+      "path": "./packages/remove-redirect/tsconfig.json"
     }
   ],
 
