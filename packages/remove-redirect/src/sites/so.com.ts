@@ -12,15 +12,11 @@ const sites: SiteModule = [
     'so.com',
     {
       transform: {
-        selector: '.result li.res-list',
+        selector: 'a[href*="so.com/link?"][data-mdurl]',
         customTransform(node) {
-          const originUrl = node.querySelector('a[data-mdurl]')?.getAttribute('data-mdurl')
+          const originUrl = node.getAttribute('data-mdurl')
           if (validateUrl(originUrl)) {
-            const isVideo = node.querySelector('[data-mohe-type="svideo_top"]')
-
-            node
-              .querySelectorAll(isVideo ? 'h3 a' : 'a')
-              .forEach((a) => a.setAttribute('href', originUrl!))
+            node.setAttribute('href', originUrl!)
           }
         },
       },
