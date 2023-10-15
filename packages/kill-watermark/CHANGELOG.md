@@ -1,5 +1,15 @@
 # kill-watermark
 
+## 0.4.0
+
+### Minor Changes
+
+- d5b57f7: 适配 CSDN C 知道
+
+### Patch Changes
+
+- 730a1a1: 优化 `sites/index.ts` 文件生成
+
 ## 0.3.0
 
 ### Minor Changes
