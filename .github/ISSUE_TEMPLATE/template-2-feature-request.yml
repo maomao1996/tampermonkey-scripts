@@ -8,13 +8,13 @@ body:
       label: 脚本
       description: 使用的脚本是？
       options:
+        - kill-watermark 杀死水印
+        - remove-redirect 跳转链接修复（移除重定向外链直达）
         - chatgpt-helper ChatGPT 小助手
         - 115-helper 115 小助手
         - imooc-helper 慕课小助手
         - tieba-helper 贴吧小助手
-        - access-link 跳转链接修复
         - color-restore 黑白网页颜色还原
-        - kill-watermark 杀死水印
         - 其他
     validations:
       required: true
