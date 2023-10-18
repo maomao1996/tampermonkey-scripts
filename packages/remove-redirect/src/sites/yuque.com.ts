@@ -1,5 +1,3 @@
-import { pathname } from 'src/utils'
-
 /******************************************************************************
  ** 语雀
  **   - https://www.yuque.com/r/goto?url=https%3A%2F%2Ffe-mm.com
@@ -11,7 +9,7 @@ const sites: SiteModule = [
     'yuque.com',
     {
       autojump: {
-        validator: () => pathname === '/r/goto',
+        validator: ({ pathname }) => pathname === '/r/goto',
         queryName: 'url',
       },
     },

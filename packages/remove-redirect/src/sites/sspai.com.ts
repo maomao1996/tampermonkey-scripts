@@ -1,5 +1,3 @@
-import { pathname } from 'src/utils'
-
 /******************************************************************************
  ** 少数派
  **   - https://sspai.com/post/71216
@@ -15,7 +13,7 @@ const sites: SiteModule = [
         selector: '[href*="sspai.com/link?target="]',
       },
       autojump: {
-        validator: () => pathname === '/link',
+        validator: ({ pathname }) => pathname === '/link',
       },
     },
   ],

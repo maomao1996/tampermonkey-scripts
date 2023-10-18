@@ -1,5 +1,3 @@
-import { pathname } from 'src/utils'
-
 /******************************************************************************
  ** 简书
  **   - https://www.jianshu.com/p/28788506c0da
@@ -16,7 +14,7 @@ const sites: SiteModule = [
         separator: 'go?to=',
       },
       autojump: {
-        validator: () => pathname === '/go-wild',
+        validator: ({ pathname }) => pathname === '/go-wild',
         queryName: 'url',
       },
     },

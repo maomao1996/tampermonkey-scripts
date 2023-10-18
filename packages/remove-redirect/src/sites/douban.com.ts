@@ -1,5 +1,3 @@
-import { pathname } from 'src/utils'
-
 /******************************************************************************
  ** 豆瓣
  **   - https://www.douban.com/link2/?url=https%3A%2F%2Ffe-mm.com
@@ -11,7 +9,7 @@ const sites: SiteModule = [
     'douban.com',
     {
       autojump: {
-        validator: () => pathname === '/link2/',
+        validator: ({ pathname }) => pathname === '/link2/',
         queryName: 'url',
       },
     },

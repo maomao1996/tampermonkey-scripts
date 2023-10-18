@@ -1,5 +1,3 @@
-import { pathname } from 'src/utils'
-
 /******************************************************************************
  ** 爱发电
  **   - https://afdian.net/a/evanyou
@@ -15,7 +13,7 @@ const sites: SiteModule = [
         selector: '[href*="afdian.net/link?target="]',
       },
       autojump: {
-        validator: () => pathname === '/link',
+        validator: ({ pathname }) => pathname === '/link',
       },
     },
   ],

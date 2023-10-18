@@ -1,5 +1,3 @@
-import { pathname } from 'src/utils'
-
 /******************************************************************************
  ** 开源中国
  **   - https://www.oschina.net/news/226616/fish-shell-be-rewritten-rust
@@ -17,7 +15,7 @@ const sites: SiteModule = [
         separator: 'GoToLink?url=',
       },
       autojump: {
-        validator: () => pathname === '/action/GoToLink',
+        validator: ({ pathname }) => pathname === '/action/GoToLink',
         queryName: 'url',
       },
     },

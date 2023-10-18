@@ -1,5 +1,3 @@
-import { pathname } from 'src/utils'
-
 /******************************************************************************
  ** pixiv
  **   - https://www.pixiv.net/artworks/105069080
@@ -14,7 +12,7 @@ const sites: SiteModule = [
         separator: '?',
       },
       autojump: {
-        validator: () => pathname === '/jump.php',
+        validator: ({ pathname }) => pathname === '/jump.php',
         selector: 'a[href]',
         separator: '?',
       },

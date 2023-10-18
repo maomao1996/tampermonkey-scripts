@@ -1,5 +1,3 @@
-import { pathname } from 'src/utils'
-
 /******************************************************************************
  ** 微信
  **   无跳转按钮
@@ -35,7 +33,8 @@ const sites: SiteModule = [
     'weixin110.qq.com',
     {
       autojump: {
-        validator: () => pathname === '/cgi-bin/mmspamsupport-bin/newredirectconfirmcgi',
+        validator: ({ pathname }) =>
+          pathname === '/cgi-bin/mmspamsupport-bin/newredirectconfirmcgi',
         getOriginalUrl: () =>
           document.querySelector<HTMLElement>('.weui-msg p.weui-msg__desc')!.textContent,
         selector: 'a.weui-btn.weui-btn_default',
@@ -47,7 +46,7 @@ const sites: SiteModule = [
     'developers.weixin.qq.com',
     {
       autojump: {
-        validator: () => pathname === '/community/middlepage/href',
+        validator: ({ pathname }) => pathname === '/community/middlepage/href',
         queryName: 'href',
       },
     },
@@ -57,7 +56,7 @@ const sites: SiteModule = [
     'mail.qq.com',
     {
       autojump: {
-        validator: () => pathname === '/cgi-bin/readtemplate',
+        validator: ({ pathname }) => pathname === '/cgi-bin/readtemplate',
         selector: 'div.c-footer a.c-footer-a1',
         queryName: 'gourl',
       },
@@ -68,7 +67,7 @@ const sites: SiteModule = [
     'c.pc.qq.com',
     {
       autojump: {
-        validator: () => pathname === '/middlem.html',
+        validator: ({ pathname }) => pathname === '/middlem.html',
         queryName: 'pfurl',
       },
     },
@@ -78,7 +77,7 @@ const sites: SiteModule = [
     'docs.qq.com',
     {
       autojump: {
-        validator: () => pathname === '/scenario/link.html',
+        validator: ({ pathname }) => pathname === '/scenario/link.html',
         // selector: '.url-tips .url-click',
         queryName: 'url',
       },

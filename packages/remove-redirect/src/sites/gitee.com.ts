@@ -1,5 +1,3 @@
-import { pathname } from 'src/utils'
-
 /******************************************************************************
  ** 码云
  **   - https://gitee.com/mirrors/vue-mmplayer
@@ -15,7 +13,7 @@ const sites: SiteModule = [
         selector: '[href*="gitee.com/link?target="]',
       },
       autojump: {
-        validator: () => pathname === '/link',
+        validator: ({ pathname }) => pathname === '/link',
       },
     },
   ],

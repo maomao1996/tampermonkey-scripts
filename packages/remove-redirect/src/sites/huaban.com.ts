@@ -1,5 +1,3 @@
-import { pathname } from 'src/utils'
-
 /******************************************************************************
  ** 花瓣网
  **   - https://huaban.com/pins/5108412769
@@ -10,7 +8,7 @@ const sites: SiteModule = [
     'huaban.com',
     {
       autojump: {
-        validator: () => pathname === '/go',
+        validator: ({ pathname }) => pathname === '/go',
         selector: '.wrapper button.ant-btn',
       },
     },

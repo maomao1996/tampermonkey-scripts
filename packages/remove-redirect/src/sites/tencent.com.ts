@@ -1,5 +1,3 @@
-import { pathname } from 'src/utils'
-
 /******************************************************************************
  ** 腾讯云开发者社区
  **   - https://cloud.tencent.com/developer/article/1829900
@@ -15,7 +13,7 @@ const sites: SiteModule = [
         selector: '[href*="/developer/tools/blog-entry?target="]',
       },
       autojump: {
-        validator: () => pathname === '/developer/tools/blog-entry',
+        validator: ({ pathname }) => pathname === '/developer/tools/blog-entry',
         // click: '.mod-external-link-btn a'
       },
     },

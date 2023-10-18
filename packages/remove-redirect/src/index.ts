@@ -41,10 +41,11 @@ if (isArray(currentSite)) {
     ;(() => {
       const { validator, getOriginalUrl, selector, separator, queryName = 'target' } = autojump
 
-      if (validator && !validator()) {
+      if (validator && !validator(location)) {
         return
       }
 
+      /* 调用 getOriginalUrl 获取原始链接 */
       if (isFunction(getOriginalUrl)) {
         const originUrl = getOriginalUrl()
         if (originUrl && validateUrl(originUrl)) {
@@ -52,10 +53,12 @@ if (isArray(currentSite)) {
         }
       }
 
+      /* 点击按钮直接跳转 */
       if (selector && document.querySelector(selector)) {
         return (document.querySelector(selector) as HTMLElement).click()
       }
 
+      /* 解析 url 参数获取原始链接 */
       const { search } = location
       const originUrl = decodeURIComponent(
         separator ? search.split(separator)?.[1] : new URLSearchParams(search).get(queryName) || '',

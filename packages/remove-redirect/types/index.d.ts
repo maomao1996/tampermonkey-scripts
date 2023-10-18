@@ -11,6 +11,7 @@ type SiteOptions = {
     /** 自定义转换规则 */
     customTransform?<T extends HTMLElement>(node: T): void
   }
+
   /** 自动跳转 */
   autojump?: {
     /** 点击跳转的选择器  */
@@ -21,7 +22,7 @@ type SiteOptions = {
     separator?: string | RegExp
 
     /** 跳转前的验证器 */
-    validator?(): boolean
+    validator?(location: Location): boolean
     /** 获取原始跳转链接 */
     getOriginalUrl?(): string | null | undefined
   }

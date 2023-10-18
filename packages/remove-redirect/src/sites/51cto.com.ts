@@ -1,5 +1,3 @@
-import { pathname } from 'src/utils'
-
 /******************************************************************************
  ** 51CTO 博客
  **   - https://blog.51cto.com/bashrc/6042107
@@ -10,7 +8,7 @@ const sites: SiteModule = [
     'blog.51cto.com',
     {
       autojump: {
-        validator: () => pathname === '/transfer',
+        validator: ({ pathname }) => pathname === '/transfer',
         separator: '?',
       },
     },

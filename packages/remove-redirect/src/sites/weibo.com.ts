@@ -1,5 +1,3 @@
-import { pathname } from 'src/utils'
-
 /******************************************************************************
  ** 微博
  **   - https://weibo.com/u/1400854834
@@ -22,7 +20,7 @@ const sites: SiteModule = [
     'weibo.cn',
     {
       autojump: {
-        validator: () => pathname === '/sinaurl',
+        validator: ({ pathname }) => pathname === '/sinaurl',
         queryName: 'u',
       },
     },
