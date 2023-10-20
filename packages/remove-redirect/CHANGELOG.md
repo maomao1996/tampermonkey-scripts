@@ -1,5 +1,12 @@
 # remove-redirect
 
+## 2.0.1
+
+### Patch Changes
+
+- 3fbd35d: 优化 validator 逻辑，移除外部参数
+- d5debbc: 修复码云个人主页
+
 ## 2.0.0
 
 ### Major Changes
