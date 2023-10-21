@@ -66,7 +66,7 @@ fs.outputFileSync(
       compilerOptions: {
         composite: true,
 
-        baseUrl: '',
+        baseUrl: './',
         paths: {
           /**
            * 别名 @ 和 npm 组织包容易冲突，故直接使用 src
