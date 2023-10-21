@@ -4,6 +4,7 @@
   "private": true,
   "type": "module",
   "scripts": {
+    "create-site": "node ./scripts/create-site.js",
     "build": "rollup -c",
     "dev": "rollup --environment BUILD:development -c --watch"
   },
