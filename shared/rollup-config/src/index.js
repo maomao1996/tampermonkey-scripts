@@ -31,24 +31,33 @@ export function createRollupConfig({ pkg, postcss: postcssOptions = {}, plugins 
       swc(
         defineRollupSwcOption({
           jsc: {
-            target: 'es5',
+            target: isDevelopment ? 'es2015' : 'es5',
             baseUrl: process.cwd(),
           },
         }),
       ),
-      terser({
-        mangle: {
-          keep_fnames: true,
-        },
-        compress: {
-          defaults: false,
-        },
-        format: {
-          ascii_only: true,
-          beautify: true,
-          indent_level: 2,
-        },
-      }),
+      terser(
+        isDevelopment
+          ? {
+              // 开发环境下仅删除注释
+              mangle: false,
+              compress: {
+                defaults: false,
+                conditionals: true,
+              },
+              format: {
+                beautify: true,
+                indent_level: 2,
+              },
+            }
+          : {
+              format: {
+                ascii_only: true,
+                beautify: true,
+                indent_level: 2,
+              },
+            },
+      ),
       metablock({
         override: {
           /* https://greasyfork.org/zh-CN/help/meta-keys */
