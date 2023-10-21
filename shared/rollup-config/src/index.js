@@ -1,17 +1,15 @@
 import path from 'node:path'
 import { defineConfig } from 'rollup'
 import { nodeResolve } from '@rollup/plugin-node-resolve'
+import replace from '@rollup/plugin-replace'
 import postcss from 'rollup-plugin-postcss'
 import { swc, defineRollupSwcOption } from 'rollup-plugin-swc3'
 import terser from '@rollup/plugin-terser'
 import metablock from 'rollup-plugin-userscript-metablock'
 
 export function createRollupConfig({ pkg, postcss: postcssOptions = {}, plugins = [] }) {
-  const file = path.resolve(
-    '../../',
-    process.env.BUILD === 'development' ? 'dist-dev' : 'dist',
-    `${pkg.name}.user.js`,
-  )
+  const isDevelopment = process.env.BUILD === 'development'
+  const file = path.resolve('../../', isDevelopment ? 'dist-dev' : 'dist', `${pkg.name}.user.js`)
 
   return defineConfig({
     input: 'src/index.ts',
@@ -22,6 +20,13 @@ export function createRollupConfig({ pkg, postcss: postcssOptions = {}, plugins 
     plugins: [
       ...plugins,
       nodeResolve(),
+      replace({
+        preventAssignment: true,
+        values: {
+          __DEV__: isDevelopment,
+          'process.env.NODE_ENV': JSON.stringify(isDevelopment ? 'development' : 'production'),
+        },
+      }),
       postcssOptions && postcss({ minimize: true, ...postcssOptions }),
       swc(
         defineRollupSwcOption({
