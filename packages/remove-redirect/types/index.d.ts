@@ -12,6 +12,19 @@ type SiteOptions = {
     customTransform?<T extends HTMLElement>(node: T): void
   }
 
+  /** 重写 window.open */
+  rewriteWindowOpen?: {
+    /** 重写前的验证规则 */
+    validationRule: string | ((url: string) => boolean)
+    /** 获取 url 参数的键名 */
+    queryName?: string
+    /** 分隔符 */
+    separator?: string | RegExp
+
+    /** 获取原始跳转链接 */
+    getOriginalUrl?(url: string | URL): string | undefined
+  }
+
   /** 自动跳转 */
   autojump?: {
     /** 点击跳转的选择器  */
