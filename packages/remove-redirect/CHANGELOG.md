@@ -1,5 +1,17 @@
 # remove-redirect
 
+## 2.1.0
+
+### Minor Changes
+
+- 462b407: 适配 CSDN 文章页
+- ee6baca: 支持拦截 `window.open` 移除重定向
+- f918a8d: 适配 InfoQ
+
+### Patch Changes
+
+- 136154c: 忽略 `localhost` 等本地服务
+
 ## 2.0.1
 
 ### Patch Changes
