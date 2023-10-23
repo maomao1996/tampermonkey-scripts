@@ -1,8 +1,8 @@
 // ==UserScript==
 // @name        杀死水印（Kill Watermark）
-// @description 杀死水印（移除烦人的水印，还你一个干净清爽的页面）；已适配稿定设计、腾讯视频、爱奇艺、优酷、哔哩哔哩直播、腾讯课堂、语雀、腾讯文档、CSDN C 知道
+// @description 杀死水印（移除烦人的水印，还你一个干净清爽的页面）；已适配稿定设计、腾讯视频、爱奇艺、优酷、哔哩哔哩直播、腾讯课堂、语雀、腾讯文档、CSDN C 知道、飞书
 // @namespace   maomao1996.kill-watermark
-// @version     0.4.0
+// @version     0.5.0
 // @author      maomao1996
 // @homepage    https://github.com/maomao1996/tampermonkey-scripts
 // @supportURL  https://github.com/maomao1996/tampermonkey-scripts/issues
@@ -16,73 +16,54 @@
 // @match       *://*.yuque.com/*
 // @match       *://docs.qq.com/*
 // @match       *://so.csdn.net/so/*
+// @match       *://*.feishu.cn/*
 // @grant       GM_addStyle
 // ==/UserScript==
-(function() {
+!function() {
   "use strict";
-  var r = ".watermark-bg-wrapper{display:none!important}";
-  var t = ".editor-watermark{display:none!important;filter:opacity(0)!important;z-index:-1996!important}";
-  var a = ".iqp-logo-bottom,.iqp-logo-box,.iqp-logo-top{display:none!important}";
-  var e = '#loki-player div[style*="position: absolute;"]{display:none!important}';
-  var o = ".web-player-icon-roomStatus{opacity:0!important}";
-  var i = ".username_mask_cover[style]{display:none!important}";
-  var n = "txpdiv.txp-watermark{opacity:0!important}txpdiv[data-role=creative-player-pause-layer]{display:none!important}";
-  var l = "watermark-layer{opacity:0!important}";
-  var y = "#main>div.wm{display:none!important}";
-  var _ = [ [ "docs.qq.com", r ], [ "gaoding.com", t ], [ "iqiyi.com", a ], [ "ke.qq.com", e ], [ "live.bilibili.com", o ], [ "so.csdn.net", i ], [ "v.qq.com", n ], [ "v.youku.com", l ], [ "yuque.com", y ] ];
-  function _array_like_to_array(r, t) {
-    if (t == null || t > r.length) t = r.length;
-    for (var a = 0, e = new Array(t); a < t; a++) e[a] = r[a];
-    return e;
+  var t = [ [ "docs.qq.com", ".watermark-bg-wrapper{display:none!important}" ], [ "feishu.cn", ".print-watermark[style],.ssrWaterMark[style],.suite-clear[style]{display:none!important;height:0!important;width:0!important}" ], [ "gaoding.com", ".editor-watermark{display:none!important;filter:opacity(0)!important;z-index:-1996!important}" ], [ "iqiyi.com", ".iqp-logo-bottom,.iqp-logo-box,.iqp-logo-top{display:none!important}" ], [ "ke.qq.com", '#loki-player div[style*="position: absolute;"]{display:none!important}' ], [ "live.bilibili.com", ".web-player-icon-roomStatus{opacity:0!important}" ], [ "so.csdn.net", ".username_mask_cover[style]{display:none!important}" ], [ "v.qq.com", "txpdiv.txp-watermark{opacity:0!important}txpdiv[data-role=creative-player-pause-layer]{display:none!important}" ], [ "v.youku.com", "watermark-layer{opacity:0!important}" ], [ "yuque.com", "#main>div.wm{display:none!important}" ] ];
+  function r(t, r) {
+    (null == r || r > t.length) && (r = t.length);
+    for (var n = 0, o = new Array(r); n < r; n++) o[n] = t[n];
+    return o;
   }
-  function _array_with_holes(r) {
-    if (Array.isArray(r)) return r;
-  }
-  function _iterable_to_array_limit(r, t) {
-    var a = r == null ? null : typeof Symbol !== "undefined" && r[Symbol.iterator] || r["@@iterator"];
-    if (a == null) return;
-    var e = [];
-    var o = true;
-    var i = false;
-    var n, l;
-    try {
-      for (a = a.call(r); !(o = (n = a.next()).done); o = true) {
-        e.push(n.value);
-        if (t && e.length === t) break;
+  function n(t, n) {
+    return function(t) {
+      if (Array.isArray(t)) return t;
+    }(t) || function(t, r) {
+      var n = null == t ? null : "undefined" != typeof Symbol && t[Symbol.iterator] || t["@@iterator"];
+      if (null != n) {
+        var o, e, a = [], i = !0, l = !1;
+        try {
+          for (n = n.call(t); !(i = (o = n.next()).done) && (a.push(o.value), !r || a.length !== r); i = !0) ;
+        } catch (t) {
+          l = !0, e = t;
+        } finally {
+          try {
+            i || null == n.return || n.return();
+          } finally {
+            if (l) throw e;
+          }
+        }
+        return a;
       }
-    } catch (r) {
-      i = true;
-      l = r;
-    } finally {
-      try {
-        if (!o && a["return"] != null) a["return"]();
-      } finally {
-        if (i) throw l;
-      }
-    }
-    return e;
+    }(t, n) || function(t, n) {
+      if (!t) return;
+      if ("string" == typeof t) return r(t, n);
+      var o = Object.prototype.toString.call(t).slice(8, -1);
+      "Object" === o && t.constructor && (o = t.constructor.name);
+      if ("Map" === o || "Set" === o) return Array.from(o);
+      if ("Arguments" === o || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(o)) return r(t, n);
+    }(t, n) || function() {
+      throw new TypeError("Invalid attempt to destructure non-iterable instance.\\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.");
+    }();
   }
-  function _non_iterable_rest() {
-    throw new TypeError("Invalid attempt to destructure non-iterable instance.\\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.");
-  }
-  function _sliced_to_array(r, t) {
-    return _array_with_holes(r) || _iterable_to_array_limit(r, t) || _unsupported_iterable_to_array(r, t) || _non_iterable_rest();
-  }
-  function _unsupported_iterable_to_array(r, t) {
-    if (!r) return;
-    if (typeof r === "string") return _array_like_to_array(r, t);
-    var a = Object.prototype.toString.call(r).slice(8, -1);
-    if (a === "Object" && r.constructor) a = r.constructor.name;
-    if (a === "Map" || a === "Set") return Array.from(a);
-    if (a === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(a)) return _array_like_to_array(r, t);
-  }
-  var u = location.hostname;
-  var p = _.find((function(r) {
-    var t = _sliced_to_array(r, 1), a = t[0];
-    return u.includes(a);
+  var o = location.hostname, e = t.find((function(t) {
+    var r = n(t, 1)[0];
+    return o.includes(r);
   }));
-  if (p) {
-    var c = _sliced_to_array(p, 2), s = c[1];
-    s && GM_addStyle(s);
+  if (e) {
+    var a = n(e, 2)[1];
+    a && GM_addStyle(a);
   }
-})();
+}();
