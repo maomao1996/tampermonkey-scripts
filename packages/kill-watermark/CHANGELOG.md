@@ -1,5 +1,11 @@
 # kill-watermark
 
+## 0.5.0
+
+### Minor Changes
+
+- 62210a3: 适配飞书
+
 ## 0.4.0
 
 ### Minor Changes
