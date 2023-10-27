@@ -8,6 +8,6 @@ txpdiv.txp-watermark {
   opacity: 0 !important;
 }
 
-txpdiv[data-role='creative-player-pause-layer'] {
+[data-role='creative-player-pause-layer'] {
   display: none !important;
 }
