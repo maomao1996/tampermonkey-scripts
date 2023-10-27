@@ -1,5 +1,11 @@
 # kill-watermark
 
+## 0.5.1
+
+### Patch Changes
+
+- 918c969: 修复腾讯视频播放页暂停时的弹窗广告
+
 ## 0.5.0
 
 ### Minor Changes
