@@ -2,7 +2,7 @@
 // @name        杀死水印（Kill Watermark）
 // @description 杀死水印（移除烦人的水印，还你一个干净清爽的页面）；已适配稿定设计、腾讯视频、爱奇艺、优酷、哔哩哔哩直播、腾讯课堂、语雀、腾讯文档、CSDN C 知道、飞书
 // @namespace   maomao1996.kill-watermark
-// @version     0.5.0
+// @version     0.5.1
 // @author      maomao1996
 // @homepage    https://github.com/maomao1996/tampermonkey-scripts
 // @supportURL  https://github.com/maomao1996/tampermonkey-scripts/issues
@@ -21,7 +21,7 @@
 // ==/UserScript==
 !function() {
   "use strict";
-  var t = [ [ "docs.qq.com", ".watermark-bg-wrapper{display:none!important}" ], [ "feishu.cn", ".print-watermark[style],.ssrWaterMark[style],.suite-clear[style]{display:none!important;height:0!important;width:0!important}" ], [ "gaoding.com", ".editor-watermark{display:none!important;filter:opacity(0)!important;z-index:-1996!important}" ], [ "iqiyi.com", ".iqp-logo-bottom,.iqp-logo-box,.iqp-logo-top{display:none!important}" ], [ "ke.qq.com", '#loki-player div[style*="position: absolute;"]{display:none!important}' ], [ "live.bilibili.com", ".web-player-icon-roomStatus{opacity:0!important}" ], [ "so.csdn.net", ".username_mask_cover[style]{display:none!important}" ], [ "v.qq.com", "txpdiv.txp-watermark{opacity:0!important}txpdiv[data-role=creative-player-pause-layer]{display:none!important}" ], [ "v.youku.com", "watermark-layer{opacity:0!important}" ], [ "yuque.com", "#main>div.wm{display:none!important}" ] ];
+  var t = [ [ "docs.qq.com", ".watermark-bg-wrapper{display:none!important}" ], [ "feishu.cn", ".print-watermark[style],.ssrWaterMark[style],.suite-clear[style]{display:none!important;height:0!important;width:0!important}" ], [ "gaoding.com", ".editor-watermark{display:none!important;filter:opacity(0)!important;z-index:-1996!important}" ], [ "iqiyi.com", ".iqp-logo-bottom,.iqp-logo-box,.iqp-logo-top{display:none!important}" ], [ "ke.qq.com", '#loki-player div[style*="position: absolute;"]{display:none!important}' ], [ "live.bilibili.com", ".web-player-icon-roomStatus{opacity:0!important}" ], [ "so.csdn.net", ".username_mask_cover[style]{display:none!important}" ], [ "v.qq.com", "txpdiv.txp-watermark{opacity:0!important}[data-role=creative-player-pause-layer]{display:none!important}" ], [ "v.youku.com", "watermark-layer{opacity:0!important}" ], [ "yuque.com", "#main>div.wm{display:none!important}" ] ];
   function r(t, r) {
     (null == r || r > t.length) && (r = t.length);
     for (var n = 0, o = new Array(r); n < r; n++) o[n] = t[n];
