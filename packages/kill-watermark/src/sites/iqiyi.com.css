@@ -1,9 +1,20 @@
 /*
- * 爱奇艺播放页 logo
+ * 爱奇艺播放页
  * https://www.iqiyi.com/v_xkt6z3z798.html
  ******************************************************************************/
+
+/* 右上角 logo */
 .iqp-logo-box,
 .iqp-logo-top,
-.iqp-logo-bottom {
+.iqp-logo-bottom,
+
+/* 暂停时的广告 */
+iqpdiv.flash-max {
   display: none !important;
+}
+iqpdiv.iqp-player-videolayer {
+  top: initial !important;
+  left: initial !important;
+  width: 100% !important;
+  height: 100% !important;
 }
