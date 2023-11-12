@@ -1,5 +1,15 @@
 # kill-watermark
 
+## 0.6.0
+
+### Minor Changes
+
+- 05780e9: 适配爱奇艺播放页暂停时的广告
+
+### Patch Changes
+
+- b6ef389: 更新脚本描述
+
 ## 0.5.1
 
 ### Patch Changes
