@@ -1,5 +1,11 @@
 # kill-watermark
 
+## 0.6.1
+
+### Patch Changes
+
+- 338317f: 修复 CSDN C 知道
+
 ## 0.6.0
 
 ### Minor Changes
