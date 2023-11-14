@@ -21,7 +21,7 @@
     "*://ke.qq.com/course/*",
     "*://*.yuque.com/*",
     "*://docs.qq.com/*",
-    "*://so.csdn.net/so/*",
+    "*://so.csdn.net/*",
     "*://*.feishu.cn/*"
   ],
   "grant": ["GM_addStyle"]
