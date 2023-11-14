@@ -2,7 +2,7 @@
 // @name        杀死水印（Kill Watermark）
 // @description 杀死水印（移除烦人的水印，还你一个干净清爽的页面）；已适配稿定设计、腾讯视频播放页 logo 和暂停时的弹窗广告、爱奇艺播放页 logo 和暂停时的广告、优酷播放页 logo、哔哩哔哩直播 logo、腾讯课堂、语雀、腾讯文档、CSDN C 知道、飞书
 // @namespace   maomao1996.kill-watermark
-// @version     0.6.0
+// @version     0.6.1
 // @author      maomao1996
 // @homepage    https://github.com/maomao1996/tampermonkey-scripts
 // @supportURL  https://github.com/maomao1996/tampermonkey-scripts/issues
@@ -15,7 +15,7 @@
 // @match       *://ke.qq.com/course/*
 // @match       *://*.yuque.com/*
 // @match       *://docs.qq.com/*
-// @match       *://so.csdn.net/so/*
+// @match       *://so.csdn.net/*
 // @match       *://*.feishu.cn/*
 // @grant       GM_addStyle
 // ==/UserScript==
