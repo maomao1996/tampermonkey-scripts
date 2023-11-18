@@ -1,5 +1,12 @@
 # kill-watermark
 
+## 0.7.0
+
+### Minor Changes
+
+- 0f29bb8: 适配 FreeBuf 网络安全行业门户
+- 7b8641e: 支持 JavaScript 脚本移除水印
+
 ## 0.6.1
 
 ### Patch Changes
