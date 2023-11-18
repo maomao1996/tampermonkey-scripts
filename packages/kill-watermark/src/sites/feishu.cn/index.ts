@@ -4,10 +4,15 @@
  * https://fyze31atzb.feishu.cn/wiki/MFOQwW2Hric2uwkvjcJczTExn3c
  * https://mxmefbp9p0g.feishu.cn/docx/ZI3ldweTXorTvMxYLbucT00Un5n
  ******************************************************************************/
-.suite-clear[style],
-.print-watermark[style],
-.ssrWaterMark[style] {
-  display: none !important;
-  width: 0 !important;
-  height: 0 !important;
-}
+
+import style from './index.css'
+
+const site: SiteModule = [
+  '飞书',
+  'feishu.cn',
+  {
+    style,
+  },
+]
+
+export default site

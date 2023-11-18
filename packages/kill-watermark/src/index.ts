@@ -1,9 +1,19 @@
-import sites from 'src/sites'
+import { isString, isFunction, formatHostname } from '@femm/shared-utils'
 
-const hostname = location.hostname
-const currentSite = (sites as [string, string][]).find(([url]) => hostname.includes(url))
+import * as sites from 'src/sites'
+
+const formatSites = Object.values(sites)
+const currentSite = formatSites.find(([, url]) => {
+  if (isString(url)) {
+    return formatHostname.includes(url)
+  }
+
+  return url.test(formatHostname)
+})
 
 if (currentSite) {
-  const [, css] = currentSite
-  css && GM_addStyle(css)
+  const { style, script } = currentSite[2]
+
+  style && GM_addStyle(style)
+  isFunction(script) && script()
 }

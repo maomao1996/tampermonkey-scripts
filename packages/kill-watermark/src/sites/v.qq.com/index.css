@@ -1,0 +1,9 @@
+/* 右上角 logo */
+txpdiv.txp-watermark {
+  opacity: 0 !important;
+}
+
+/* 暂停时的弹窗广告 */
+[data-role='creative-player-pause-layer'] {
+  display: none !important;
+}

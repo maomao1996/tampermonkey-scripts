@@ -1,7 +1,0 @@
-/*
- * 腾讯课堂播放页漂浮水印
- * https://ke.qq.com/course/list?mt=1001&st=2004&quicklink=1
- ******************************************************************************/
-#loki-player div[style*='position: absolute;'] {
-  display: none !important;
-}

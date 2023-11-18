@@ -1,0 +1,3 @@
+#loki-player div[style*='position: absolute;'] {
+  display: none !important;
+}

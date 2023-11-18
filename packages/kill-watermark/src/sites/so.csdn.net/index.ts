@@ -4,6 +4,15 @@
  * https://so.csdn.net/so/ai
  * https://so.csdn.net/so/search?t=chat
  ******************************************************************************/
-.username_mask_cover[style] {
-  display: none !important;
-}
+
+import style from './index.css'
+
+const site: SiteModule = [
+  'CSDN C 知道',
+  'so.csdn.net',
+  {
+    style,
+  },
+]
+
+export default site
