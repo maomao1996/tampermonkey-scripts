@@ -1,5 +1,6 @@
 export { default as docsQqCom } from './docs.qq.com'
 export { default as feishuCn } from './feishu.cn'
+export { default as freebufCom } from './freebuf.com'
 export { default as gaodingCom } from './gaoding.com'
 export { default as iqiyiCom } from './iqiyi.com'
 export { default as keQqCom } from './ke.qq.com'
