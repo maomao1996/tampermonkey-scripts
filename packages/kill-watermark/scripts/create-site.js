@@ -25,25 +25,39 @@ async function main() {
     process.exit(0)
   }
 
-  const filepath = path.join(process.cwd(), 'src', 'sites', `${url}.css`)
+  const rootPath = path.join(process.cwd(), 'src', 'sites', `${url}`)
 
-  if (fs.existsSync(filepath)) {
+  if (fs.existsSync(rootPath)) {
     console.log(chalk.yellow(`站点【${name}】已经存在，请重新输入`))
     return main()
   }
 
+  fs.outputFileSync(`${rootPath}/index.css`, '\n')
   fs.outputFileSync(
-    filepath,
+    `${rootPath}/index.ts`,
     `/*
  * ${name}
  *
  ******************************************************************************/
+
+import style from './index.css'
+
+const site: SiteModule = [
+  '${name}',
+  '${url}',
+  {
+    style,
+    script() {},
+  },
+]
+
+export default site
 `,
   )
 
   console.log(
     chalk.green(`站点【${name}】创建成功咯！
-快打开 ./packages/kill-watermark/src/sites/${url}.css 写代码吧!`),
+快打开 ./packages/kill-watermark/src/sites/${url}/index.ts 写代码吧!`),
   )
 }
 
