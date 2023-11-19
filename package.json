@@ -16,7 +16,9 @@
   "type": "module",
   "scripts": {
     "build": "turbo run build",
-    "dev": "turbo run dev",
+    "dev": "pnpm dev:server & pnpm dev:rollup",
+    "dev:rollup": "turbo run dev",
+    "dev:server": "http-server ./dist-dev -p 8688 -s",
     "clean": "pnpm clean:turbo && pnpm clean:dist && pnpm clean:node-modules && pnpm install --hoist",
     "clean:turbo": "turbo clean && rimraf ./node_modules/.cache/turbo",
     "clean:node-modules": "rimraf ./packages/**/node_modules && rimraf ./shared/**/node_modules && rm -rf ./node_modules",
@@ -47,6 +49,7 @@
     "camelcase": "^8.0.0",
     "chalk": "^5.3.0",
     "fs-extra": "^11.1.1",
+    "http-server": "^14.1.1",
     "husky": "^8.0.3",
     "lint-staged": "^13.2.2",
     "prettier": "^2.8.8",

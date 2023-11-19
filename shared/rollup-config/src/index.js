@@ -9,7 +9,8 @@ import metablock from 'rollup-plugin-userscript-metablock'
 
 export function createRollupConfig({ pkg, postcss: postcssOptions = {}, plugins = [] }) {
   const isDevelopment = process.env.BUILD === 'development'
-  const file = path.resolve('../../', isDevelopment ? 'dist-dev' : 'dist', `${pkg.name}.user.js`)
+  const filename = `${pkg.name}.user.js`
+  const file = path.resolve('../../', isDevelopment ? 'dist-dev' : 'dist', filename)
 
   return defineConfig({
     input: 'src/index.ts',
@@ -68,6 +69,13 @@ export function createRollupConfig({ pkg, postcss: postcssOptions = {}, plugins 
           license: 'MIT',
         },
       }),
+      isDevelopment && {
+        name: 'log-debug-url',
+        writeBundle() {
+          const debugUrl = `http://127.0.0.1:8688/${filename}`
+          console.log(`请打开 ${debugUrl} 进行调试`)
+        },
+      },
     ],
   })
 }
