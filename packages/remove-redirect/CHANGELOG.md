@@ -1,5 +1,11 @@
 # remove-redirect
 
+## 2.2.0
+
+### Minor Changes
+
+- 66dcb97: 适配 NGA 玩家社区
+
 ## 2.1.0
 
 ### Minor Changes
