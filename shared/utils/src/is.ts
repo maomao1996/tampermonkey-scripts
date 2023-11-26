@@ -28,3 +28,6 @@ export const isNumber = (val: any): val is number => typeof val === 'number'
 
 /** 是否为字符串 */
 export const isString = (val: any): val is string => typeof val === 'string'
+
+/** 是否为浏览器环境 */
+export const isBrowser = typeof window !== 'undefined'
