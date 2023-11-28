@@ -1,0 +1,3 @@
+#nworld-app-container div > div[style*='pointer-events'][style*='data:image/'] {
+  display: none !important;
+}

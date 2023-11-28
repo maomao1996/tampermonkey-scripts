@@ -1,3 +1,4 @@
+export { default as chat360Com } from './chat.360.com'
 export { default as docsQqCom } from './docs.qq.com'
 export { default as feishuCn } from './feishu.cn'
 export { default as freebufCom } from './freebuf.com'
