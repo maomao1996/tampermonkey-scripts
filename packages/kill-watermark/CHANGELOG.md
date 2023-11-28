@@ -1,5 +1,11 @@
 # kill-watermark
 
+## 0.8.0
+
+### Minor Changes
+
+- 7bd9d22: 适配 360 智脑
+
 ## 0.7.0
 
 ### Minor Changes
