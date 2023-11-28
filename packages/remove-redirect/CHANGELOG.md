@@ -1,5 +1,12 @@
 # remove-redirect
 
+## 2.3.0
+
+### Minor Changes
+
+- 06f87ea: 适配谷歌搜索 [#13](https://github.com/maomao1996/tampermonkey-scripts/issues/13)
+- e624f43: 适配金山文档
+
 ## 2.2.0
 
 ### Minor Changes
