@@ -1,5 +1,11 @@
 # remove-redirect
 
+## 2.3.1
+
+### Patch Changes
+
+- 99bc29f: 修复 YouTube 拦截页
+
 ## 2.3.0
 
 ### Minor Changes
