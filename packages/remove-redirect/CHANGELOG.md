@@ -1,5 +1,11 @@
 # remove-redirect
 
+## 2.3.2
+
+### Patch Changes
+
+- a81d832: 修复腾讯云开发者社区链接转换错误
+
 ## 2.3.1
 
 ### Patch Changes
