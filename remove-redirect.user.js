@@ -2,7 +2,7 @@
 // @name        跳转链接修复（移除重定向外链直达）
 // @description 修复跳转链接为站外直链（移除重定向），免去拦截页面点击步骤可直达站外；拦截页面自动跳转；已适配爱发电、百度、NGA 玩家社区、CSDN、豆瓣、码云、谷歌搜索、花瓣网、InfoQ、简书、掘金、金山文档、力扣（Leetcode）、51CTO 博客、牛客网、开源中国、pixiv、微信、微信开放社区、QQ 邮箱、PC 版 QQ、腾讯文档、360 搜索、少数派、腾讯云开发者社区、微博、YouTube、语雀、知乎、知乎专栏
 // @namespace   maomao1996.remove-redirect
-// @version     2.3.1
+// @version     2.3.2
 // @author      maomao1996
 // @homepage    https://github.com/maomao1996/tampermonkey-scripts
 // @supportURL  https://github.com/maomao1996/tampermonkey-scripts/issues
@@ -251,7 +251,8 @@
     } ] ],
     tencentCom: [ [ "\u817e\u8baf\u4e91\u5f00\u53d1\u8005\u793e\u533a", "cloud.tencent.com", {
       transform: {
-        selector: '[href*="/developer/tools/blog-entry?target="]'
+        selector: '[href*="/developer/tools/blog-entry?target="]',
+        queryName: "target"
       },
       autojump: {
         validator: function(t) {
