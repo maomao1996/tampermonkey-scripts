@@ -11,6 +11,7 @@ const sites: SiteModule = [
     {
       transform: {
         selector: '[href*="/developer/tools/blog-entry?target="]',
+        queryName: 'target',
       },
       autojump: {
         validator: ({ pathname }) => pathname === '/developer/tools/blog-entry',
