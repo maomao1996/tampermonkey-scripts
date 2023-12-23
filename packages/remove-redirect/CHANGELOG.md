@@ -1,5 +1,12 @@
 # remove-redirect
 
+## 2.4.0
+
+### Minor Changes
+
+- 0a4eea8: 适配 Facebook [#15](https://github.com/maomao1996/tampermonkey-scripts/issues/15)
+- 6273aab: 适配 Instagram [#15](https://github.com/maomao1996/tampermonkey-scripts/issues/15)
+
 ## 2.3.2
 
 ### Patch Changes
