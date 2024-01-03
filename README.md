@@ -2,11 +2,14 @@
 
 油猴插件库（记录茂茂开发的油猴插件）如果觉得不错，欢迎 [**star**](https://github.com/maomao1996/tampermonkey-scripts) 和 [支持作者](#支持作者)
 
-**使用前请确保已先安装 [Tampermonkey](https://chrome.google.com/webstore/detail/tampermonkey/dhdgffkkebhmkfjojejmpbldmpobfkfo)**
-
 - [GitHub 仓库](https://github.com/maomao1996/tampermonkey-scripts)
 - [Greasy Fork 主页](https://greasyfork.org/zh-CN/users/440613)
 - [茂茂物语](https://notes.fe-mm.com)
+
+## 使用前提
+
+- PC 端**请确保浏览器已安装 [Tampermonkey](https://chrome.google.com/webstore/detail/tampermonkey/dhdgffkkebhmkfjojejmpbldmpobfkfo)**
+- 移动端**推荐使用 [Via 浏览器](https://viayoo.com/zh-cn/)**
 
 ## 脚本列表
 
