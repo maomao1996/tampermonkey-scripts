@@ -1,5 +1,11 @@
 # kill-watermark
 
+## 0.9.0
+
+### Minor Changes
+
+- 63370b9: 适配优酷视频播放页暂停时的弹窗广告
+
 ## 0.8.0
 
 ### Minor Changes
