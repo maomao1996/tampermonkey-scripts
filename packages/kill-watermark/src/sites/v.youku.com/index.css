@@ -1,3 +1,9 @@
+/* 播放页 logo */
 watermark-layer {
   opacity: 0 !important;
+}
+
+/* 暂停时的弹窗广告 */
+#youku-pause-container {
+  display: none !important;
 }
