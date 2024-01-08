@@ -1,5 +1,10 @@
-.editor-watermark {
+/* .editor-watermark {
   display: none !important;
   z-index: -1996 !important;
   filter: opacity(0) !important;
+} */
+
+.editor-canvas
+  div[style*='pointer-events: none !important'][style*='visibility: visible !important'][style*='background'] {
+  clip-path: circle(0) !important;
 }
