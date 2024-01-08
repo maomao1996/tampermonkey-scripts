@@ -1,5 +1,11 @@
 # kill-watermark
 
+## 0.9.1
+
+### Patch Changes
+
+- 9892116: 修复稿定设计
+
 ## 0.9.0
 
 ### Minor Changes
