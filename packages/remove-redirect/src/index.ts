@@ -11,6 +11,15 @@ const currentSite = formatSites.find(([, url]) => {
   return url.test(hostname)
 })
 
+if (__DEV__) {
+  // 开发模式下，打印当前站点信息
+  console.group('remove-redirect')
+  console.log('hostname :', hostname)
+  console.log('sites :', formatSites)
+  console.log('currentSite :', currentSite)
+  console.groupEnd()
+}
+
 if (isArray(currentSite)) {
   const { transform, rewriteWindowOpen, autojump } = currentSite[2]
 
