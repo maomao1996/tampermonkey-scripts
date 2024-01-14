@@ -1,5 +1,13 @@
 # remove-redirect
 
+## 2.4.1
+
+### Patch Changes
+
+- 4e13868: 优化 `formatHostname` 逻辑
+- d4eb3a0: 更新脚本描述
+- 3f651ce: 优化文件命名
+
 ## 2.4.0
 
 ### Minor Changes

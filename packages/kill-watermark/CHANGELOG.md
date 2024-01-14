@@ -1,5 +1,11 @@
 # kill-watermark
 
+## 0.9.2
+
+### Patch Changes
+
+- 4e13868: 优化 `formatHostname` 逻辑
+
 ## 0.9.1
 
 ### Patch Changes
