@@ -2,13 +2,14 @@ import { isString, isFunction, formatHostname } from '@femm/shared-utils'
 
 import * as sites from 'src/sites'
 
+const hostname = formatHostname()
 const formatSites = Object.values(sites)
 const currentSite = formatSites.find(([, url]) => {
   if (isString(url)) {
-    return formatHostname.includes(url)
+    return hostname.includes(url)
   }
 
-  return url.test(formatHostname)
+  return url.test(hostname)
 })
 
 if (currentSite) {

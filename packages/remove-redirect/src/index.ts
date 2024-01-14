@@ -2,12 +2,13 @@ import { isString, isFunction, isArray, formatHostname, validateUrl } from '@fem
 
 import * as sites from 'src/sites'
 
+const hostname = formatHostname()
 const formatSites = Object.values(sites).flat()
 const currentSite = formatSites.find(([, url]) => {
   if (isString(url)) {
-    return url === formatHostname
+    return url === hostname
   }
-  return url.test(formatHostname)
+  return url.test(hostname)
 })
 
 if (isArray(currentSite)) {

@@ -1,4 +1,9 @@
 import { isBrowser } from './is'
 
 /** 格式化 location.hostname 删除 'www.' 前缀 */
-export const formatHostname = isBrowser ? location.hostname.replace(/^www\./, '') : ''
+export function formatHostname(hostname: string = location.hostname) {
+  if (!isBrowser) {
+    return ''
+  }
+  return hostname.replace(/^www\./, '')
+}
