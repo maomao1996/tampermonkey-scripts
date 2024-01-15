@@ -1,0 +1,19 @@
+{
+  "name": "GitHub 小助手",
+  "name:zh-CN": "GitHub 小助手",
+  "name:zh-TW": "GitHub 小助手",
+  "namespace": "maomao1996.github-helper",
+  "version": "0.0.0",
+  "description": "优化 GitHub 使用体验的小工具；仓库页显示 GitHub 计数统计（issues、watch、fork、star）为具体数值",
+  "author": "",
+  "homepage": "",
+  "supportURL": "",
+  "updateURL": "",
+  "downloadURL": "",
+  "license": "",
+  "match": ["*://github.com/*"],
+  "exclude": [],
+  "require": [],
+  "connect": [],
+  "grant": []
+}
