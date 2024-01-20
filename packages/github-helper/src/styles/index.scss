@@ -1,0 +1,14 @@
+.medium-zoom-overlay {
+  z-index: 1996;
+  background-color: #fff !important;
+}
+
+.medium-zoom-image--opened {
+  z-index: 1997;
+}
+
+@media (prefers-color-scheme: dark) {
+  .medium-zoom-overlay {
+    background-color: #000 !important;
+  }
+}

@@ -84,6 +84,12 @@ importers:
         specifier: ^4.4.3
         version: 4.4.3
 
+  packages/github-helper:
+    dependencies:
+      medium-zoom:
+        specifier: ^1.1.0
+        version: 1.1.0
+
   packages/kill-watermark: {}
 
   packages/remove-redirect: {}
@@ -2604,6 +2610,10 @@ packages:
 
   /mdn-data@2.0.14:
     resolution: {integrity: sha512-dn6wd0uw5GsdswPFfsgMp5NSB0/aDe6fK94YJV/AJDYXL6HVLWBsxeq7js7Ad+mU2K9LAlwpk6kN2D5mwCPVow==}
+    dev: false
+
+  /medium-zoom@1.1.0:
+    resolution: {integrity: sha512-ewyDsp7k4InCUp3jRmwHBRFGyjBimKps/AJLjRSox+2q/2H4p/PNpQf+pwONWlJiOudkBXtbdmVbFjqyybfTmQ==}
     dev: false
 
   /meow@6.1.1:
