@@ -1,5 +1,15 @@
 # github-helper
 
+## 1.1.0
+
+### Minor Changes
+
+- 624478d: 支持放大查看 Markdown 中的图片
+
+### Patch Changes
+
+- d9927ba: 添加脚本 icon
+
 ## 1.0.0
 
 ### Major Changes
