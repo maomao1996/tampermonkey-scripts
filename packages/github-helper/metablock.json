@@ -5,6 +5,7 @@
   "namespace": "maomao1996.github-helper",
   "version": "0.0.0",
   "description": "优化 GitHub 使用体验的小工具；仓库页显示 GitHub 计数统计（issues、watch、fork、star）为具体数值",
+  "icon": "https://github.githubassets.com/favicons/favicon.svg",
   "author": "",
   "homepage": "",
   "supportURL": "",
