@@ -4,9 +4,18 @@
  ******************************************************************************/
 
 /* CSS */
-declare module '*.css' {}
-declare module '*.scss' {}
-declare module '*.sass' {}
+declare module '*.css' {
+  const styles: string
+  export default styles
+}
+declare module '*.scss' {
+  const styles: string
+  export default styles
+}
+declare module '*.sass' {
+  const styles: string
+  export default styles
+}
 declare module '*.less' {}
 declare module '*.styl' {}
 declare module '*.stylus' {}

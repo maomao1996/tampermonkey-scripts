@@ -1,8 +1,3 @@
-declare module '*.css' {
-  const styles: string
-  export default styles
-}
-
 type SiteOptions = {
   /** 站点样式 */
   style?: string
