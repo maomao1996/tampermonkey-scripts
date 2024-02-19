@@ -1,5 +1,15 @@
 # remove-redirect
 
+## 2.5.0
+
+### Minor Changes
+
+- 5c75d6c: `queryName` 支持传入数组
+
+### Patch Changes
+
+- d69378a: 修复 pixiv 链接转换错误 [#18](https://github.com/maomao1996/tampermonkey-scripts/issues/15)
+
 ## 2.4.1
 
 ### Patch Changes
