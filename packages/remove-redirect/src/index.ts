@@ -1,6 +1,7 @@
 import { isString, isFunction, isArray, formatHostname, validateUrl } from '@femm/shared-utils'
 
 import * as sites from 'src/sites'
+import { getSearchParamsValue } from 'src/utils'
 
 const hostname = formatHostname()
 const formatSites = Object.values(sites).flat()
@@ -30,12 +31,20 @@ if (isArray(currentSite)) {
       queryName,
       separator = '?target=',
       customTransform = (node: HTMLAnchorElement) => {
-        const originUrl = queryName
-          ? new URL(node.href).searchParams.get(queryName)
-          : node.href.split(separator)[1]
+        let originUrl = ''
 
-        if (originUrl) {
-          node.href = decodeURIComponent(originUrl)
+        if (queryName) {
+          const { search } = new URL(node.href)
+          originUrl = getSearchParamsValue(search, queryName)
+        }
+
+        if (!validateUrl(originUrl)) {
+          originUrl = node.href.split(separator)[1]
+        }
+
+        originUrl = decodeURIComponent(originUrl)
+        if (validateUrl(originUrl)) {
+          node.href = originUrl
         }
       },
     } = transform
@@ -73,9 +82,7 @@ if (isArray(currentSite)) {
         } else {
           const { search } = new URL(url)
           url = decodeURIComponent(
-            separator
-              ? search.split(separator)?.[1]
-              : new URLSearchParams(search).get(queryName) || '',
+            separator ? search.split(separator)?.[1] : getSearchParamsValue(search, queryName),
           )
         }
       }
@@ -94,25 +101,34 @@ if (isArray(currentSite)) {
         return
       }
 
-      /* 调用 getOriginalUrl 获取原始链接 */
-      if (isFunction(getOriginalUrl)) {
-        const originUrl = getOriginalUrl()
-        if (originUrl && validateUrl(originUrl)) {
-          return location.replace(originUrl)
-        }
-      }
-
       /* 点击按钮直接跳转 */
       if (selector && document.querySelector(selector)) {
         return (document.querySelector(selector) as HTMLElement).click()
       }
 
-      /* 解析 url 参数获取原始链接 */
-      const { search } = location
-      const originUrl = decodeURIComponent(
-        separator ? search.split(separator)?.[1] : new URLSearchParams(search).get(queryName) || '',
-      )
-      validateUrl(originUrl) && location.replace(originUrl)
+      let originUrl
+
+      /* 调用 getOriginalUrl 获取原始链接 */
+      if (isFunction(getOriginalUrl)) {
+        originUrl = getOriginalUrl()
+      }
+
+      if (!validateUrl(originUrl)) {
+        /* 解析 url 参数获取原始链接 */
+        const { search } = location
+
+        if (separator) {
+          originUrl = search.split(separator)?.[1]
+        }
+
+        if (!validateUrl(originUrl)) {
+          originUrl = getSearchParamsValue(search, queryName)
+        }
+
+        originUrl = decodeURIComponent(originUrl || '')
+      }
+
+      validateUrl(originUrl) && location.replace(originUrl!)
     })()
   }
 }
