@@ -2,7 +2,7 @@
 // @name        跳转链接修复（移除重定向外链直达）
 // @description 修复跳转链接为站外直链（移除重定向），免去拦截页面点击步骤可直达站外；拦截页面自动跳转；已适配爱发电、百度、百度移动端、NGA 玩家社区、CSDN、豆瓣、Facebook、码云、谷歌搜索、花瓣网、InfoQ、Instagram、简书、掘金、金山文档、力扣（Leetcode）、51CTO 博客、牛客网、开源中国、pixiv、微信、微信开放社区、QQ 邮箱、PC 版 QQ、腾讯文档、腾讯兔小巢、360 搜索、少数派、腾讯云开发者社区、微博、YouTube、语雀、知乎、知乎专栏
 // @namespace   maomao1996.remove-redirect
-// @version     2.4.1
+// @version     2.5.0
 // @author      maomao1996
 // @homepage    https://github.com/maomao1996/tampermonkey-scripts
 // @supportURL  https://github.com/maomao1996/tampermonkey-scripts/issues
@@ -60,14 +60,14 @@
         }));
       }
     }
-  } ] ], m = [ [ "\u725b\u5ba2\u7f51", "nowcoder.com", {
+  } ] ], l = [ [ "\u725b\u5ba2\u7f51", "nowcoder.com", {
     transform: {
       selector: [ '[href*="gw-c.nowcoder.com/api/sparta/jump/link?link="]', '[href*="hd.nowcoder.com/link.html?target="]' ].join(","),
       separator: /\?target|link\=/
     }
   } ], [ , "hd.nowcoder.com", {
     autojump: {}
-  } ] ], l = [ [ "\u5fae\u4fe1", "weixin110.qq.com", {
+  } ] ], m = [ [ "\u5fae\u4fe1", "weixin110.qq.com", {
     autojump: {
       validator: function(t) {
         return "/cgi-bin/mmspamsupport-bin/newredirectconfirmcgi" === t.pathname;
@@ -106,7 +106,7 @@
       },
       queryName: "url"
     }
-  } ] ], s = [ [ "360 \u641c\u7d22", "so.com", {
+  } ] ], f = [ [ "360 \u641c\u7d22", "so.com", {
     transform: {
       selector: 'a[href*="so.com/link?"][data-mdurl]',
       customTransform: function(t) {
@@ -114,7 +114,7 @@
         o(e) && t.setAttribute("href", e);
       }
     }
-  } ] ], f = Object.freeze({
+  } ] ], s = Object.freeze({
     __proto__: null,
     afdianNet: [ [ "\u7231\u53d1\u7535", "afdian.net", {
       transform: {
@@ -227,7 +227,7 @@
       }
     } ] ],
     ngaCn: c,
-    nowcoderCom: m,
+    nowcoderCom: l,
     oschinaNet: [ [ "\u5f00\u6e90\u4e2d\u56fd", /^(?:my\.)?oschina\.net$/, {
       transform: {
         selector: '[href*="oschina.net/action/GoToLink?url="]',
@@ -243,7 +243,8 @@
     pixivNet: [ [ "pixiv", "pixiv.net", {
       transform: {
         selector: '[href*="/jump.php?"]',
-        separator: "?"
+        separator: "?",
+        queryName: "url"
       },
       autojump: {
         validator: function(t) {
@@ -253,8 +254,8 @@
         separator: "?"
       }
     } ] ],
-    qqCom: l,
-    soCom: s,
+    qqCom: m,
+    soCom: f,
     sspaiCom: [ [ "\u5c11\u6570\u6d3e", "sspai.com", {
       transform: {
         selector: '[href*="sspai.com/link?target="]'
@@ -318,11 +319,36 @@
     } ] ]
   });
   function d(t, e) {
+    t = new URLSearchParams(t);
+    var r = null;
+    if (Array.isArray(e)) {
+      var n = !0, o = !1, a = void 0;
+      try {
+        for (var u, i = e[Symbol.iterator](); !(n = (u = i.next()).done); n = !0) {
+          var c = u.value;
+          if (t.has(c)) {
+            r = t.get(c);
+            break;
+          }
+        }
+      } catch (t) {
+        o = !0, a = t;
+      } finally {
+        try {
+          n || null == i.return || i.return();
+        } finally {
+          if (o) throw a;
+        }
+      }
+    } else r = t.get(e);
+    return r || "";
+  }
+  function p(t, e) {
     (null == e || e > t.length) && (e = t.length);
     for (var r = 0, n = new Array(e); r < e; r++) n[r] = t[r];
     return n;
   }
-  function p(t, e) {
+  function h(t, e) {
     return function(t) {
       if (Array.isArray(t)) return t;
     }(t) || function(t, e) {
@@ -344,62 +370,64 @@
       }
     }(t, e) || function(t, e) {
       if (!t) return;
-      if ("string" == typeof t) return d(t, e);
+      if ("string" == typeof t) return p(t, e);
       var r = Object.prototype.toString.call(t).slice(8, -1);
       "Object" === r && t.constructor && (r = t.constructor.name);
       if ("Map" === r || "Set" === r) return Array.from(r);
-      if ("Arguments" === r || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(r)) return d(t, e);
+      if ("Arguments" === r || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(r)) return p(t, e);
     }(t, e) || function() {
       throw new TypeError("Invalid attempt to destructure non-iterable instance.\\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.");
     }();
   }
-  var h = function() {
+  var v = function() {
     var t = arguments.length > 0 && void 0 !== arguments[0] ? arguments[0] : location.hostname;
     return n ? t.replace(/^www\./, "") : "";
-  }(), v = Object.values(f).flat().find((function(t) {
-    var e = p(t, 2)[1];
-    return r(e) ? e === h : e.test(h);
+  }(), g = Object.values(s).flat().find((function(t) {
+    var e = h(t, 2)[1];
+    return r(e) ? e === v : e.test(v);
   }));
-  if (t(v)) {
-    var g = v[2], b = g.transform, y = g.rewriteWindowOpen, j = g.autojump;
+  if (t(g)) {
+    var y = g[2], b = y.transform, j = y.rewriteWindowOpen, w = y.autojump;
     if (b) {
-      var w = b.selector, q = b.queryName, k = b.separator, C = void 0 === k ? "?target=" : k, N = b.customTransform, A = void 0 === N ? function(t) {
-        var e = q ? new URL(t.href).searchParams.get(q) : t.href.split(C)[1];
-        e && (t.href = decodeURIComponent(e));
-      } : N;
+      var q = b.selector, k = b.queryName, C = b.separator, N = void 0 === C ? "?target=" : C, A = b.customTransform, S = void 0 === A ? function(t) {
+        var e = "";
+        k && (e = d(new URL(t.href).search, k));
+        o(e) || (e = t.href.split(N)[1]), o(e = decodeURIComponent(e)) && (t.href = e);
+      } : A;
       new MutationObserver((function() {
-        document.querySelectorAll(w).forEach(A);
+        document.querySelectorAll(q).forEach(S);
       })).observe(document.body, {
         childList: !0,
         subtree: !0
       });
     }
-    if (y) {
-      var S = y.validationRule, U = y.getOriginalUrl, O = y.separator, R = y.queryName, L = void 0 === R ? "target" : R, T = window.open;
+    if (j) {
+      var U = j.validationRule, O = j.getOriginalUrl, R = j.separator, T = j.queryName, L = void 0 === T ? "target" : T, _ = window.open;
       window.open = function(t, n, a) {
         if (r(t)) {
-          if (r(S) && !t.includes(S) || e(S) && !S(t)) return T.call(this, t, n, a);
-          if (e(U)) {
-            var u = U(t);
+          if (r(U) && !t.includes(U) || e(U) && !U(t)) return _.call(this, t, n, a);
+          if (e(O)) {
+            var u = O(t);
             u && o(u) && (t = u);
           } else {
             var i, c = new URL(t).search;
-            t = decodeURIComponent(O ? null === (i = c.split(O)) || void 0 === i ? void 0 : i[1] : new URLSearchParams(c).get(L) || "");
+            t = decodeURIComponent(R ? null === (i = c.split(R)) || void 0 === i ? void 0 : i[1] : d(c, L));
           }
         }
-        return T.call(this, t, n, a);
+        return _.call(this, t, n, a);
       };
     }
-    j && function() {
-      var t, r = j.validator, n = j.getOriginalUrl, a = j.selector, u = j.separator, i = j.queryName, c = void 0 === i ? "target" : i;
-      if (!r || r(location)) {
-        if (e(n)) {
-          var m = n();
-          if (m && o(m)) return location.replace(m);
+    w && function() {
+      var t = w.validator, r = w.getOriginalUrl, n = w.selector, a = w.separator, u = w.queryName, i = void 0 === u ? "target" : u;
+      if (!t || t(location)) {
+        if (n && document.querySelector(n)) return document.querySelector(n).click();
+        var c;
+        if (e(r) && (c = r()), !o(c)) {
+          var l, m = location.search;
+          if (a) c = null === (l = m.split(a)) || void 0 === l ? void 0 : l[1];
+          o(c) || (c = d(m, i)), c = decodeURIComponent(c || "");
         }
-        if (a && document.querySelector(a)) return document.querySelector(a).click();
-        var l = location.search, s = decodeURIComponent(u ? null === (t = l.split(u)) || void 0 === t ? void 0 : t[1] : new URLSearchParams(l).get(c) || "");
-        o(s) && location.replace(s);
+        o(c) && location.replace(c);
       }
     }();
   }
