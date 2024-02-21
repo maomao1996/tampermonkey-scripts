@@ -8,7 +8,7 @@
 
 ### Patch Changes
 
-- d69378a: 修复 pixiv 链接转换错误 [#18](https://github.com/maomao1996/tampermonkey-scripts/issues/15)
+- d69378a: 修复 pixiv 链接转换错误 [#18](https://github.com/maomao1996/tampermonkey-scripts/issues/18)
 
 ## 2.4.1
 
