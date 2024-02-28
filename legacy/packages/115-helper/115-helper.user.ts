@@ -2,7 +2,7 @@
 // ==UserScript==
 // @name          115小助手
 // @namespace     https://github.com/maomao1996/tampermonkey-scripts
-// @version       1.7.2
+// @version       1.7.3
 // @description   顶部链接任务入口还原、SHA1 快速查重（新页面打开）、SHA1 自动查重、删除空文件夹、一键搜（快捷搜索）、SHA1 查重列表支持选中第一个元素和悬浮菜单展示、搜索列表支持悬浮菜单展示、列表显示文件 SHA1 信息、关闭侧边栏、悬浮菜单移除图标、悬浮菜单支持新标签页打开文件夹、加速转码
 // @icon      	  https://115.com/favicon.ico
 // @author        maomao1996
@@ -343,10 +343,12 @@
     /**
      * 小助手相关样式
      */
-    /*css*/ `.mm-quick-operation{margin-left: 12px;padding: 0 6px}`,
+    /*css*/ `.mm-quick-operation{margin-left: 12px;padding: 0 4px;white-space: nowrap;}`,
     /*css*/ `.list-contents .active::before, .list-thumb .active{background: rgba(199, 237, 204, 0.7)!important;}`,
+    // 链接任务
+    /*css*/ `.left-tvf .btn-upload{z-index: 1;}`,
     // 列表显示文件SHA1信息
-    /*css*/ `[show-sha1]{position: absolute;top:20px;color:#999;}`,
+    /*css*/ `[show-sha1]{line-height: 1;color: #999;}`,
     /*css*/ `.page-center .lstc-search .list-contents [file_type="1"] .file-name.h-auto,.list-cell:not(.lstc-search) .list-contents [file_type="1"] .file-name.h-auto{flex:1;padding-bottom: 20px;height:auto;}`,
     // 悬浮菜单样式
     getStyles(
@@ -360,7 +362,7 @@
    * 在顶部菜单添加链接任务按钮
    */
   const addLinkTaskBtn = () => {
-    $('#js_filter_btn').after(
+    $('[rel="left_tvf"]').prepend(
       /*html*/ `<a href="javascript:;" class="button btn-line btn-upload" menu="offline_task"><i class="icon-operate ifo-linktask"></i><span>链接任务</span></a>`,
     )
   }
@@ -522,7 +524,7 @@
   const listShowSHA1 = ($listItem: JQuery) => {
     const sha1 = $listItem.attr('sha1')
     if (sha1 && !$listItem.find('[show-sha1]').length) {
-      $listItem.find('.file-name').addClass('h-auto').append(`<small show-sha1>${sha1}</small>`)
+      $listItem.find('.file-name').addClass('h-auto').after(`<small show-sha1>${sha1}</small>`)
     }
   }
 
@@ -855,7 +857,7 @@
         const $first = $list.find('li:first-child')
         if (!$first.attr('item')) {
           $first.attr('item', 'file').find('i.file-type').removeProp('style')
-          $first.children('.file-name-wrap').prepend('<b class="checkbox"></b>')
+          $first.prepend('<b class="checkbox"></b>')
         }
         if (G.get('sha1Repeat.select')) {
           $first.trigger('click')
@@ -944,11 +946,11 @@
     /* 主界面布局初始化 */
     if (urlHasString('mode=wangpan')) {
       initMainLayout()
+      // 添加链接任务入口
+      G.get('layout.addTaskBtn') && addLinkTaskBtn()
     }
     // 网盘列表模块
     if (urlHasString('cid=')) {
-      // 添加链接任务入口
-      G.get('layout.addTaskBtn') && addLinkTaskBtn()
       initQuickOperation()
     }
     // SHA1 查重列表模块
