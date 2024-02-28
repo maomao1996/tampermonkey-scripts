@@ -7,6 +7,7 @@ on:
     # 只在下列文件变更时触发
     paths:
       - 'packages/**/CHANGELOG.md'
+      - 'legacy/**/*.user.ts'
 
 # 设置权限
 permissions: write-all
