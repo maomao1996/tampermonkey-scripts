@@ -2,7 +2,7 @@
 // ==UserScript==
 // @name          115小助手
 // @namespace     https://github.com/maomao1996/tampermonkey-scripts
-// @version       1.7.2
+// @version       1.7.3
 // @description   顶部链接任务入口还原、SHA1 快速查重（新页面打开）、SHA1 自动查重、删除空文件夹、一键搜（快捷搜索）、SHA1 查重列表支持选中第一个元素和悬浮菜单展示、搜索列表支持悬浮菜单展示、列表显示文件 SHA1 信息、关闭侧边栏、悬浮菜单移除图标、悬浮菜单支持新标签页打开文件夹、加速转码
 // @icon      	  https://115.com/favicon.ico
 // @author        maomao1996
@@ -319,15 +319,16 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     };
     var randomDelayIndex = [3, 5];
     var styles = [
-        ".mm-quick-operation{margin-left: 12px;padding: 0 6px}",
+        ".mm-quick-operation{margin-left: 12px;padding: 0 4px;white-space: nowrap;}",
         ".list-contents .active::before, .list-thumb .active{background: rgba(199, 237, 204, 0.7)!important;}",
-        "[show-sha1]{position: absolute;top:20px;color:#999;}",
+        ".left-tvf .btn-upload{z-index: 1;}",
+        "[show-sha1]{line-height: 1;color: #999;}",
         ".page-center .lstc-search .list-contents [file_type=\"1\"] .file-name.h-auto,.list-cell:not(.lstc-search) .list-contents [file_type=\"1\"] .file-name.h-auto{flex:1;padding-bottom: 20px;height:auto;}",
         getStyles(".file-opr [class|=\"icon\"]{display:none!important;}", 'floatOperation.removeIcon'),
     ].join('');
     GM_addStyle(styles);
     var addLinkTaskBtn = function () {
-        $('#js_filter_btn').after("<a href=\"javascript:;\" class=\"button btn-line btn-upload\" menu=\"offline_task\"><i class=\"icon-operate ifo-linktask\"></i><span>\u94FE\u63A5\u4EFB\u52A1</span></a>");
+        $('[rel="left_tvf"]').prepend("<a href=\"javascript:;\" class=\"button btn-line btn-upload\" menu=\"offline_task\"><i class=\"icon-operate ifo-linktask\"></i><span>\u94FE\u63A5\u4EFB\u52A1</span></a>");
     };
     var handleRepeatSha1 = function (file_id, isAll) {
         if (isAll === void 0) { isAll = false; }
@@ -446,7 +447,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     var listShowSHA1 = function ($listItem) {
         var sha1 = $listItem.attr('sha1');
         if (sha1 && !$listItem.find('[show-sha1]').length) {
-            $listItem.find('.file-name').addClass('h-auto').append("<small show-sha1>" + sha1 + "</small>");
+            $listItem.find('.file-name').addClass('h-auto').after("<small show-sha1>" + sha1 + "</small>");
         }
     };
     var initQuickOperation = function () {
@@ -739,7 +740,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
                 var $first = $list.find('li:first-child');
                 if (!$first.attr('item')) {
                     $first.attr('item', 'file').find('i.file-type').removeProp('style');
-                    $first.children('.file-name-wrap').prepend('<b class="checkbox"></b>');
+                    $first.prepend('<b class="checkbox"></b>');
                 }
                 if (G.get('sha1Repeat.select')) {
                     $first.trigger('click');
@@ -802,9 +803,9 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         initMenu();
         if (urlHasString('mode=wangpan')) {
             initMainLayout();
+            G.get('layout.addTaskBtn') && addLinkTaskBtn();
         }
         if (urlHasString('cid=')) {
-            G.get('layout.addTaskBtn') && addLinkTaskBtn();
             initQuickOperation();
         }
         else if (urlHasString('tab=sha1_repeat')) {
