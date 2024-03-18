@@ -1,6 +1,7 @@
 name: GitHub Actions Deploy
 
 on:
+  workflow_dispatch:
   push:
     branches:
       - master
@@ -20,14 +21,14 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Install pnpm
-        uses: pnpm/action-setup@v2
+        uses: pnpm/action-setup@v3
         with:
           version: 8
 
-      - name: Set node version to 18
+      - name: Set node version to 20
         uses: actions/setup-node@v3
         with:
-          node-version: 18
+          node-version: 20
           cache: 'pnpm'
 
       - name: Run Script
