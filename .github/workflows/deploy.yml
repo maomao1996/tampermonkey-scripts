@@ -16,6 +16,9 @@ permissions: write-all
 jobs:
   bot:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [20]
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -25,10 +28,10 @@ jobs:
         with:
           version: 8
 
-      - name: Set node version to 20
+      - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v3
         with:
-          node-version: 20
+          node-version: ${{ matrix.node-version }}
           cache: 'pnpm'
 
       - name: Run Script
