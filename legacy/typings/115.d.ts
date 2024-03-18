@@ -8,6 +8,7 @@ declare const checkRepaatApi: any
 interface Window {
   $: JQueryStatic
   Core: any
+  oofUtil: any
   UA$: { ajax(options: JQuery.AjaxSettings): void }
   USER_INFO: {
     ALIAS_NAME: string

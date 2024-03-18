@@ -2,8 +2,8 @@
 // ==UserScript==
 // @name          115小助手
 // @namespace     https://github.com/maomao1996/tampermonkey-scripts
-// @version       1.7.3
-// @description   顶部链接任务入口还原、SHA1 快速查重（新页面打开）、SHA1 自动查重、删除空文件夹、一键搜（快捷搜索）、SHA1 查重列表支持选中第一个元素和悬浮菜单展示、搜索列表支持悬浮菜单展示、列表显示文件 SHA1 信息、关闭侧边栏、悬浮菜单移除图标、悬浮菜单支持新标签页打开文件夹、加速转码
+// @version       1.8.0
+// @description   网盘顶部菜单栏添加链接任务和云下载、SHA1 快速查重（新页面打开）、SHA1 自动查重、删除空文件夹、一键搜（快捷搜索）、SHA1 查重列表支持选中第一个元素和悬浮菜单展示、搜索列表支持悬浮菜单展示、列表显示文件 SHA1 信息、关闭侧边栏、悬浮菜单移除图标、悬浮菜单支持新标签页打开文件夹、加速转码
 // @icon      	  https://115.com/favicon.ico
 // @author        maomao1996
 // @include       *://115.com/*
@@ -82,6 +82,12 @@
       },
       'layout.addTaskBtn': {
         label: '网盘顶部菜单增加链接任务按钮',
+        labelPos: 'right',
+        type: 'checkbox',
+        default: true,
+      },
+      'layout.addOfflineBtn': {
+        label: '网盘顶部菜单增加云下载按钮',
         labelPos: 'right',
         type: 'checkbox',
         default: true,
@@ -365,6 +371,27 @@
     $('[rel="left_tvf"]').prepend(
       /*html*/ `<a href="javascript:;" class="button btn-line btn-upload" menu="offline_task"><i class="icon-operate ifo-linktask"></i><span>链接任务</span></a>`,
     )
+  }
+
+  /**
+   * 在顶部菜单添加云下载按钮
+   */
+  const addOfflineBtn = () => {
+    $('[rel="left_tvf"]')
+      .prepend(
+        /*html*/ `<a href="javascript:;" class="button btn-line" tab_btn="wangpan" mode-tab="offline"><i class="icon-operate ifo-linktask"></i><span>云下载</span></a>`,
+      )
+      .on('click', '[tab_btn]', function () {
+        const $this = $(this)
+        const tab = $this.attr('tab_btn')
+        const mode = $this.attr('mode-tab')
+
+        if (mode === 'offline') {
+          top.oofUtil.urlMaintain.changeMode(tab, { tab: mode })
+        }
+
+        return false
+      })
   }
 
   /**
@@ -952,6 +979,8 @@
     // 网盘列表模块
     if (urlHasString('cid=')) {
       initQuickOperation()
+      // 添加云下载入口
+      G.get('layout.addOfflineBtn') && addOfflineBtn()
     }
     // SHA1 查重列表模块
     else if (urlHasString('tab=sha1_repeat')) {
