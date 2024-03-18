@@ -2,8 +2,8 @@
 // ==UserScript==
 // @name          115小助手
 // @namespace     https://github.com/maomao1996/tampermonkey-scripts
-// @version       1.7.3
-// @description   顶部链接任务入口还原、SHA1 快速查重（新页面打开）、SHA1 自动查重、删除空文件夹、一键搜（快捷搜索）、SHA1 查重列表支持选中第一个元素和悬浮菜单展示、搜索列表支持悬浮菜单展示、列表显示文件 SHA1 信息、关闭侧边栏、悬浮菜单移除图标、悬浮菜单支持新标签页打开文件夹、加速转码
+// @version       1.8.0
+// @description   网盘顶部菜单栏添加链接任务和云下载、SHA1 快速查重（新页面打开）、SHA1 自动查重、删除空文件夹、一键搜（快捷搜索）、SHA1 查重列表支持选中第一个元素和悬浮菜单展示、搜索列表支持悬浮菜单展示、列表显示文件 SHA1 信息、关闭侧边栏、悬浮菜单移除图标、悬浮菜单支持新标签页打开文件夹、加速转码
 // @icon      	  https://115.com/favicon.ico
 // @author        maomao1996
 // @include       *://115.com/*
@@ -108,6 +108,12 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
             },
             'layout.addTaskBtn': {
                 label: '网盘顶部菜单增加链接任务按钮',
+                labelPos: 'right',
+                type: 'checkbox',
+                default: true,
+            },
+            'layout.addOfflineBtn': {
+                label: '网盘顶部菜单增加云下载按钮',
                 labelPos: 'right',
                 type: 'checkbox',
                 default: true,
@@ -329,6 +335,19 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     GM_addStyle(styles);
     var addLinkTaskBtn = function () {
         $('[rel="left_tvf"]').prepend("<a href=\"javascript:;\" class=\"button btn-line btn-upload\" menu=\"offline_task\"><i class=\"icon-operate ifo-linktask\"></i><span>\u94FE\u63A5\u4EFB\u52A1</span></a>");
+    };
+    var addOfflineBtn = function () {
+        $('[rel="left_tvf"]')
+            .prepend("<a href=\"javascript:;\" class=\"button btn-line\" tab_btn=\"wangpan\" mode-tab=\"offline\"><i class=\"icon-operate ifo-linktask\"></i><span>\u4E91\u4E0B\u8F7D</span></a>")
+            .on('click', '[tab_btn]', function () {
+            var $this = $(this);
+            var tab = $this.attr('tab_btn');
+            var mode = $this.attr('mode-tab');
+            if (mode === 'offline') {
+                top.oofUtil.urlMaintain.changeMode(tab, { tab: mode });
+            }
+            return false;
+        });
     };
     var handleRepeatSha1 = function (file_id, isAll) {
         if (isAll === void 0) { isAll = false; }
@@ -807,6 +826,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         }
         if (urlHasString('cid=')) {
             initQuickOperation();
+            G.get('layout.addOfflineBtn') && addOfflineBtn();
         }
         else if (urlHasString('tab=sha1_repeat')) {
             initRepeatSha1List();
