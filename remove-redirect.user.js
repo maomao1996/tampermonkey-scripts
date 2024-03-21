@@ -2,7 +2,7 @@
 // @name        跳转链接修复（移除重定向外链直达）
 // @description 修复跳转链接为站外直链（移除重定向），免去拦截页面点击步骤可直达站外；拦截页面自动跳转；已适配爱发电、百度、百度移动端、NGA 玩家社区、CSDN、豆瓣、Facebook、码云、谷歌搜索、花瓣网、InfoQ、Instagram、简书、掘金、金山文档、力扣（Leetcode）、51CTO 博客、牛客网、开源中国、pixiv、微信、微信开放社区、QQ 邮箱、PC 版 QQ、腾讯文档、腾讯兔小巢、360 搜索、少数派、腾讯云开发者社区、微博、YouTube、语雀、知乎、知乎专栏
 // @namespace   maomao1996.remove-redirect
-// @version     2.5.0
+// @version     2.6.0
 // @author      maomao1996
 // @homepage    https://github.com/maomao1996/tampermonkey-scripts
 // @supportURL  https://github.com/maomao1996/tampermonkey-scripts/issues
@@ -20,8 +20,8 @@
     return "function" == typeof t;
   }, r = function(t) {
     return "string" == typeof t;
-  }, n = "undefined" != typeof window;
-  function o(t) {
+  }, o = "undefined" != typeof window;
+  function n(t) {
     if (!r("string")) return !1;
     try {
       return new URL(t), !0;
@@ -34,7 +34,7 @@
       selector: "#content_left > [mu]",
       customTransform: function(t) {
         var e = t.getAttribute("mu");
-        o(e) && !e.includes(".baidu.com") && t.querySelectorAll("a[href]").forEach((function(t) {
+        n(e) && !e.includes(".baidu.com") && t.querySelectorAll("a[href]").forEach((function(t) {
           return t.setAttribute("href", e);
         }));
       }
@@ -47,7 +47,7 @@
         var e = (t.getAttribute("href") || "").match(/\?(.*)/);
         if (e) {
           var r = new URLSearchParams(e[1]).get("url");
-          r && o(r) && t.setAttribute("href", r);
+          r && n(r) && t.setAttribute("href", r);
         }
       }
     }
@@ -111,7 +111,7 @@
       selector: 'a[href*="so.com/link?"][data-mdurl]',
       customTransform: function(t) {
         var e = t.getAttribute("data-mdurl");
-        o(e) && t.setAttribute("href", e);
+        n(e) && t.setAttribute("href", e);
       }
     }
   } ] ], s = Object.freeze({
@@ -211,6 +211,19 @@
         validator: function(t) {
           return "/office/link" === t.pathname;
         }
+      }
+    } ] ],
+    ld246Com: [ [ "\u94fe\u6ef4", "ld246.com", {
+      transform: {
+        selector: '[href*="/forward?goto="]',
+        queryName: "goto"
+      },
+      autojump: {
+        validator: function(t) {
+          return "/forward" === t.pathname;
+        },
+        selector: ".text a[href]",
+        queryName: "goto"
       }
     } ] ],
     leetcodeCn: [ [ "\u529b\u6263\uff08Leetcode\uff09", "leetcode.cn", {
@@ -322,9 +335,9 @@
     t = new URLSearchParams(t);
     var r = null;
     if (Array.isArray(e)) {
-      var n = !0, o = !1, a = void 0;
+      var o = !0, n = !1, a = void 0;
       try {
-        for (var u, i = e[Symbol.iterator](); !(n = (u = i.next()).done); n = !0) {
+        for (var u, i = e[Symbol.iterator](); !(o = (u = i.next()).done); o = !0) {
           var c = u.value;
           if (t.has(c)) {
             r = t.get(c);
@@ -332,12 +345,12 @@
           }
         }
       } catch (t) {
-        o = !0, a = t;
+        n = !0, a = t;
       } finally {
         try {
-          n || null == i.return || i.return();
+          o || null == i.return || i.return();
         } finally {
-          if (o) throw a;
+          if (n) throw a;
         }
       }
     } else r = t.get(e);
@@ -345,8 +358,8 @@
   }
   function p(t, e) {
     (null == e || e > t.length) && (e = t.length);
-    for (var r = 0, n = new Array(e); r < e; r++) n[r] = t[r];
-    return n;
+    for (var r = 0, o = new Array(e); r < e; r++) o[r] = t[r];
+    return o;
   }
   function h(t, e) {
     return function(t) {
@@ -354,16 +367,16 @@
     }(t) || function(t, e) {
       var r = null == t ? null : "undefined" != typeof Symbol && t[Symbol.iterator] || t["@@iterator"];
       if (null != r) {
-        var n, o, a = [], u = !0, i = !1;
+        var o, n, a = [], u = !0, i = !1;
         try {
-          for (r = r.call(t); !(u = (n = r.next()).done) && (a.push(n.value), !e || a.length !== e); u = !0) ;
+          for (r = r.call(t); !(u = (o = r.next()).done) && (a.push(o.value), !e || a.length !== e); u = !0) ;
         } catch (t) {
-          i = !0, o = t;
+          i = !0, n = t;
         } finally {
           try {
             u || null == r.return || r.return();
           } finally {
-            if (i) throw o;
+            if (i) throw n;
           }
         }
         return a;
@@ -381,7 +394,7 @@
   }
   var v = function() {
     var t = arguments.length > 0 && void 0 !== arguments[0] ? arguments[0] : location.hostname;
-    return n ? t.replace(/^www\./, "") : "";
+    return o ? t.replace(/^www\./, "") : "";
   }(), g = Object.values(s).flat().find((function(t) {
     var e = h(t, 2)[1];
     return r(e) ? e === v : e.test(v);
@@ -392,7 +405,7 @@
       var q = b.selector, k = b.queryName, C = b.separator, N = void 0 === C ? "?target=" : C, A = b.customTransform, S = void 0 === A ? function(t) {
         var e = "";
         k && (e = d(new URL(t.href).search, k));
-        o(e) || (e = t.href.split(N)[1]), o(e = decodeURIComponent(e)) && (t.href = e);
+        n(e) || (e = t.href.split(N)[1]), n(e = decodeURIComponent(e)) && (t.href = e);
       } : A;
       new MutationObserver((function() {
         document.querySelectorAll(q).forEach(S);
@@ -402,32 +415,32 @@
       });
     }
     if (j) {
-      var U = j.validationRule, O = j.getOriginalUrl, R = j.separator, T = j.queryName, L = void 0 === T ? "target" : T, _ = window.open;
-      window.open = function(t, n, a) {
+      var U = j.validationRule, O = j.getOriginalUrl, R = j.separator, T = j.queryName, x = void 0 === T ? "target" : T, L = window.open;
+      window.open = function(t, o, a) {
         if (r(t)) {
-          if (r(U) && !t.includes(U) || e(U) && !U(t)) return _.call(this, t, n, a);
+          if (r(U) && !t.includes(U) || e(U) && !U(t)) return L.call(this, t, o, a);
           if (e(O)) {
             var u = O(t);
-            u && o(u) && (t = u);
+            u && n(u) && (t = u);
           } else {
             var i, c = new URL(t).search;
-            t = decodeURIComponent(R ? null === (i = c.split(R)) || void 0 === i ? void 0 : i[1] : d(c, L));
+            t = decodeURIComponent(R ? null === (i = c.split(R)) || void 0 === i ? void 0 : i[1] : d(c, x));
           }
         }
-        return _.call(this, t, n, a);
+        return L.call(this, t, o, a);
       };
     }
     w && function() {
-      var t = w.validator, r = w.getOriginalUrl, n = w.selector, a = w.separator, u = w.queryName, i = void 0 === u ? "target" : u;
+      var t = w.validator, r = w.getOriginalUrl, o = w.selector, a = w.separator, u = w.queryName, i = void 0 === u ? "target" : u;
       if (!t || t(location)) {
-        if (n && document.querySelector(n)) return document.querySelector(n).click();
+        if (o && document.querySelector(o)) return document.querySelector(o).click();
         var c;
-        if (e(r) && (c = r()), !o(c)) {
+        if (e(r) && (c = r()), !n(c)) {
           var l, m = location.search;
           if (a) c = null === (l = m.split(a)) || void 0 === l ? void 0 : l[1];
-          o(c) || (c = d(m, i)), c = decodeURIComponent(c || "");
+          n(c) || (c = d(m, i)), c = decodeURIComponent(c || "");
         }
-        o(c) && location.replace(c);
+        n(c) && location.replace(c);
       }
     }();
   }
