@@ -1,5 +1,11 @@
 # remove-redirect
 
+## 2.6.0
+
+### Minor Changes
+
+- e045ac8: 适配链滴 [#19](https://github.com/maomao1996/tampermonkey-scripts/issues/19)
+
 ## 2.5.0
 
 ### Minor Changes
