@@ -6,6 +6,7 @@
   "scripts": {
     "create-site": "node ./scripts/create-site.js",
     "update-description": "tsx ./scripts/update-description.ts && prettier --write ./metablock.json",
+    "prebulid": "pnpm run update-description",
     "build": "rollup -c",
     "dev": "rollup --environment BUILD:development -c --watch"
   }
