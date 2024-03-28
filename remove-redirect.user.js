@@ -1,8 +1,8 @@
 // ==UserScript==
 // @name        跳转链接修复（移除重定向外链直达）
-// @description 修复跳转链接为站外直链（移除重定向），免去拦截页面点击步骤可直达站外；拦截页面自动跳转；已适配爱发电、百度、百度移动端、NGA 玩家社区、CSDN、豆瓣、Facebook、码云、谷歌搜索、花瓣网、InfoQ、Instagram、简书、掘金、金山文档、力扣（Leetcode）、51CTO 博客、牛客网、开源中国、pixiv、微信、微信开放社区、QQ 邮箱、PC 版 QQ、腾讯文档、腾讯兔小巢、360 搜索、少数派、腾讯云开发者社区、微博、YouTube、语雀、知乎、知乎专栏
+// @description 修复跳转链接为站外直链（移除重定向），免去拦截页面点击步骤可直达站外；拦截页面自动跳转；已适配爱发电、百度、CSDN、豆瓣、Facebook、码云、谷歌搜索、花瓣网、InfoQ、Instagram、简书、掘金、金山文档、链滴、力扣（Leetcode）、51CTO 博客、NGA 玩家社区、牛客网、开源中国、pixiv、微信、微信开放社区、QQ 邮箱、PC 版 QQ、腾讯文档、腾讯兔小巢、360 搜索、少数派、腾讯云开发者社区、微博、YouTube、语雀、知乎、知乎专栏
 // @namespace   maomao1996.remove-redirect
-// @version     2.6.0
+// @version     2.7.0
 // @author      maomao1996
 // @homepage    https://github.com/maomao1996/tampermonkey-scripts
 // @supportURL  https://github.com/maomao1996/tampermonkey-scripts/issues
@@ -85,6 +85,10 @@
       queryName: "href"
     }
   } ], [ "QQ \u90ae\u7bb1", "mail.qq.com", {
+    rewriteWindowOpen: {
+      validationRule: "url=",
+      queryName: "url"
+    },
     autojump: {
       validator: function(t) {
         return "/cgi-bin/readtemplate" === t.pathname;
@@ -105,6 +109,18 @@
         return "/scenario/link.html" === t.pathname;
       },
       queryName: "url"
+    }
+  } ], [ "\u817e\u8baf\u5154\u5c0f\u5de2", /(txc|support)\.qq\.com/, {
+    transform: {
+      selector: 'a[href*="/link-jump?jump="]',
+      queryName: "jump"
+    },
+    autojump: {
+      validator: function(t) {
+        var e = t.pathname;
+        return /^\/products\/\d+\/link-jump$/.test(e);
+      },
+      queryName: "jump"
     }
   } ] ], f = [ [ "360 \u641c\u7d22", "so.com", {
     transform: {
@@ -415,16 +431,16 @@
       });
     }
     if (j) {
-      var U = j.validationRule, O = j.getOriginalUrl, R = j.separator, T = j.queryName, x = void 0 === T ? "target" : T, L = window.open;
+      var O = j.validationRule, U = j.getOriginalUrl, R = j.separator, x = j.queryName, T = void 0 === x ? "target" : x, L = window.open;
       window.open = function(t, o, a) {
         if (r(t)) {
-          if (r(U) && !t.includes(U) || e(U) && !U(t)) return L.call(this, t, o, a);
-          if (e(O)) {
-            var u = O(t);
+          if (r(O) && !t.includes(O) || e(O) && !O(t)) return L.call(this, t, o, a);
+          if (e(U)) {
+            var u = U(t);
             u && n(u) && (t = u);
           } else {
             var i, c = new URL(t).search;
-            t = decodeURIComponent(R ? null === (i = c.split(R)) || void 0 === i ? void 0 : i[1] : d(c, x));
+            t = decodeURIComponent(R ? null === (i = c.split(R)) || void 0 === i ? void 0 : i[1] : d(c, T));
           }
         }
         return L.call(this, t, o, a);
