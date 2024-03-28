@@ -45,6 +45,10 @@ const sites: SiteModule = [
     'QQ 邮箱',
     'mail.qq.com',
     {
+      rewriteWindowOpen: {
+        validationRule: 'url=',
+        queryName: 'url',
+      },
       autojump: {
         validator: ({ pathname }) => pathname === '/cgi-bin/readtemplate',
         selector: 'div.c-footer a.c-footer-a1',
