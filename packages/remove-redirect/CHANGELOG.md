@@ -1,5 +1,16 @@
 # remove-redirect
 
+## 2.7.0
+
+### Minor Changes
+
+- afcdee5: 适配 QQ 邮箱内容页
+- 01df160: 适配腾讯兔小巢
+
+### Patch Changes
+
+- 4739af4: 更新脚本描述
+
 ## 2.6.0
 
 ### Minor Changes
