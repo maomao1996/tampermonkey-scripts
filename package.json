@@ -26,7 +26,7 @@
     "format": "prettier --write .",
     "create-site:kill-watermark": "pnpm --filter='kill-watermark' create-site",
     "create-site:remove-redirect": "pnpm --filter='remove-redirect' create-site",
-    "create-package": "node scripts/create.js",
+    "create-package": "node scripts/create.js && pnpm install",
     "changeset": "changeset",
     "packages-version": "changeset version",
     "prepare": "husky install"
