@@ -101,10 +101,10 @@
 
 如果你喜欢 `tampermonkey-scripts` 中的插件，并且它对你确实有帮助，欢迎给我打赏一杯咖啡哈~
 
-**支付宝：**
-
-<img src="https://cdn.jsdelivr.net/gh/maomao1996/picture/sponsor/alipay.jpg" width="200" alt="支付宝" />
-
 **微信：**
 
-<img src="https://cdn.jsdelivr.net/gh/maomao1996/picture/sponsor/wechat.jpg" width="200" alt="微信" />
+<img src="https://cdn.jsdelivr.net/gh/maomao1996/picture/sponsor/wechat-color.webp" width="200" alt="微信" />
+
+**支付宝：**
+
+<img src="https://cdn.jsdelivr.net/gh/maomao1996/picture/sponsor/alipay-color.webp" width="200" alt="支付宝" />
