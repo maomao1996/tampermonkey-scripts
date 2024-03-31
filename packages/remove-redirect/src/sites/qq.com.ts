@@ -58,17 +58,19 @@ const sites: SiteModule = [
   ],
   /******************************************************************************
    ** PC 版 QQ
-   **   -  https://c.pc.qq.com/middlem.html?pfurl=https%3A%2F%2Ffe-mm.com
    **   -  https://c.pc.qq.com/middlem.html?pfurl=https%3A%2F%2Fgithub.com%2Fmaomao1996%2Ftampermonkey-scripts
-   **   -  https://c.pc.qq.com/pc.html?url=%3A%2F%2Fgithub.com%2Fmaomao1996%2Ftampermonkey-scripts
+   **   -  https://c.pc.qq.com/middleb.html?pfurl=https%3A%2F%2Fgithub.com%2Fmaomao1996%2Ftampermonkey-scripts
+   **   -  https://c.pc.qq.com/pc.html?url=https%3A%2F%2Fgithub.com%2Fmaomao1996%2Ftampermonkey-scripts
+   **   -  https://c.pc.qq.com/ios.html?url=https%3A%2F%2Fgithub.com%2Fmaomao1996%2Ftampermonkey-scripts
+   **   -  https://c.pc.qq.com/android.html?url=https%3A%2F%2Fgithub.com%2Fmaomao1996%2Ftampermonkey-scripts
    ******************************************************************************/
   [
     'PC 版 QQ',
     'c.pc.qq.com',
     {
       autojump: {
-        validator: ({ pathname }) => pathname === '/middlem.html',
-        queryName: 'pfurl',
+        validator: ({ pathname }) => /^\/(middleb|middlem|pc|ios|android)\.html$/.test(pathname),
+        queryName: ['pfurl', 'url'],
       },
     },
   ],
