@@ -1,5 +1,11 @@
 # remove-redirect
 
+## 2.8.0
+
+### Minor Changes
+
+- b334bea: 适配 NT 版 QQ
+
 ## 2.7.0
 
 ### Minor Changes
