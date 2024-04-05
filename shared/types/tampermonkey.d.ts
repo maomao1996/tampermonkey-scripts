@@ -89,6 +89,24 @@ declare function GM_registerMenuCommand(
 ): number
 
 /**
+ * 将剪贴板的文本设置为指定值
+ **/
+declare function GM_setClipboard(
+  /**
+   * 要设置的文本
+   */
+  data: string,
+  /**
+   * 文本类型
+   */
+  type?: 'text' | 'html',
+  /**
+   * 设置剪贴板时的回调函数
+   */
+  callback?: () => void,
+): any
+
+/**
  * 正在运行的页面的窗口对象
  */
 declare const unsafeWindow: Window
