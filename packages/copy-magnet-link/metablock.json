@@ -1,0 +1,19 @@
+{
+  "name": "复制磁力链接",
+  "name:zh-CN": "复制磁力链接",
+  "name:zh-TW": "复制磁力链接",
+  "namespace": "maomao1996.copy-magnet-link",
+  "version": "0.0.0",
+  "description": "一键复制页面内所有磁力链接（自动过滤重复磁力链接）",
+  "author": "",
+  "homepage": "",
+  "supportURL": "",
+  "updateURL": "",
+  "downloadURL": "",
+  "license": "",
+  "match": ["*://*/*"],
+  "exclude": ["*://localhost:*/*", "*://127.0.0.1:*/*", "*://0.0.0.0*", "*://192.168.*"],
+  "require": [],
+  "connect": [],
+  "grant": ["GM_addStyle", "GM_setClipboard", "GM_notification"]
+}

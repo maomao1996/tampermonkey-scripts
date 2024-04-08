@@ -1,0 +1,64 @@
+.femm-copy-magnet-link {
+  position: fixed;
+  right: 16px;
+  bottom: 20vh;
+  z-index: 1996;
+  opacity: 0.5;
+  cursor: pointer;
+  transform: translateX(40px);
+  transition: transform 0.3s, opacity 0.2s;
+
+  &::after {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    display: block;
+    content: '';
+    width: 150%;
+  }
+
+  &::before {
+    content: attr(tips);
+    position: absolute;
+    z-index: 1;
+    bottom: 120%;
+    right: 0;
+    padding: 8px;
+    border-radius: 6px;
+    font-size: 12px;
+    text-align: center;
+    white-space: nowrap;
+    color: #e6f4ff;
+    background-color: rgba(0, 0, 0, 0.85);
+    opacity: 0;
+    transition: opacity 0.25s 0.1s;
+  }
+
+  &:hover {
+    opacity: 1;
+    transform: translateX(10px);
+    &::before {
+      opacity: 1;
+    }
+  }
+
+  &-btn {
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    font-size: 16px;
+    background-color: #fff;
+    box-shadow: 0 6px 16px 0 rgba(0, 0, 0, 0.08), 0 3px 6px -4px rgba(0, 0, 0, 0.12),
+      0 9px 28px 8px rgba(0, 0, 0, 0.05);
+    transition: background-color 0.2s;
+
+    &:hover {
+      background-color: rgba(0, 0, 0, 0.06);
+    }
+  }
+}
