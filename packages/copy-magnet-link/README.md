@@ -1,6 +1,6 @@
 # 复制磁力链接
 
-![复制磁力链接](https://greasyfork.org/zh-CN/scripts/491959)
+![复制磁力链接](https://img.shields.io/greasyfork/v/491959)
 
 一键复制页面内所有磁力链接（自动过滤重复磁力链接）
 
