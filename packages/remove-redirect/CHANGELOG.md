@@ -1,5 +1,15 @@
 # remove-redirect
 
+## 2.9.0
+
+### Minor Changes
+
+- 16d2311: 适配 Google 重定向页
+
+### Patch Changes
+
+- d391402: 优化百度域名判断，修复搜索结果中百科、知道等重定向跳转
+
 ## 2.8.0
 
 ### Minor Changes
