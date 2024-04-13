@@ -1,14 +1,16 @@
 import { validateUrl } from '@femm/shared-utils'
 
+const BAIDU_RE = /^http:\/\/[^.]+\.[^.]+\.baidu\.com/
+
 /******************************************************************************
- ** 百度
+ ** 百度搜索
  **   - https://www.baidu.com/s?wd=mmPlayer
  **   - https://www.baidu.com/s?wd=es6
  **   - https://www.baidu.com/s?wd=武林外传
  ******************************************************************************/
 const sites: SiteModule = [
   [
-    '百度',
+    '百度搜索',
     'baidu.com',
     {
       transform: {
@@ -19,9 +21,12 @@ const sites: SiteModule = [
            ** 特殊的链接：
            **   - 重定向 http://nourl.ubs.baidu.com/51270
            **   - 快捷搜索 http://28608.recommend_list.baidu.com
+           **   - 短视频 http://3108.lightapp.baidu.com/%CE%E4%C1%D6%CD%E2%B4%AB
            */
-          if (validateUrl(originUrl) && !originUrl.includes('.baidu.com')) {
-            node.querySelectorAll('a[href]').forEach((a) => a.setAttribute('href', originUrl))
+          if (validateUrl(originUrl) && !BAIDU_RE.test(originUrl)) {
+            node
+              .querySelectorAll('a[href*="baidu.com/link?url="]')
+              .forEach((a) => a.setAttribute('href', originUrl))
           }
         },
       },
