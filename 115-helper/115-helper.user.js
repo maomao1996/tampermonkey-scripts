@@ -30,7 +30,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     function verb(n) { return function (v) { return step([n, v]); }; }
     function step(op) {
         if (f) throw new TypeError("Generator is already executing.");
-        while (_) try {
+        while (g && (g = 0, op[0] && (_ = 0)), _) try {
             if (f = 1, y && (t = op[0] & 2 ? y["return"] : op[0] ? y["throw"] || ((t = y["return"]) && t.call(y), 0) : y.next) && !(t = t.call(y, op[1])).done) return t;
             if (y = 0, t) op = [op[0] & 2, t.value];
             switch (op[0]) {
@@ -292,8 +292,8 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     var random = function (lower, upper, floating) {
         if (floating) {
             var rand = Math.random();
-            var randLength = ("" + rand).length - 1;
-            return Math.min(lower + rand * (upper - lower + parseFloat("1e-" + randLength)), upper);
+            var randLength = "".concat(rand).length - 1;
+            return Math.min(lower + rand * (upper - lower + parseFloat("1e-".concat(randLength))), upper);
         }
         return lower + Math.floor(Math.random() * (upper - lower + 1));
     };
@@ -363,7 +363,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
                     var state = _a.state, data = _a.data;
                     !isAll && MinMessage.Hide();
                     if (state && data.length > 1) {
-                        var sha1RepeatUrl = "//115.com/?tab=sha1_repeat&file_id=" + file_id + "&mode=wangpan";
+                        var sha1RepeatUrl = "//115.com/?tab=sha1_repeat&file_id=".concat(file_id, "&mode=wangpan");
                         if (G.get('sha1Repeat.select')) {
                             sha1RepeatUrl += '&select=1';
                         }
@@ -399,7 +399,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
                 prev += MENU_MAP.search;
             }
             else if (key === 'new_tab' && G.get('floatOperation.newTab.addBtn') && fileType === '0') {
-                prev += MENU_MAP.new_tab.replace('$href', "/?cid=" + cid + "&offset=0&mode=wangpan");
+                prev += MENU_MAP.new_tab.replace('$href', "/?cid=".concat(cid, "&offset=0&mode=wangpan"));
             }
             else if (key === 'sha1' && G.get('floatOperation.sha1.addBtn') && fileType === '1') {
                 prev += MENU_MAP.sha1;
@@ -410,7 +410,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
             return prev;
         }, '');
         if (isAddWrap) {
-            return "<div class=\"file-opr\" rel=\"menu\">" + menu + "</div>";
+            return "<div class=\"file-opr\" rel=\"menu\">".concat(menu, "</div>");
         }
         return menu;
     };
@@ -418,7 +418,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         var handleQuickSearch = function (keyword) {
             var _a = getAidCid(), aid = _a.aid, cid = _a.cid, name = _a.name;
             var openSearch = function (value) {
-                GM_openInTab("//115.com/?mode=search&submode=wangpan&url=" + encodeURIComponent("/?aid=" + aid + "&cid=" + (G.get('quickSearch.isAll') ? 0 : cid) + "&old_cid=" + cid + "&old_cid_name=" + encodeURIComponent(name) + "&search_value=" + encodeURIComponent(value) + "&ct=file&ac=search&is_wl_tpl=1"), { active: true });
+                GM_openInTab("//115.com/?mode=search&submode=wangpan&url=".concat(encodeURIComponent("/?aid=".concat(aid, "&cid=").concat(G.get('quickSearch.isAll') ? 0 : cid, "&old_cid=").concat(cid, "&old_cid_name=").concat(encodeURIComponent(name), "&search_value=").concat(encodeURIComponent(value), "&ct=file&ac=search&is_wl_tpl=1"))), { active: true });
             };
             if (!G.get('quickSearch.edit')) {
                 openSearch(keyword);
@@ -459,14 +459,14 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
                 case 'search':
                     var ico = $li.attr('ico');
                     var title = $li.attr('title');
-                    return handleQuickSearch(title.replace("." + ico, ''));
+                    return handleQuickSearch(title.replace(".".concat(ico), ''));
             }
         });
     };
     var listShowSHA1 = function ($listItem) {
         var sha1 = $listItem.attr('sha1');
         if (sha1 && !$listItem.find('[show-sha1]').length) {
-            $listItem.find('.file-name').addClass('h-auto').after("<small show-sha1>" + sha1 + "</small>");
+            $listItem.find('.file-name').addClass('h-auto').after("<small show-sha1>".concat(sha1, "</small>"));
         }
     };
     var initQuickOperation = function () {
@@ -531,8 +531,8 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
                                         options = { text: '', type: '', timeout: 2e3 };
                                         if (repeatCount) {
                                             options.text = isMax
-                                                ? "\u5DF2\u67E5\u8BE2\u5230 " + repeatCount + " \u4E2A\u91CD\u590D\u6587\u4EF6"
-                                                : "\u5DF2\u67E5\u8BE2\u5B8C\u5F53\u524D\u5206\u9875\uFF0C\u5171 " + repeatCount + " \u4E2A\u91CD\u590D\u6587\u4EF6";
+                                                ? "\u5DF2\u67E5\u8BE2\u5230 ".concat(repeatCount, " \u4E2A\u91CD\u590D\u6587\u4EF6")
+                                                : "\u5DF2\u67E5\u8BE2\u5B8C\u5F53\u524D\u5206\u9875\uFF0C\u5171 ".concat(repeatCount, " \u4E2A\u91CD\u590D\u6587\u4EF6");
                                             options.type = 'suc';
                                         }
                                         else {
@@ -662,7 +662,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
                         });
                         var options = { text: '', type: '', timeout: 2e3 };
                         if (repeatCount) {
-                            options.text = "\u5F53\u524D\u6587\u4EF6\u5939\u4E0B\u5171 " + repeatCount + " \u4E2A\u91CD\u590D\u6587\u4EF6";
+                            options.text = "\u5F53\u524D\u6587\u4EF6\u5939\u4E0B\u5171 ".concat(repeatCount, " \u4E2A\u91CD\u590D\u6587\u4EF6");
                             options.type = 'suc';
                         }
                         else {
@@ -705,7 +705,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
                             var state = _a.state, data = _a.data, count = _a.count;
                             if (state && data && data.length) {
                                 $.confirm({
-                                    text: "\u6B64\u76EE\u5F55\u4E0B\u8FD8\u6709 " + count + " \u4E2A\u6587\u4EF6\u672A\u8F6C\u7801\uFF0C" + (data.length < count
+                                    text: "\u6B64\u76EE\u5F55\u4E0B\u8FD8\u6709 ".concat(count, " \u4E2A\u6587\u4EF6\u672A\u8F6C\u7801\uFF0C").concat(data.length < count
                                         ? "\u662F\u5426\u63D0\u4EA4 VIP \u52A0\u901F\uFF1F<br/>\uFF08\u5355\u6B21\u63D0\u4EA4\u6700\u591A\u53EF\u52A0\u901F50\u4E2A\uFF09"
                                         : "\u662F\u5426\u5168\u90E8\u63D0\u4EA4 VIP \u52A0\u901F\uFF1F"),
                                     confirm_text: '全部加速',
@@ -796,7 +796,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
                 return;
             }
             $mainSidebar
-                .append("<li mm-layout=\"sidebar\"><a href=\"javascript:;\"><p id=\"mm-sidebar\">" + (top.$('.wrap-hflow .sub-hflow').is(':visible') ? '关闭' : '打开') + "</p><p>\u4FA7\u8FB9\u680F</p></a></li>")
+                .append("<li mm-layout=\"sidebar\"><a href=\"javascript:;\"><p id=\"mm-sidebar\">".concat(top.$('.wrap-hflow .sub-hflow').is(':visible') ? '关闭' : '打开', "</p><p>\u4FA7\u8FB9\u680F</p></a></li>"))
                 .find(SIDEBAR_SELECTOR)
                 .on('click', function () {
                 var $sidebar = top.$('.wrap-hflow .sub-hflow');

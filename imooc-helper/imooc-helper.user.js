@@ -25,7 +25,7 @@
         GM_addStyle(rules);
     }
     function getBntHtml(link) {
-        return "<a class=\"mm-btn\" href=\"javascript:void(0)\" data-link=\"" + link + "\">\u5F39\u7A97\u67E5\u770B</a>";
+        return "<a class=\"mm-btn\" href=\"javascript:void(0)\" data-link=\"".concat(link, "\">\u5F39\u7A97\u67E5\u770B</a>");
     }
     function appendModal() {
         var modalHtml = '<div class="mm-modal" id="mm-modal"><div class="mm-mask"></div><div class="mm-modal-x"><iframe id="mm-content" width="100%" height="100%" frameborder="0"></iframe></div></div>';

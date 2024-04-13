@@ -90,8 +90,8 @@
     var random = function (lower, upper, floating) {
         if (floating) {
             var rand = Math.random();
-            var randLength = ("" + rand).length - 1;
-            return Math.min(lower + rand * (upper - lower + parseFloat("1e-" + randLength)), upper);
+            var randLength = "".concat(rand).length - 1;
+            return Math.min(lower + rand * (upper - lower + parseFloat("1e-".concat(randLength))), upper);
         }
         return lower + Math.floor(Math.random() * (upper - lower + 1));
     };
@@ -129,7 +129,7 @@
         }
         var appendResponseBtn = function () {
             if (!$('#ding_btn').length) {
-                $('#quick_reply').after("<a id=\"ding_btn\" rel=\"noopener\" class=\"btn-sub btn-small\">" + (CONFIG.STATUS ? '关闭' : '开启') + "\u81EA\u52A8\u9876\u8D34\u56DE\u590D</a>");
+                $('#quick_reply').after("<a id=\"ding_btn\" rel=\"noopener\" class=\"btn-sub btn-small\">".concat(CONFIG.STATUS ? '关闭' : '开启', "\u81EA\u52A8\u9876\u8D34\u56DE\u590D</a>"));
             }
             if (CONFIG.STATUS && !$('#reply_immediate').length) {
                 $('#ding_btn').after('<a id="reply_immediate" rel="noopener" class="btn-sub btn-small">立即回复(重新计时)</a>');
@@ -178,7 +178,7 @@
                 $(selectors.editor).text(text);
                 $(selectors.submit).trigger('click');
                 var time = random(CONFIG.TIME_MIN, CONFIG.TIME_MAX, true) * 6e4;
-                console.log(time / 1e3 + "\u79D2\u540E\u81EA\u52A8\u9876\u8D34\u56DE\u590D");
+                console.log("".concat(time / 1e3, "\u79D2\u540E\u81EA\u52A8\u9876\u8D34\u56DE\u590D"));
                 CONFIG.timer = setTimeout(function () {
                     runResponse();
                 }, time);
