@@ -15,7 +15,7 @@
   "match": [
     "*://*.gaoding.com/*",
     "*://v.qq.com/x/cover/*",
-    "*://www.iqiyi.com/*",
+    "*://*.iqiyi.com/*",
     "*://v.youku.com/*",
     "*://live.bilibili.com/*",
     "*://ke.qq.com/course/*",

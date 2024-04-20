@@ -1,7 +1,10 @@
-/* 右上角 logo */
+/* 播放页右上角 logo */
 .iqp-logo-box,
 .iqp-logo-top,
 .iqp-logo-bottom,
+
+/* 直播右上角 log */
+.zpc-watermark,
 
 /* 暂停时的广告 */
 iqpdiv.flash-max {
