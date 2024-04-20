@@ -1,5 +1,11 @@
 # kill-watermark
 
+## 0.10.0
+
+### Minor Changes
+
+- a238fa2: 适配爱奇艺二级页面右上角 logo 移除 [#20](https://github.com/maomao1996/tampermonkey-scripts/issues/20)
+
 ## 0.9.2
 
 ### Patch Changes
