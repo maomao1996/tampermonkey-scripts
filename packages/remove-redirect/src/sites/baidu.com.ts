@@ -7,6 +7,7 @@ const BAIDU_RE = /^http:\/\/[^.]+\.[^.]+\.baidu\.com/
  **   - https://www.baidu.com/s?wd=mmPlayer
  **   - https://www.baidu.com/s?wd=es6
  **   - https://www.baidu.com/s?wd=武林外传
+ **   - https://www.baidu.com/s?wd=实现简单的实时渲染器
  ******************************************************************************/
 const sites: SiteModule = [
   [
@@ -25,7 +26,7 @@ const sites: SiteModule = [
            */
           if (validateUrl(originUrl) && !BAIDU_RE.test(originUrl)) {
             node
-              .querySelectorAll('a[href*="baidu.com/link?url="]')
+              .querySelectorAll('div[has-tts] a[href*="baidu.com/link?url="]')
               .forEach((a) => a.setAttribute('href', originUrl))
           }
         },
