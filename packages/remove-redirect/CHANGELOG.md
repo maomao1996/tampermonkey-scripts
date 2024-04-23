@@ -1,5 +1,11 @@
 # remove-redirect
 
+## 2.10.0
+
+### Minor Changes
+
+- de23c5a: 适配推特（Twitter）
+
 ## 2.9.1
 
 ### Patch Changes
