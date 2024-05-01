@@ -2,7 +2,7 @@
 // ==UserScript==
 // @name          115小助手
 // @namespace     https://github.com/maomao1996/tampermonkey-scripts
-// @version       1.8.0
+// @version       1.8.1
 // @description   网盘顶部菜单栏添加链接任务和云下载、SHA1 快速查重（新页面打开）、SHA1 自动查重、删除空文件夹、一键搜（快捷搜索）、SHA1 查重列表支持选中第一个元素和悬浮菜单展示、搜索列表支持悬浮菜单展示、列表显示文件 SHA1 信息、关闭侧边栏、悬浮菜单移除图标、悬浮菜单支持新标签页打开文件夹、加速转码
 // @icon      	  https://115.com/favicon.ico
 // @author        maomao1996
@@ -69,7 +69,7 @@
       },
       'layout.hideSidebar': {
         section: ['', '界面布局相关设置'],
-        label: '关闭存储侧边栏',
+        label: '默认关闭网盘侧边栏',
         labelPos: 'right',
         type: 'checkbox',
         default: false,
@@ -924,9 +924,11 @@
   const initMainLayout = () => {
     const SIDEBAR_SELECTOR = '[mm-layout="sidebar"]'
     const HELPER_SETTING_SELECTOR = '[mm-layout="helper-setting"]'
-    const $mainSidebar = top.$('.main-sub .sub-footer ul')
+    const $mainSidebar = top.$('#js-main_leftUI .top-side .navigation-ceiling ul')
 
-    G.get('layout.hideSidebar') && top.$('.wrap-hflow .sub-hflow').toggle(0)
+    if (G.get('layout.hideSidebar')) {
+      top.$('.wrap-hflow .sub-hflow').hide(0)
+    }
 
     const initSidebar = () => {
       if (top.$(SIDEBAR_SELECTOR).length) {
@@ -935,16 +937,18 @@
 
       $mainSidebar
         .append(
-          /*html*/ `<li mm-layout="sidebar"><a href="javascript:;"><p id="mm-sidebar">${
+          /*html*/ `<li mm-layout="sidebar"><a href="javascript:;" style="width: auto"><span id="mm-sidebar">${
             top.$('.wrap-hflow .sub-hflow').is(':visible') ? '关闭' : '打开'
-          }</p><p>侧边栏</p></a></li>`,
+          }</span><span>侧边栏</span></a></li>`,
         )
         .find(SIDEBAR_SELECTOR)
         .on('click', function () {
           const $sidebar = top.$('.wrap-hflow .sub-hflow')
           $sidebar.toggle(200)
           setTimeout(function () {
-            top.$('#mm-sidebar').text($sidebar.is(':visible') ? '关闭' : '打开')
+            const isVisible = $sidebar.is(':visible')
+            top.$('#mm-sidebar').text(isVisible ? '关闭' : '打开')
+            top.localStorage.setItem('wangpan_is_hide', isVisible ? '0' : '1')
           }, 200)
         })
     }
@@ -956,7 +960,7 @@
 
       $mainSidebar
         .append(
-          /*html*/ `<li mm-layout="helper-setting"><a href="javascript:;"><p>小助手</p><p>设置</p></a></li>`,
+          /*html*/ `<li mm-layout="helper-setting"><a href="javascript:;" style="width: auto"><span>小助手</span><span>设置</span></a></li>`,
         )
         .find(HELPER_SETTING_SELECTOR)
         .on('click', () => (G.isOpen ? G.close() : G.open()))
