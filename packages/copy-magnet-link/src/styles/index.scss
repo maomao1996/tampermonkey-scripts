@@ -1,7 +1,7 @@
 .femm-copy-magnet-link {
   position: fixed;
-  right: 16px;
-  bottom: 20vh;
+  right: 18px;
+  bottom: 30vh;
   z-index: 1996;
   opacity: 0.5;
   cursor: pointer;
@@ -24,6 +24,7 @@
     z-index: 1;
     bottom: 120%;
     right: 0;
+    display: none;
     padding: 8px;
     border-radius: 6px;
     font-size: 12px;
@@ -31,7 +32,6 @@
     white-space: nowrap;
     color: #e6f4ff;
     background-color: rgba(0, 0, 0, 0.85);
-    opacity: 0;
     transition: opacity 0.25s 0.1s;
   }
 
@@ -39,7 +39,7 @@
     opacity: 1;
     transform: translateX(10px);
     &::before {
-      opacity: 1;
+      display: block;
     }
   }
 
