@@ -1,5 +1,11 @@
 # remove-redirect
 
+## 2.10.1
+
+### Patch Changes
+
+- 0f89828: 修复推特（Twitter）链接转换错误
+
 ## 2.10.0
 
 ### Minor Changes
