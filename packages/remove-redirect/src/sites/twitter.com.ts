@@ -13,7 +13,7 @@ const sites: SiteModule = [
       transform: {
         selector: 'a[href*="://t.co/"]',
         customTransform(node) {
-          const originUrl = node.innerText
+          const originUrl = node.innerText.replace('…', '')
           if (validateUrl(originUrl)) {
             node.setAttribute('href', originUrl)
           }
