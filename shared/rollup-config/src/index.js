@@ -7,10 +7,38 @@ import { swc, defineRollupSwcOption } from 'rollup-plugin-swc3'
 import terser from '@rollup/plugin-terser'
 import metablock from 'rollup-plugin-userscript-metablock'
 
-export function createRollupConfig({ pkg, postcss: postcssOptions = {}, plugins = [] }) {
+export function createRollupConfig({
+  pkg,
+  postcss: postcssOptions,
+  terser: terserOptions,
+  plugins = [],
+}) {
   const isDevelopment = process.env.BUILD === 'development'
   const filename = `${pkg.name}.user.js`
   const file = path.resolve('../../', isDevelopment ? 'dist-dev' : 'dist', filename)
+
+  const defaultPostcssOptions = { minimize: true }
+
+  const defaultTerserOptions = isDevelopment
+    ? {
+        // 开发环境下仅删除注释
+        mangle: false,
+        compress: {
+          defaults: false,
+          conditionals: true,
+        },
+        format: {
+          beautify: true,
+          indent_level: 2,
+        },
+      }
+    : {
+        format: {
+          ascii_only: true,
+          beautify: true,
+          indent_level: 2,
+        },
+      }
 
   return defineConfig({
     input: 'src/index.ts',
@@ -28,7 +56,11 @@ export function createRollupConfig({ pkg, postcss: postcssOptions = {}, plugins 
           'process.env.NODE_ENV': JSON.stringify(isDevelopment ? 'development' : 'production'),
         },
       }),
-      postcssOptions && postcss({ minimize: true, ...postcssOptions }),
+      postcss(
+        typeof postcssOptions === 'function'
+          ? postcssOptions(defaultPostcssOptions)
+          : defaultPostcssOptions,
+      ),
       swc(
         defineRollupSwcOption({
           jsc: {
@@ -38,26 +70,9 @@ export function createRollupConfig({ pkg, postcss: postcssOptions = {}, plugins 
         }),
       ),
       terser(
-        isDevelopment
-          ? {
-              // 开发环境下仅删除注释
-              mangle: false,
-              compress: {
-                defaults: false,
-                conditionals: true,
-              },
-              format: {
-                beautify: true,
-                indent_level: 2,
-              },
-            }
-          : {
-              format: {
-                ascii_only: true,
-                beautify: true,
-                indent_level: 2,
-              },
-            },
+        typeof terserOptions === 'function'
+          ? terserOptions(defaultTerserOptions)
+          : defaultTerserOptions,
       ),
       metablock({
         override: {
