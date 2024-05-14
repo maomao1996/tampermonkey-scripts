@@ -10,6 +10,7 @@ body:
       options:
         - kill-watermark 杀死水印
         - remove-redirect 跳转链接修复（移除重定向外链直达）
+        - civitai-helper Civitai 小助手
         - github-helper GitHub 小助手
         - copy-magnet-link 复制磁力链接
         - 115-helper 115 小助手
