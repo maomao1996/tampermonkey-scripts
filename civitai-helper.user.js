@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name        Civitai 小助手
-// @description 提升 Civitai 使用体验的小助手
+// @description 提升 Civitai 使用体验的小助手；自动移除分级遮罩直接展示图片
 // @namespace   maomao1996.civitai-helper
 // @version     1.0.0
 // @author      maomao1996
@@ -12,36 +12,36 @@
 // ==/UserScript==
 !function() {
   "use strict";
-  var t = new IntersectionObserver((function(n) {
-    var e = !0, r = !1, o = void 0;
+  var ob = new IntersectionObserver((function(entries) {
+    var _iteratorNormalCompletion = !0, _didIteratorError = !1, _iteratorError = void 0;
     try {
-      for (var i, u = n[Symbol.iterator](); !(e = (i = u.next()).done); e = !0) {
-        var a = i.value;
-        if (a.isIntersecting) {
-          var c = a.target;
-          c.click(), t.unobserve(c);
+      for (var _step, _iterator = entries[Symbol.iterator](); !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = !0) {
+        var entry = _step.value;
+        if (entry.isIntersecting) {
+          var node = entry.target;
+          node.click(), ob.unobserve(node);
         }
       }
-    } catch (t) {
-      r = !0, o = t;
+    } catch (err) {
+      _didIteratorError = !0, _iteratorError = err;
     } finally {
       try {
-        e || null == u.return || u.return();
+        _iteratorNormalCompletion || null == _iterator.return || _iterator.return();
       } finally {
-        if (r) throw o;
+        if (_didIteratorError) throw _iteratorError;
       }
     }
   }));
-  var n = function() {
-    document.querySelectorAll(".mantine-Stack-root > button.mantine-UnstyledButton-root.mantine-Button-root").forEach((function(n) {
-      "Show" === n.innerText && t.observe(n);
+  var init = function() {
+    document.querySelectorAll(".mantine-Stack-root > button.mantine-UnstyledButton-root.mantine-Button-root").forEach((function(node) {
+      "Show" === node.innerText && ob.observe(node);
     }));
-  }, e = document.querySelector("#main");
-  null != e && new MutationObserver((function() {
-    return n();
-  })).observe(e, {
+  }, main = document.querySelector("#main");
+  null != main && new MutationObserver((function() {
+    return init();
+  })).observe(main, {
     childList: !0,
     subtree: !0
   });
-  n();
+  init();
 }();
