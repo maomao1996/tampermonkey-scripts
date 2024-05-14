@@ -1,0 +1,19 @@
+{
+  "name": "Civitai 小助手",
+  "name:zh-CN": "Civitai 小助手",
+  "name:zh-TW": "Civitai 小助手",
+  "namespace": "maomao1996.civitai-helper",
+  "version": "0.0.0",
+  "description": "提升 Civitai 使用体验的小助手；自动移除分级遮罩直接展示图片",
+  "author": "",
+  "homepage": "",
+  "supportURL": "",
+  "updateURL": "",
+  "downloadURL": "",
+  "license": "",
+  "match": ["*://civitai.com/*"],
+  "exclude": [],
+  "require": [],
+  "connect": [],
+  "grant": []
+}
