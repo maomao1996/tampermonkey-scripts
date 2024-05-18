@@ -1,5 +1,11 @@
 # remove-redirect
 
+## 2.10.2
+
+### Patch Changes
+
+- 300c0db: 适配推特（Twitter）新域名
+
 ## 2.10.1
 
 ### Patch Changes
