@@ -2,7 +2,7 @@
 // ==UserScript==
 // @name          115小助手
 // @namespace     https://github.com/maomao1996/tampermonkey-scripts
-// @version       1.8.1
+// @version       1.8.2
 // @description   网盘顶部菜单栏添加链接任务和云下载、SHA1 快速查重（新页面打开）、SHA1 自动查重、删除空文件夹、一键搜（快捷搜索）、SHA1 查重列表支持选中第一个元素和悬浮菜单展示、搜索列表支持悬浮菜单展示、列表显示文件 SHA1 信息、关闭侧边栏、悬浮菜单移除图标、悬浮菜单支持新标签页打开文件夹、加速转码
 // @icon      	  https://115.com/favicon.ico
 // @author        maomao1996
@@ -368,30 +368,20 @@
    * 在顶部菜单添加链接任务按钮
    */
   const addLinkTaskBtn = () => {
-    $('[rel="left_tvf"]').prepend(
-      /*html*/ `<a href="javascript:;" class="button btn-line btn-upload" menu="offline_task"><i class="icon-operate ifo-linktask"></i><span>链接任务</span></a>`,
-    )
+    const content = /*html*/ `<a href="javascript:;" class="button btn-line btn-upload" menu="offline_task"><i class="icon-operate ifo-linktask"></i><span>链接任务</span></a>`
+
+    urlHasString('mode=search')
+      ? $('[rel="left_tvf"]').prepend(content)
+      : $('a#js_filter_btn').after(content)
   }
 
   /**
    * 在顶部菜单添加云下载按钮
    */
   const addOfflineBtn = () => {
-    $('[rel="left_tvf"]')
-      .prepend(
-        /*html*/ `<a href="javascript:;" class="button btn-line" tab_btn="wangpan" mode-tab="offline"><i class="icon-operate ifo-linktask"></i><span>云下载</span></a>`,
-      )
-      .on('click', '[tab_btn]', function () {
-        const $this = $(this)
-        const tab = $this.attr('tab_btn')
-        const mode = $this.attr('mode-tab')
-
-        if (mode === 'offline') {
-          top.oofUtil.urlMaintain.changeMode(tab, { tab: mode })
-        }
-
-        return false
-      })
+    $('a#js_filter_btn').after(
+      /*html*/ `<a href="/?tab=offline&mode=wangpan" class="button btn-line" tab_btn="wangpan" mode-tab="offline"><i class="icon-operate ifo-linktask"></i><span>云下载</span></a>`,
+    )
   }
 
   /**
@@ -433,9 +423,9 @@
     move: /*html*/ `<a href="javascript:;" menu="move"><i class="icon-operate ifo-move" menu="move"></i><span menu="move">移动</span></a>`,
     edit_name: /*html*/ `<a href="javascript:;" menu="edit_name"><i class="icon-operate ifo-rename" menu="edit_name"></i><span menu="edit_name">重命名</span></a>`,
     delete: /*html*/ `<a href="javascript:;" menu="delete" btn="del"><i class="icon-operate ifo-remove" menu="delete"></i><span menu="delete">删除</span></a>`,
-    search: /*html*/ `<a href="javascript:;" class="mm-operation" type="search"><span>一键搜</span></a>`,
-    sha1: /*html*/ `<a href="javascript:;" class="mm-operation" type="sha1"><span>SHA1查重</span></a>`,
-    new_tab: /*html*/ `<a href="$href" target="_blank" class="mm-operation"><span>新标签页打开</span></a>`,
+    search: /*html*/ `<a href="javascript:;" class="mm-operation" type="search" title="使用当前名称作为搜索条件"><span>一键搜</span></a>`,
+    sha1: /*html*/ `<a href="javascript:;" class="mm-operation" type="sha1" title="查询当前文件是否重复"><span>SHA1查重</span></a>`,
+    new_tab: /*html*/ `<a href="$href" target="_blank" class="mm-operation" title="在新标签页打开该文件夹"><span>新标签页</span></a>`,
   }
   type MenuKey = keyof typeof MENU_MAP
   const CONTROLLED_MENU: MenuKey[] = ['new_tab', 'search', 'sha1']
@@ -582,6 +572,10 @@
                 cid: $(this).attr('cate_id'),
               }),
             )
+            .on('mousedown', function (e) {
+              e.stopPropagation()
+              return true
+            })
         }
       })
     })
@@ -907,6 +901,10 @@
               }),
             )
           }
+          that.find('.file-opr').on('mousedown', function (e) {
+            e.stopPropagation()
+            return true
+          })
         })
       }
     }, $list)
@@ -994,16 +992,22 @@
     else if (urlHasString('mode=search') && G.get('search.addMenu')) {
       observerChildList(() => {
         $('li[rel="item"]').each(function () {
-          G.get('search.showSha1') && listShowSHA1($(this))
-          if (!$(this).find('.mm-operation').length) {
-            $(this).append(
+          const that = $(this)
+          G.get('search.showSha1') && listShowSHA1(that)
+          if (!that.find('.mm-operation').length) {
+            that.append(
               getFloatMenu({
-                fileType: $(this).attr('file_type'),
+                fileType: that.attr('file_type'),
                 menuKeys: ['new_tab', 'search', 'sha1', 'move', 'edit_name', 'delete'],
                 isAddWrap: true,
-                cid: $(this).attr('cate_id'),
+                cid: that.attr('cate_id'),
               }),
             )
+
+            that.find('.file-opr').on('mousedown', function (e) {
+              e.stopPropagation()
+              return true
+            })
           }
         })
       })
