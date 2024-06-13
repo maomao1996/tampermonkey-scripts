@@ -2,7 +2,7 @@
 // ==UserScript==
 // @name          115小助手
 // @namespace     https://github.com/maomao1996/tampermonkey-scripts
-// @version       1.8.1
+// @version       1.8.2
 // @description   网盘顶部菜单栏添加链接任务和云下载、SHA1 快速查重（新页面打开）、SHA1 自动查重、删除空文件夹、一键搜（快捷搜索）、SHA1 查重列表支持选中第一个元素和悬浮菜单展示、搜索列表支持悬浮菜单展示、列表显示文件 SHA1 信息、关闭侧边栏、悬浮菜单移除图标、悬浮菜单支持新标签页打开文件夹、加速转码
 // @icon      	  https://115.com/favicon.ico
 // @author        maomao1996
@@ -334,20 +334,13 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     ].join('');
     GM_addStyle(styles);
     var addLinkTaskBtn = function () {
-        $('[rel="left_tvf"]').prepend("<a href=\"javascript:;\" class=\"button btn-line btn-upload\" menu=\"offline_task\"><i class=\"icon-operate ifo-linktask\"></i><span>\u94FE\u63A5\u4EFB\u52A1</span></a>");
+        var content = "<a href=\"javascript:;\" class=\"button btn-line btn-upload\" menu=\"offline_task\"><i class=\"icon-operate ifo-linktask\"></i><span>\u94FE\u63A5\u4EFB\u52A1</span></a>";
+        urlHasString('mode=search')
+            ? $('[rel="left_tvf"]').prepend(content)
+            : $('a#js_filter_btn').after(content);
     };
     var addOfflineBtn = function () {
-        $('[rel="left_tvf"]')
-            .prepend("<a href=\"javascript:;\" class=\"button btn-line\" tab_btn=\"wangpan\" mode-tab=\"offline\"><i class=\"icon-operate ifo-linktask\"></i><span>\u4E91\u4E0B\u8F7D</span></a>")
-            .on('click', '[tab_btn]', function () {
-            var $this = $(this);
-            var tab = $this.attr('tab_btn');
-            var mode = $this.attr('mode-tab');
-            if (mode === 'offline') {
-                top.oofUtil.urlMaintain.changeMode(tab, { tab: mode });
-            }
-            return false;
-        });
+        $('a#js_filter_btn').after("<a href=\"/?tab=offline&mode=wangpan\" class=\"button btn-line\" tab_btn=\"wangpan\" mode-tab=\"offline\"><i class=\"icon-operate ifo-linktask\"></i><span>\u4E91\u4E0B\u8F7D</span></a>");
     };
     var handleRepeatSha1 = function (file_id, isAll) {
         if (isAll === void 0) { isAll = false; }
@@ -387,9 +380,9 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         move: "<a href=\"javascript:;\" menu=\"move\"><i class=\"icon-operate ifo-move\" menu=\"move\"></i><span menu=\"move\">\u79FB\u52A8</span></a>",
         edit_name: "<a href=\"javascript:;\" menu=\"edit_name\"><i class=\"icon-operate ifo-rename\" menu=\"edit_name\"></i><span menu=\"edit_name\">\u91CD\u547D\u540D</span></a>",
         delete: "<a href=\"javascript:;\" menu=\"delete\" btn=\"del\"><i class=\"icon-operate ifo-remove\" menu=\"delete\"></i><span menu=\"delete\">\u5220\u9664</span></a>",
-        search: "<a href=\"javascript:;\" class=\"mm-operation\" type=\"search\"><span>\u4E00\u952E\u641C</span></a>",
-        sha1: "<a href=\"javascript:;\" class=\"mm-operation\" type=\"sha1\"><span>SHA1\u67E5\u91CD</span></a>",
-        new_tab: "<a href=\"$href\" target=\"_blank\" class=\"mm-operation\"><span>\u65B0\u6807\u7B7E\u9875\u6253\u5F00</span></a>",
+        search: "<a href=\"javascript:;\" class=\"mm-operation\" type=\"search\" title=\"\u4F7F\u7528\u5F53\u524D\u540D\u79F0\u4F5C\u4E3A\u641C\u7D22\u6761\u4EF6\"><span>\u4E00\u952E\u641C</span></a>",
+        sha1: "<a href=\"javascript:;\" class=\"mm-operation\" type=\"sha1\" title=\"\u67E5\u8BE2\u5F53\u524D\u6587\u4EF6\u662F\u5426\u91CD\u590D\"><span>SHA1\u67E5\u91CD</span></a>",
+        new_tab: "<a href=\"$href\" target=\"_blank\" class=\"mm-operation\" title=\"\u5728\u65B0\u6807\u7B7E\u9875\u6253\u5F00\u8BE5\u6587\u4EF6\u5939\"><span>\u65B0\u6807\u7B7E\u9875</span></a>",
     };
     var CONTROLLED_MENU = ['new_tab', 'search', 'sha1'];
     var getFloatMenu = function (_a) {
@@ -484,7 +477,11 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
                         .prepend(getFloatMenu({
                         fileType: $(this).attr('file_type'),
                         cid: $(this).attr('cate_id'),
-                    }));
+                    }))
+                        .on('mousedown', function (e) {
+                        e.stopPropagation();
+                        return true;
+                    });
                 }
             });
         });
@@ -778,6 +775,10 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
                             isAddWrap: true,
                         }));
                     }
+                    that.find('.file-opr').on('mousedown', function (e) {
+                        e.stopPropagation();
+                        return true;
+                    });
                 });
             }
         }, $list);
@@ -838,14 +839,19 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         else if (urlHasString('mode=search') && G.get('search.addMenu')) {
             observerChildList(function () {
                 $('li[rel="item"]').each(function () {
-                    G.get('search.showSha1') && listShowSHA1($(this));
-                    if (!$(this).find('.mm-operation').length) {
-                        $(this).append(getFloatMenu({
-                            fileType: $(this).attr('file_type'),
+                    var that = $(this);
+                    G.get('search.showSha1') && listShowSHA1(that);
+                    if (!that.find('.mm-operation').length) {
+                        that.append(getFloatMenu({
+                            fileType: that.attr('file_type'),
                             menuKeys: ['new_tab', 'search', 'sha1', 'move', 'edit_name', 'delete'],
                             isAddWrap: true,
-                            cid: $(this).attr('cate_id'),
+                            cid: that.attr('cate_id'),
                         }));
+                        that.find('.file-opr').on('mousedown', function (e) {
+                            e.stopPropagation();
+                            return true;
+                        });
                     }
                 });
             });
