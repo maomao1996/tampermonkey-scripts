@@ -1,8 +1,8 @@
 // ==UserScript==
 // @name        跳转链接修复（移除重定向外链直达）
-// @description 修复跳转链接为站外直链（移除重定向），免去拦截页面点击步骤可直达站外；拦截页面自动跳转；已适配爱发电、百度搜索、CSDN、豆瓣、Facebook、码云、Google 搜索、Google 重定向页、花瓣网、InfoQ、Instagram、简书、掘金、金山文档、链滴、力扣（Leetcode）、51CTO 博客、NGA 玩家社区、牛客网、开源中国、pixiv、微信、微信开放社区、QQ 邮箱、PC 版 QQ、腾讯文档、腾讯兔小巢、360 搜索、少数派、腾讯云开发者社区、推特（Twitter）、微博、YouTube、语雀、知乎、知乎专栏
+// @description 修复跳转链接为站外直链（移除重定向），免去拦截页面点击步骤可直达站外；拦截页面自动跳转；已适配爱发电、百度搜索、百度贴吧、CSDN、豆瓣、Facebook、码云、Google 搜索、Google 重定向页、花瓣网、InfoQ、Instagram、简书、掘金、金山文档、链滴、力扣（Leetcode）、51CTO 博客、NGA 玩家社区、牛客网、开源中国、pixiv、微信、微信开放社区、QQ 邮箱、PC 版 QQ、腾讯文档、腾讯兔小巢、360 搜索、少数派、腾讯云开发者社区、推特（Twitter）、微博、YouTube、语雀、知乎、知乎专栏
 // @namespace   maomao1996.remove-redirect
-// @version     2.10.2
+// @version     2.11.0
 // @author      maomao1996
 // @homepage    https://github.com/maomao1996/tampermonkey-scripts
 // @supportURL  https://github.com/maomao1996/tampermonkey-scripts/issues
@@ -38,6 +38,22 @@
           return t.setAttribute("href", e);
         }));
       }
+    }
+  } ], [ "\u767e\u5ea6\u8d34\u5427", /^(jump|jump2)\.bdimg\.com$/, {
+    autojump: {
+      validator: function(t) {
+        return "/safecheck/index" === t.pathname;
+      },
+      queryName: "url",
+      selector: "a.btn.btn-next[href]"
+    }
+  } ], [ , "tieba.baidu.com", {
+    autojump: {
+      validator: function(t) {
+        return "/mo/q/checkurl" === t.pathname;
+      },
+      queryName: "url",
+      selector: ".btns span.j_next"
     }
   } ] ], i = [ [ "Google \u641c\u7d22", /^google\.com/, {
     transform: {
@@ -433,34 +449,34 @@
     return r(e) ? e === y : e.test(y);
   }));
   if (t(b)) {
-    var j = b[2], w = j.transform, q = j.rewriteWindowOpen, k = j.autojump;
-    if (w) {
-      var C = w.selector, N = w.queryName, A = w.separator, S = void 0 === A ? "?target=" : A, T = w.customTransform, x = void 0 === T ? function(t) {
+    var j = b[2], q = j.transform, w = j.rewriteWindowOpen, k = j.autojump;
+    if (q) {
+      var C = q.selector, N = q.queryName, A = q.separator, x = void 0 === A ? "?target=" : A, S = q.customTransform, T = void 0 === S ? function(t) {
         var e = "";
         N && (e = h(new URL(t.href).search, N));
-        n(e) || (e = t.href.split(S)[1]), n(e = decodeURIComponent(e)) && (t.href = e);
-      } : T;
+        n(e) || (e = t.href.split(x)[1]), n(e = decodeURIComponent(e)) && (t.href = e);
+      } : S;
       new MutationObserver((function() {
-        document.querySelectorAll(C).forEach(x);
+        document.querySelectorAll(C).forEach(T);
       })).observe(document.body, {
         childList: !0,
         subtree: !0
       });
     }
-    if (q) {
-      var O = q.validationRule, U = q.getOriginalUrl, R = q.separator, $ = q.queryName, L = void 0 === $ ? "target" : $, _ = window.open;
+    if (w) {
+      var O = w.validationRule, U = w.getOriginalUrl, R = w.separator, $ = w.queryName, _ = void 0 === $ ? "target" : $, L = window.open;
       window.open = function(t, o, a) {
         if (r(t)) {
-          if (r(O) && !t.includes(O) || e(O) && !O(t)) return _.call(this, t, o, a);
+          if (r(O) && !t.includes(O) || e(O) && !O(t)) return L.call(this, t, o, a);
           if (e(U)) {
             var u = U(t);
             u && n(u) && (t = u);
           } else {
             var i, c = new URL(t).search;
-            t = decodeURIComponent(R ? null === (i = c.split(R)) || void 0 === i ? void 0 : i[1] : h(c, L));
+            t = decodeURIComponent(R ? null === (i = c.split(R)) || void 0 === i ? void 0 : i[1] : h(c, _));
           }
         }
-        return _.call(this, t, o, a);
+        return L.call(this, t, o, a);
       };
     }
     k && function() {
