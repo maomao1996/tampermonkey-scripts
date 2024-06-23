@@ -2,14 +2,14 @@ import { validateUrl } from '@femm/shared-utils'
 
 const BAIDU_RE = /^http:\/\/[^.]+\.[^.]+\.baidu\.com/
 
-/******************************************************************************
- ** 百度搜索
- **   - https://www.baidu.com/s?wd=mmPlayer
- **   - https://www.baidu.com/s?wd=es6
- **   - https://www.baidu.com/s?wd=武林外传
- **   - https://www.baidu.com/s?wd=实现简单的实时渲染器
- ******************************************************************************/
 const sites: SiteModule = [
+  /******************************************************************************
+   ** 百度搜索
+   **   - https://www.baidu.com/s?wd=mmPlayer
+   **   - https://www.baidu.com/s?wd=es6
+   **   - https://www.baidu.com/s?wd=武林外传
+   **   - https://www.baidu.com/s?wd=实现简单的实时渲染器
+   ******************************************************************************/
   [
     '百度搜索',
     'baidu.com',
@@ -30,6 +30,33 @@ const sites: SiteModule = [
               .forEach((a) => a.setAttribute('href', originUrl))
           }
         },
+      },
+    },
+  ],
+  /******************************************************************************
+   ** 百度贴吧
+   **   - https://tieba.baidu.com/p/8863884278
+   **   - https://tieba.baidu.com/mo/q/checkurl?url=https%3A%2F%2Fgithub.com%2Fmaomao1996%2Ftampermonkey-scripts
+   ******************************************************************************/
+  [
+    '百度贴吧',
+    /^(jump|jump2)\.bdimg\.com$/,
+    {
+      autojump: {
+        validator: ({ pathname }) => pathname === '/safecheck/index',
+        queryName: 'url',
+        selector: 'a.btn.btn-next[href]',
+      },
+    },
+  ],
+  [
+    ,
+    'tieba.baidu.com',
+    {
+      autojump: {
+        validator: ({ pathname }) => pathname === '/mo/q/checkurl',
+        queryName: 'url',
+        selector: '.btns span.j_next',
       },
     },
   ],
