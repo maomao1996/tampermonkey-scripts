@@ -1,5 +1,11 @@
 # remove-redirect
 
+## 2.11.0
+
+### Minor Changes
+
+- 1293eb7: 适配百度贴吧
+
 ## 2.10.2
 
 ### Patch Changes
