@@ -1,5 +1,11 @@
 # remove-redirect
 
+## 2.12.0
+
+### Minor Changes
+
+- 7fefb33: 适配酷安
+
 ## 2.11.0
 
 ### Minor Changes
