@@ -2,7 +2,7 @@
 // @name        跳转链接修复（移除重定向外链直达）
 // @description 修复跳转链接为站外直链（移除重定向），免去拦截页面点击步骤可直达站外；拦截页面自动跳转；已适配爱发电、百度搜索、百度贴吧、CSDN、豆瓣、Facebook、码云、Google 搜索、Google 重定向页、花瓣网、InfoQ、Instagram、简书、掘金、金山文档、链滴、力扣（Leetcode）、51CTO 博客、NGA 玩家社区、牛客网、开源中国、pixiv、微信、微信开放社区、QQ 邮箱、PC 版 QQ、腾讯文档、腾讯兔小巢、360 搜索、少数派、腾讯云开发者社区、推特（Twitter）、微博、YouTube、语雀、知乎、知乎专栏
 // @namespace   maomao1996.remove-redirect
-// @version     2.11.0
+// @version     2.12.0
 // @author      maomao1996
 // @homepage    https://github.com/maomao1996/tampermonkey-scripts
 // @supportURL  https://github.com/maomao1996/tampermonkey-scripts/issues
@@ -154,7 +154,7 @@
         n(e) && t.setAttribute("href", e);
       }
     }
-  } ] ], d = [ [ "\u63a8\u7279\uff08Twitter\uff09", /^(twitter|x)\.com$/, {
+  } ] ], p = [ [ "\u63a8\u7279\uff08Twitter\uff09", /^(twitter|x)\.com$/, {
     transform: {
       selector: 'a[href*="://t.co/"]',
       customTransform: function(t) {
@@ -162,7 +162,7 @@
         n(e) && t.setAttribute("href", e);
       }
     }
-  } ] ], p = Object.freeze({
+  } ] ], d = Object.freeze({
     __proto__: null,
     afdianNet: [ [ "\u7231\u53d1\u7535", "afdian.net", {
       transform: {
@@ -175,6 +175,14 @@
       }
     } ] ],
     baiduCom: u,
+    coolapkCom: [ [ "\u9177\u5b89", "coolapk.com", {
+      autojump: {
+        validator: function(t) {
+          return "/link" === t.pathname;
+        },
+        queryName: "url"
+      }
+    } ] ],
     csdnNet: [ [ , "blog.csdn.net", {
       rewriteWindowOpen: {
         validationRule: "link.csdn.net?target="
@@ -338,7 +346,7 @@
         }
       }
     } ] ],
-    twitterCom: d,
+    twitterCom: p,
     weiboCom: [ [ "\u5fae\u535a", "weibo.com", {
       transform: {
         selector: '[href*="weibo.cn/sinaurl?u="]',
@@ -444,7 +452,7 @@
   var y = function() {
     var t = arguments.length > 0 && void 0 !== arguments[0] ? arguments[0] : location.hostname;
     return o ? t.replace(/^www\./, "") : "";
-  }(), b = Object.values(p).flat().find((function(t) {
+  }(), b = Object.values(d).flat().find((function(t) {
     var e = g(t, 2)[1];
     return r(e) ? e === y : e.test(y);
   }));
