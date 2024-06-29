@@ -23,6 +23,7 @@
     "*://docs.qq.com/*",
     "*://so.csdn.net/*",
     "*://*.feishu.cn/*",
+    "*://*.freebuf.com/*",
     "*://chat.360.com/*"
   ],
   "grant": ["GM_addStyle"]
