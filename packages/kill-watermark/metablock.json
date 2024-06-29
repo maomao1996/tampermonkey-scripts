@@ -5,7 +5,7 @@
   "name:en": "Kill Watermark",
   "namespace": "maomao1996.kill-watermark",
   "version": "0.0.2",
-  "description": "杀死水印（移除烦人的水印，还你一个干净清爽的页面）；已适配360 智脑、腾讯文档、飞书、FreeBuf 网络安全行业门户、稿定设计、爱奇艺播放页（右上角 logo、暂停时的广告）、腾讯课堂播放页漂浮水印、哔哩哔哩直播左上角 logo、CSDN C 知道、腾讯视频播放页（右上角 logo、暂停时的弹窗广告）、优酷视频播放页（右上角 logo、暂停时的弹窗广告）、语雀",
+  "description": "杀死水印（移除烦人的水印，还你一个干净清爽的页面）；已适配360 智脑、腾讯文档、飞书、FreeBuf 网络安全行业门户、爱奇艺播放页（右上角 logo、暂停时的广告）、腾讯课堂播放页漂浮水印、哔哩哔哩直播左上角 logo、CSDN C 知道、腾讯视频播放页（右上角 logo、暂停时的弹窗广告）、优酷视频播放页（右上角 logo、暂停时的弹窗广告）、语雀",
   "author": "",
   "homepage": "",
   "supportURL": "",
@@ -13,7 +13,6 @@
   "downloadURL": "",
   "license": "",
   "match": [
-    "*://*.gaoding.com/*",
     "*://v.qq.com/x/cover/*",
     "*://*.iqiyi.com/*",
     "*://v.youku.com/*",
