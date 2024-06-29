@@ -1,5 +1,12 @@
 # kill-watermark
 
+## 0.10.1
+
+### Patch Changes
+
+- 2c9d817: 移除稿定设计（已失效）[23](https://github.com/maomao1996/tampermonkey-scripts/issues/23) [24](https://github.com/maomao1996/tampermonkey-scripts/issues/24) [25](https://github.com/maomao1996/tampermonkey-scripts/issues/25)
+- 8f1d4b7: 修复 FreeBuf 网络安全行业门户
+
 ## 0.10.0
 
 ### Minor Changes
