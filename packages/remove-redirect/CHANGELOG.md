@@ -1,5 +1,11 @@
 # remove-redirect
 
+## 2.13.0
+
+### Minor Changes
+
+- a4139b9: 适配 Bing 搜索
+
 ## 2.12.0
 
 ### Minor Changes
