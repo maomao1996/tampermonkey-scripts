@@ -1,6 +1,8 @@
 export { default as m_51CtoCom } from './51cto.com'
 export { default as afdianNet } from './afdian.net'
 export { default as baiduCom } from './baidu.com'
+export { default as bingCom } from './bing.com'
+export { default as coolapkCom } from './coolapk.com'
 export { default as csdnNet } from './csdn.net'
 export { default as doubanCom } from './douban.com'
 export { default as facebookCom } from './facebook.com'
