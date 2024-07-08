@@ -1,5 +1,11 @@
 # remove-redirect
 
+## 2.13.1
+
+### Patch Changes
+
+- 1823d87: 适配 Bing 搜索国内域名
+
 ## 2.13.0
 
 ### Minor Changes
