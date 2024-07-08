@@ -10,7 +10,7 @@ const urlMap = new Map()
 const sites: SiteModule = [
   [
     'Bing 搜索',
-    'bing.com',
+    /^(?:cn\.)?bing\.com$/,
     {
       transform: {
         selector: '#b_results a[target="_blank"][href*="www.bing.com/ck/a"][href*="&u=a1"]',
