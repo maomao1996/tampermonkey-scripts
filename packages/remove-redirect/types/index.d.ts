@@ -1,7 +1,16 @@
+type AllHTMLElementTypes = HTMLElementTagNameMap[keyof HTMLElementTagNameMap]
 type QueryName = string | string[]
 type Separator = string | RegExp
+type CustomTransform<T extends AllHTMLElementTypes = Element> = (node: T) => void
 
-type SiteOptions = {
+interface TransformOptions<T extends AllHTMLElementTypes = Element> {
+  selector: string
+  queryName?: QueryName
+  separator?: Separator
+  customTransform?: CustomTransform<T>
+}
+
+interface SiteOptions<T extends AllHTMLElementTypes = Element> {
   /** 链接转换 */
   transform?: {
     /** 链接选择器 */
@@ -12,7 +21,7 @@ type SiteOptions = {
     separator?: Separator
 
     /** 自定义转换规则 */
-    customTransform?<T extends HTMLElement>(node: T): void
+    customTransform?: CustomTransform<T>
   }
 
   /** 重写 window.open */
@@ -44,11 +53,13 @@ type SiteOptions = {
   }
 }
 
-type SiteModule = [
+type Site<T extends AllHTMLElementTypes = Element> = [
   /** 站点名称 */
   string | undefined,
   /** 站点 url */
   string | RegExp,
   /** 站点配置项 */
-  SiteOptions,
-][]
+  SiteOptions<T>,
+]
+
+type SiteModule = Site<any>[]
