@@ -1,8 +1,9 @@
 import { validateUrl } from '@femm/shared-utils'
+import { defineSite } from 'src/utils'
 
 const BAIDU_RE = /^http:\/\/[^.]+\.[^.]+\.baidu\.com/
 
-const sites: SiteModule = [
+const sites = [
   /******************************************************************************
    ** 百度搜索
    **   - https://www.baidu.com/s?wd=mmPlayer
@@ -10,7 +11,7 @@ const sites: SiteModule = [
    **   - https://www.baidu.com/s?wd=武林外传
    **   - https://www.baidu.com/s?wd=实现简单的实时渲染器
    ******************************************************************************/
-  [
+  defineSite([
     '百度搜索',
     'baidu.com',
     {
@@ -32,13 +33,13 @@ const sites: SiteModule = [
         },
       },
     },
-  ],
+  ]),
   /******************************************************************************
    ** 百度贴吧
    **   - https://tieba.baidu.com/p/8863884278
    **   - https://tieba.baidu.com/mo/q/checkurl?url=https%3A%2F%2Fgithub.com%2Fmaomao1996%2Ftampermonkey-scripts
    ******************************************************************************/
-  [
+  defineSite([
     '百度贴吧',
     /^(jump|jump2)\.bdimg\.com$/,
     {
@@ -48,8 +49,8 @@ const sites: SiteModule = [
         selector: 'a.btn.btn-next[href]',
       },
     },
-  ],
-  [
+  ]),
+  defineSite([
     ,
     'tieba.baidu.com',
     {
@@ -59,7 +60,7 @@ const sites: SiteModule = [
         selector: '.btns span.j_next',
       },
     },
-  ],
+  ]),
 ]
 
 export default sites

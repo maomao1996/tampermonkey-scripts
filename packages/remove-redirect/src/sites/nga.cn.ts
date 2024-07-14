@@ -1,3 +1,4 @@
+import { defineSite } from 'src/utils'
 /******************************************************************************
  ** NGA 玩家社区
  **   - https://bbs.nga.cn/read.php?tid=38319227
@@ -7,8 +8,8 @@
 
 const REMOVE_ATTRS = ['onclick', 'onmouseover', 'onmouseout']
 
-const sites: SiteModule = [
-  [
+const sites = [
+  defineSite([
     'NGA 玩家社区',
     /^(bbs\.nga\.cn|ngabbs\.com|g\.nga\.cn)$/,
     {
@@ -19,7 +20,7 @@ const sites: SiteModule = [
         },
       },
     },
-  ],
+  ]),
 ]
 
 export default sites

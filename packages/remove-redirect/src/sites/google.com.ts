@@ -1,12 +1,13 @@
 import { validateUrl } from '@femm/shared-utils'
+import { defineSite } from 'src/utils'
 
-const sites: SiteModule = [
+const sites = [
   /******************************************************************************
    ** Google 搜索
    **   - https://www.google.com/search?q=mmPlayer
    **   - https://www.google.com/search?q=茂茂物语
    ******************************************************************************/
-  [
+  defineSite([
     'Google 搜索',
     /^google\.com/,
     {
@@ -28,14 +29,14 @@ const sites: SiteModule = [
         },
       },
     },
-  ],
+  ]),
   /******************************************************************************
    ** Google 重定向页
    **   - https://www.google.com/url?q=https%3A%2F%2Fgithub.com%2Fmaomao1996%2Ftampermonkey-scripts&sa=D&source=docs
    **   - https://www.google.com.hk/url?q=https%3A%2F%2Fgithub.com%2Fmaomao1996%2Ftampermonkey-scripts&sa=D&source=docs
    **   - https://www.google.co.jp/url?q=https%3A%2F%2Fgithub.com%2Fmaomao1996%2Ftampermonkey-scripts&sa=D&source=docs
    ******************************************************************************/
-  [
+  defineSite([
     'Google 重定向页',
     /^google\.(com|com?\.[a-z]{2}|[a-z]{2})$/,
     {
@@ -44,7 +45,7 @@ const sites: SiteModule = [
         queryName: 'q',
       },
     },
-  ],
+  ]),
 ]
 
 export default sites

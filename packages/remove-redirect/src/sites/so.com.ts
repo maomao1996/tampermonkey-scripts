@@ -1,4 +1,5 @@
 import { validateUrl } from '@femm/shared-utils'
+import { defineSite } from 'src/utils'
 
 /******************************************************************************
  ** 360 搜索
@@ -6,8 +7,8 @@ import { validateUrl } from '@femm/shared-utils'
  **   - https://www.so.com/s?q=es6
  **   - https://www.so.com/s?q=武林外传
  ******************************************************************************/
-const sites: SiteModule = [
-  [
+const sites = [
+  defineSite([
     '360 搜索',
     'so.com',
     {
@@ -21,7 +22,7 @@ const sites: SiteModule = [
         },
       },
     },
-  ],
+  ]),
 ]
 
 export default sites

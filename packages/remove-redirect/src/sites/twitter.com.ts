@@ -1,4 +1,5 @@
 import { validateUrl } from '@femm/shared-utils'
+import { defineSite } from 'src/utils'
 
 /******************************************************************************
  ** Twitter
@@ -7,8 +8,8 @@ import { validateUrl } from '@femm/shared-utils'
  **   - https://x.com
  **   - https://x.com/vuejs
  ******************************************************************************/
-const sites: SiteModule = [
-  [
+const sites = [
+  defineSite([
     '推特（Twitter）',
     /^(twitter|x)\.com$/,
     {
@@ -22,7 +23,7 @@ const sites: SiteModule = [
         },
       },
     },
-  ],
+  ]),
 ]
 
 export default sites

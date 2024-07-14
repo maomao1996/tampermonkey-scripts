@@ -1,4 +1,5 @@
 import { validateUrl } from '@femm/shared-utils'
+import { defineSite } from 'src/utils'
 
 /******************************************************************************
  ** Bing 搜索
@@ -7,19 +8,19 @@ import { validateUrl } from '@femm/shared-utils'
 
 const urlMap = new Map()
 
-const sites: SiteModule = [
-  [
+const sites = [
+  defineSite([
     'Bing 搜索',
     /^(?:cn\.)?bing\.com$/,
     {
       transform: {
         selector: '#b_results a[target="_blank"][href*="www.bing.com/ck/a"][href*="&u=a1"]',
         customTransform(node) {
-          const searchParams = new URLSearchParams(node.getAttribute('href')!)
+          const searchParams = new URLSearchParams(node.href)
           const u = searchParams.get('u')!
 
           if (urlMap.has(u)) {
-            node.setAttribute('href', urlMap.get(u))
+            node.href = urlMap.get(u)
             return
           }
 
@@ -31,13 +32,13 @@ const sites: SiteModule = [
           )
 
           if (validateUrl(originUrl)) {
-            node.setAttribute('href', originUrl)
+            node.href = originUrl
             urlMap.set(u, originUrl)
           }
         },
       },
     },
-  ],
+  ]),
 ]
 
 export default sites
