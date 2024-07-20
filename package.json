@@ -31,6 +31,7 @@
     "packages-version": "changeset version",
     "prepare": "husky install"
   },
+  "packageManager": "pnpm@9.5.0",
   "lint-staged": {
     "*.{html,js,ts,tsx,vue,css,md,json,yaml}": [
       "prettier --write"
