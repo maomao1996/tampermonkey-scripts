@@ -49,7 +49,9 @@ if (isArray(currentSite)) {
       },
     } = transform
     const observer = new MutationObserver(() => {
-      document.querySelectorAll<HTMLAnchorElement>(selector).forEach(customTransform)
+      document
+        .querySelectorAll<HTMLAnchorElement>(selector)
+        .forEach(customTransform as CustomTransform<HTMLAnchorElement>)
     })
     observer.observe(document.body, { childList: true, subtree: true })
   }
