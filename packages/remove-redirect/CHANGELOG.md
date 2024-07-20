@@ -1,5 +1,16 @@
 # remove-redirect
 
+## 2.14.0
+
+### Minor Changes
+
+- 2efc17b: 适配搜狗搜索
+
+### Patch Changes
+
+- 436b3e5: 添加 `defineSite` 辅助函数
+- e97efd9: 使用 `defineSite` 优化站点配置
+
 ## 2.13.1
 
 ### Patch Changes
