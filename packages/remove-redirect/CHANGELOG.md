@@ -1,5 +1,12 @@
 # remove-redirect
 
+## 2.14.1
+
+### Patch Changes
+
+- 2589eb5: 更新脚本描述
+- d7b202f: 适配语雀自定义二级域名
+
 ## 2.14.0
 
 ### Minor Changes
