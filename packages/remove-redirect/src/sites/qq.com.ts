@@ -96,6 +96,7 @@ const sites: SiteModule = [
    **   - https://txc.qq.com/products/606094/faqs-more?id=149310
    **   - https://txc.qq.com/products/606094/blog/777398
    **   - https://txc.qq.com/products/606094/link-jump?jump=https%3A%2F%2Fgithub.com%2Fmaomao1996%2Ftampermonkey-scripts
+   **   - https://txc.qq.com/embed/phone/606094/link-jump?jump=https%3A%2F%2Fgithub.com%2Fmaomao1996%2Ftampermonkey-scripts
    **
    **   - https://support.qq.com/products/1368
    ******************************************************************************/
@@ -108,7 +109,7 @@ const sites: SiteModule = [
         queryName: 'jump',
       },
       autojump: {
-        validator: ({ pathname }) => /^\/products\/\d+\/link-jump$/.test(pathname),
+        validator: ({ pathname }) => /\/link-jump$/.test(pathname),
         queryName: 'jump',
       },
     },
