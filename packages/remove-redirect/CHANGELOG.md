@@ -1,5 +1,11 @@
 # remove-redirect
 
+## 2.14.2
+
+### Patch Changes
+
+- 77a1779: 优化腾讯兔小巢判断逻辑
+
 ## 2.14.1
 
 ### Patch Changes
