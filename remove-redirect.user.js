@@ -1,8 +1,8 @@
 // ==UserScript==
 // @name        跳转链接修复（移除重定向外链直达）
-// @description 修复跳转链接为站外直链（移除重定向），免去拦截页面点击步骤可直达站外；拦截页面自动跳转；已适配爱发电、百度搜索、百度贴吧、Bing 搜索、酷安、CSDN、豆瓣、Facebook、码云、Google 搜索、Google 重定向页、花瓣网、InfoQ、Instagram、简书、掘金、金山文档、链滴、力扣（Leetcode）、51CTO 博客、NGA 玩家社区、牛客网、开源中国、pixiv、微信、微信开放社区、QQ 邮箱、PC 版 QQ、腾讯文档、腾讯兔小巢、360 搜索、搜狗搜索、少数派、腾讯云开发者社区、推特（Twitter）、微博、YouTube、语雀、知乎、知乎专栏
+// @description 修复跳转链接为站外直链（移除重定向），免去拦截页面点击步骤可直达站外；拦截页面自动跳转；已适配爱发电、百度搜索、百度贴吧、Bing 搜索、书签地球、酷安、CSDN、豆瓣、Facebook、码云、Google 搜索、Google 重定向页、花瓣网、InfoQ、Instagram、简书、掘金、金山文档、链滴、力扣（Leetcode）、51CTO 博客、NGA 玩家社区、牛客网、开源中国、pixiv、微信、微信开放社区、QQ 邮箱、PC 版 QQ、腾讯文档、腾讯兔小巢、360 搜索、搜狗搜索、少数派、腾讯云开发者社区、推特（Twitter）、微博、YouTube、语雀、知乎、知乎专栏
 // @namespace   maomao1996.remove-redirect
-// @version     2.14.2
+// @version     2.15.0
 // @author      maomao1996
 // @homepage    https://github.com/maomao1996/tampermonkey-scripts
 // @supportURL  https://github.com/maomao1996/tampermonkey-scripts/issues
@@ -134,7 +134,24 @@
         }
       }
     }
-  } ]) ], p = [ i([ "Google \u641c\u7d22", /^google\.com/, {
+  } ]) ], p = [ i([ "\u4e66\u7b7e\u5730\u7403", "bookmarkearth.cn", {
+    transform: {
+      selector: 'a[href*="/view/"][data-ext]',
+      customTransform: function(r) {
+        var t = decodeURIComponent(r.getAttribute("data-ext") || "");
+        n(t) && (r.href = t);
+      }
+    },
+    autojump: {
+      validator: function(r) {
+        var t = r.pathname;
+        return /^\/view\//.test(t) && !!document.querySelector(".jump-target-url");
+      },
+      getOriginalUrl: function() {
+        return document.querySelector(".jump-target-url").getAttribute("data-url");
+      }
+    }
+  } ]) ], d = [ i([ "Google \u641c\u7d22", /^google\.com/, {
     transform: {
       selector: [ "a[jsname][href][data-jsarwt]", "a[jsname][href][ping]" ].join(","),
       customTransform: function(r) {
@@ -153,23 +170,23 @@
       },
       queryName: "q"
     }
-  } ]) ], d = [ "onclick", "onmouseover", "onmouseout" ], h = [ i([ "NGA \u73a9\u5bb6\u793e\u533a", /^(bbs\.nga\.cn|ngabbs\.com|g\.nga\.cn)$/, {
+  } ]) ], h = [ "onclick", "onmouseover", "onmouseout" ], v = [ i([ "NGA \u73a9\u5bb6\u793e\u533a", /^(bbs\.nga\.cn|ngabbs\.com|g\.nga\.cn)$/, {
     transform: {
       selector: 'a[target="_blank"][onclick*="showUrlAlert"]',
       customTransform: function(r) {
-        d.forEach((function(t) {
+        h.forEach((function(t) {
           return r.removeAttribute(t);
         }));
       }
     }
-  } ]) ], v = [ [ "\u725b\u5ba2\u7f51", "nowcoder.com", {
+  } ]) ], g = [ [ "\u725b\u5ba2\u7f51", "nowcoder.com", {
     transform: {
       selector: [ '[href*="gw-c.nowcoder.com/api/sparta/jump/link?link="]', '[href*="hd.nowcoder.com/link.html?target="]' ].join(","),
       separator: /\?target|link\=/
     }
   } ], [ , "hd.nowcoder.com", {
     autojump: {}
-  } ] ], g = [ [ "\u5fae\u4fe1", "weixin110.qq.com", {
+  } ] ], y = [ [ "\u5fae\u4fe1", "weixin110.qq.com", {
     autojump: {
       validator: function(r) {
         return "/cgi-bin/mmspamsupport-bin/newredirectconfirmcgi" === r.pathname;
@@ -225,7 +242,7 @@
       },
       queryName: "jump"
     }
-  } ] ], y = [ i([ "360 \u641c\u7d22", "so.com", {
+  } ] ], b = [ i([ "360 \u641c\u7d22", "so.com", {
     transform: {
       selector: 'a[href*="so.com/link?"][data-mdurl]',
       customTransform: function(r) {
@@ -233,7 +250,7 @@
         n(t) && r.setAttribute("href", t);
       }
     }
-  } ]) ], b = [ i([ "\u641c\u72d7\u641c\u7d22", "sogou.com", {
+  } ]) ], j = [ i([ "\u641c\u72d7\u641c\u7d22", "sogou.com", {
     transform: {
       selector: ".results .vrwrap",
       customTransform: function(r) {
@@ -251,7 +268,7 @@
       selector: 'a[href^="./id="]',
       queryName: "url"
     }
-  } ]) ], j = [ i([ "\u63a8\u7279\uff08Twitter\uff09", /^(twitter|x)\.com$/, {
+  } ]) ], w = [ i([ "\u63a8\u7279\uff08Twitter\uff09", /^(twitter|x)\.com$/, {
     transform: {
       selector: 'a[href*="://t.co/"]',
       customTransform: function(r) {
@@ -259,7 +276,7 @@
         n(t) && r.setAttribute("href", t);
       }
     }
-  } ]) ], w = Object.freeze({
+  } ]) ], q = Object.freeze({
     __proto__: null,
     afdianNet: [ [ "\u7231\u53d1\u7535", "afdian.net", {
       transform: {
@@ -273,6 +290,7 @@
     } ] ],
     baiduCom: m,
     bingCom: s,
+    bookmarkearthCn: p,
     coolapkCom: [ [ "\u9177\u5b89", "coolapk.com", {
       autojump: {
         validator: function(r) {
@@ -314,7 +332,7 @@
         }
       }
     } ] ],
-    googleCom: p,
+    googleCom: d,
     huabanCom: [ [ "\u82b1\u74e3\u7f51", "huaban.com", {
       autojump: {
         validator: function(r) {
@@ -393,8 +411,8 @@
         separator: "?"
       }
     } ] ],
-    ngaCn: h,
-    nowcoderCom: v,
+    ngaCn: v,
+    nowcoderCom: g,
     oschinaNet: [ [ "\u5f00\u6e90\u4e2d\u56fd", /^(?:my\.)?oschina\.net$/, {
       transform: {
         selector: '[href*="oschina.net/action/GoToLink?url="]',
@@ -421,9 +439,9 @@
         separator: "?"
       }
     } ] ],
-    qqCom: g,
-    soCom: y,
-    sogouCom: b,
+    qqCom: y,
+    soCom: b,
+    sogouCom: j,
     sspaiCom: [ [ "\u5c11\u6570\u6d3e", "sspai.com", {
       transform: {
         selector: '[href*="sspai.com/link?target="]'
@@ -445,7 +463,7 @@
         }
       }
     } ] ],
-    twitterCom: j,
+    twitterCom: w,
     weiboCom: [ [ "\u5fae\u535a", "weibo.com", {
       transform: {
         selector: '[href*="weibo.cn/sinaurl?u="]',
@@ -487,12 +505,12 @@
       autojump: {}
     } ] ]
   });
-  function q(r, t) {
+  function k(r, t) {
     (null == t || t > r.length) && (t = r.length);
     for (var e = 0, o = new Array(t); e < t; e++) o[e] = r[e];
     return o;
   }
-  function k(r, t) {
+  function C(r, t) {
     return function(r) {
       if (Array.isArray(r)) return r;
     }(r) || function(r, t) {
@@ -514,55 +532,55 @@
       }
     }(r, t) || function(r, t) {
       if (!r) return;
-      if ("string" == typeof r) return q(r, t);
+      if ("string" == typeof r) return k(r, t);
       var e = Object.prototype.toString.call(r).slice(8, -1);
       "Object" === e && r.constructor && (e = r.constructor.name);
       if ("Map" === e || "Set" === e) return Array.from(e);
-      if ("Arguments" === e || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(e)) return q(r, t);
+      if ("Arguments" === e || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(e)) return k(r, t);
     }(r, t) || function() {
       throw new TypeError("Invalid attempt to destructure non-iterable instance.\\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.");
     }();
   }
-  var C = function() {
+  var A = function() {
     var r = arguments.length > 0 && void 0 !== arguments[0] ? arguments[0] : location.hostname;
     return o ? r.replace(/^www\./, "") : "";
-  }(), A = Object.values(w).flat().find((function(r) {
-    var t = k(r, 2)[1];
-    return e(t) ? t === C : t.test(C);
+  }(), N = Object.values(q).flat().find((function(r) {
+    var t = C(r, 2)[1];
+    return e(t) ? t === A : t.test(A);
   }));
-  if (r(A)) {
-    var N = A[2], S = N.transform, x = N.rewriteWindowOpen, T = N.autojump;
-    if (S) {
-      var O = S.selector, U = S.queryName, $ = S.separator, _ = void 0 === $ ? "?target=" : $, R = S.customTransform, I = void 0 === R ? function(r) {
+  if (r(N)) {
+    var S = N[2], x = S.transform, T = S.rewriteWindowOpen, U = S.autojump;
+    if (x) {
+      var O = x.selector, $ = x.queryName, R = x.separator, _ = void 0 === R ? "?target=" : R, I = x.customTransform, L = void 0 === I ? function(r) {
         var t = "";
-        U && (t = c(new URL(r.href).search, U));
+        $ && (t = c(new URL(r.href).search, $));
         n(t) || (t = r.href.split(_)[1]), n(t = decodeURIComponent(t)) && (r.href = t);
-      } : R;
+      } : I;
       new MutationObserver((function() {
-        document.querySelectorAll(O).forEach(I);
+        document.querySelectorAll(O).forEach(L);
       })).observe(document.body, {
         childList: !0,
         subtree: !0
       });
     }
-    if (x) {
-      var L = x.validationRule, z = x.getOriginalUrl, E = x.separator, G = x.queryName, Q = void 0 === G ? "target" : G, M = window.open;
+    if (T) {
+      var z = T.validationRule, E = T.getOriginalUrl, G = T.separator, Q = T.queryName, M = void 0 === Q ? "target" : Q, P = window.open;
       window.open = function(r, o, a) {
         if (e(r)) {
-          if (e(L) && !r.includes(L) || t(L) && !L(r)) return M.call(this, r, o, a);
-          if (t(z)) {
-            var u = z(r);
+          if (e(z) && !r.includes(z) || t(z) && !z(r)) return P.call(this, r, o, a);
+          if (t(E)) {
+            var u = E(r);
             u && n(u) && (r = u);
           } else {
             var i, l = new URL(r).search;
-            r = decodeURIComponent(E ? null === (i = l.split(E)) || void 0 === i ? void 0 : i[1] : c(l, Q));
+            r = decodeURIComponent(G ? null === (i = l.split(G)) || void 0 === i ? void 0 : i[1] : c(l, M));
           }
         }
-        return M.call(this, r, o, a);
+        return P.call(this, r, o, a);
       };
     }
-    T && function() {
-      var r = T.validator, e = T.getOriginalUrl, o = T.selector, a = T.separator, u = T.queryName, i = void 0 === u ? "target" : u;
+    U && function() {
+      var r = U.validator, e = U.getOriginalUrl, o = U.selector, a = U.separator, u = U.queryName, i = void 0 === u ? "target" : u;
       if (!r || r(location)) {
         if (o && document.querySelector(o)) return document.querySelector(o).click();
         var l;
