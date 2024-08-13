@@ -1,5 +1,11 @@
 # remove-redirect
 
+## 2.15.0
+
+### Minor Changes
+
+- 7cca702: 适配书签地球
+
 ## 2.14.2
 
 ### Patch Changes
