@@ -52,7 +52,7 @@ importers:
         version: 8.0.3
       lint-staged:
         specifier: ^13.3.0
-        version: 13.3.0
+        version: 13.3.0(enquirer@2.4.1)
       prettier:
         specifier: ^2.8.8
         version: 2.8.8
@@ -126,7 +126,11 @@ importers:
 
   shared/tsconfig: {}
 
-  shared/types: {}
+  shared/types:
+    devDependencies:
+      '@types/tampermonkey':
+        specifier: ^5.0.3
+        version: 5.0.3
 
   shared/utils: {}
 
@@ -632,6 +636,9 @@ packages:
 
   '@types/sizzle@2.3.3':
     resolution: {integrity: sha512-JYM8x9EGF163bEyhdJBpR2QX1R5naCJHC8ucJylJ3w9/CVBaskdQ8WqBf8MmQrd1kRvp/a4TS8HJ+bxzR7ZJYQ==}
+
+  '@types/tampermonkey@5.0.3':
+    resolution: {integrity: sha512-i8+x8ipoib8xAfho25oNTbILgrO665oxq5tNr3LvH5DaW5UOPsc88Fe1mTVTDwsux5LYOcd8Syb6q+s95x878Q==}
 
   acorn@8.10.0:
     resolution: {integrity: sha512-F0SAmZ8iUtS//m8DmCTA0jlh6TDKkHQyK6xc6V4KDTyZKA9dnvX9/3sRTVQrWm79glUAZbnmmNcdYwUIHWVybw==}
@@ -2859,20 +2866,23 @@ snapshots:
       is-builtin-module: 3.2.1
       is-module: 1.0.0
       resolve: 1.22.6
+    optionalDependencies:
       rollup: 3.29.4
 
   '@rollup/plugin-replace@5.0.5(rollup@3.29.4)':
     dependencies:
       '@rollup/pluginutils': 5.0.5(rollup@3.29.4)
       magic-string: 0.30.5
+    optionalDependencies:
       rollup: 3.29.4
 
   '@rollup/plugin-terser@0.4.4(rollup@3.29.4)':
     dependencies:
-      rollup: 3.29.4
       serialize-javascript: 6.0.1
       smob: 1.4.0
       terser: 5.19.4
+    optionalDependencies:
+      rollup: 3.29.4
 
   '@rollup/pluginutils@4.2.1':
     dependencies:
@@ -2884,6 +2894,7 @@ snapshots:
       '@types/estree': 1.0.2
       estree-walker: 2.0.2
       picomatch: 2.3.1
+    optionalDependencies:
       rollup: 3.29.4
 
   '@swc/core-darwin-arm64@1.4.13':
@@ -2970,6 +2981,8 @@ snapshots:
   '@types/semver@7.5.2': {}
 
   '@types/sizzle@2.3.3': {}
+
+  '@types/tampermonkey@5.0.3': {}
 
   acorn@8.10.0: {}
 
@@ -3832,14 +3845,14 @@ snapshots:
 
   lines-and-columns@1.2.4: {}
 
-  lint-staged@13.3.0:
+  lint-staged@13.3.0(enquirer@2.4.1):
     dependencies:
       chalk: 5.3.0
       commander: 11.0.0
       debug: 4.3.4
       execa: 7.2.0
       lilconfig: 2.1.0
-      listr2: 6.6.1
+      listr2: 6.6.1(enquirer@2.4.1)
       micromatch: 4.0.5
       pidtree: 0.6.0
       string-argv: 0.3.2
@@ -3848,7 +3861,7 @@ snapshots:
       - enquirer
       - supports-color
 
-  listr2@6.6.1:
+  listr2@6.6.1(enquirer@2.4.1):
     dependencies:
       cli-truncate: 3.1.0
       colorette: 2.0.20
@@ -3856,6 +3869,8 @@ snapshots:
       log-update: 5.0.1
       rfdc: 1.3.0
       wrap-ansi: 8.1.0
+    optionalDependencies:
+      enquirer: 2.4.1
 
   load-yaml-file@0.2.0:
     dependencies:
@@ -4138,8 +4153,9 @@ snapshots:
   postcss-load-config@3.1.4(postcss@8.4.38):
     dependencies:
       lilconfig: 2.1.0
-      postcss: 8.4.38
       yaml: 1.10.2
+    optionalDependencies:
+      postcss: 8.4.38
 
   postcss-merge-longhand@5.1.7(postcss@8.4.38):
     dependencies:

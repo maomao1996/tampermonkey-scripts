@@ -4,6 +4,7 @@
   "private": true,
   "type": "module",
   "main": "src/index.js",
+  "types": "types/index.d.ts",
   "dependencies": {
     "@rollup/plugin-node-resolve": "^15.2.3",
     "@rollup/plugin-replace": "^5.0.5",

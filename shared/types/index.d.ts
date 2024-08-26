@@ -1,4 +1,4 @@
-/// <reference path="../rollup-config/types/index.d.ts"/>
+/// <reference types="@femm/shared-rollup-config"/>
+/// <reference types="tampermonkey"/>
 /// <reference path="./module.d.ts"/>
-/// <reference path="./tampermonkey.d.ts"/>
 /// <reference path="./gm_config.d.ts"/>

@@ -2,5 +2,8 @@
   "name": "@types/shared-types",
   "version": "1.0.0",
   "private": true,
-  "types": "./index.d.ts"
+  "types": "./index.d.ts",
+  "devDependencies": {
+    "@types/tampermonkey": "^5.0.3"
+  }
 }
