@@ -1,5 +1,11 @@
 # remove-redirect
 
+## 2.16.0
+
+### Minor Changes
+
+- 64eb872: 适配石墨文档
+
 ## 2.15.0
 
 ### Minor Changes
