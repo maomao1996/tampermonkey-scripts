@@ -1,8 +1,8 @@
 // ==UserScript==
 // @name        跳转链接修复（移除重定向外链直达）
-// @description 修复跳转链接为站外直链（移除重定向），免去拦截页面点击步骤可直达站外；拦截页面自动跳转；已适配爱发电、百度搜索、百度贴吧、Bing 搜索、书签地球、酷安、CSDN、豆瓣、Facebook、码云、Google 搜索、Google 重定向页、花瓣网、InfoQ、Instagram、简书、掘金、金山文档、链滴、力扣（Leetcode）、51CTO 博客、NGA 玩家社区、牛客网、开源中国、pixiv、微信、微信开放社区、QQ 邮箱、PC 版 QQ、腾讯文档、腾讯兔小巢、360 搜索、搜狗搜索、少数派、腾讯云开发者社区、推特（Twitter）、微博、YouTube、语雀、知乎、知乎专栏
+// @description 提升用户体验：修复跳转链接为站外直链（移除重定向直接跳转），免去拦截页面点击步骤可直达站外；拦截页面自动跳转（无须额外操作）；已适配爱发电、百度搜索、百度贴吧、Bing 搜索、书签地球、酷安、CSDN、豆瓣、Facebook、码云、Google 搜索、Google 重定向页、花瓣网、InfoQ、Instagram、简书、掘金、金山文档、链滴、力扣（Leetcode）、51CTO 博客、NGA 玩家社区、牛客网、开源中国、pixiv、微信、微信开放社区、QQ 邮箱、PC 版 QQ、腾讯文档、腾讯兔小巢、石墨文档、360 搜索、搜狗搜索、少数派、腾讯云开发者社区、推特（Twitter）、微博、YouTube、语雀、知乎、知乎专栏
 // @namespace   maomao1996.remove-redirect
-// @version     2.15.0
+// @version     2.16.0
 // @author      maomao1996
 // @homepage    https://github.com/maomao1996/tampermonkey-scripts
 // @supportURL  https://github.com/maomao1996/tampermonkey-scripts/issues
@@ -440,6 +440,18 @@
       }
     } ] ],
     qqCom: y,
+    shimoIm: [ [ "\u77f3\u58a8\u6587\u6863", "shimo.im", {
+      rewriteWindowOpen: {
+        validationRule: "outlink/gray?url=",
+        queryName: "url"
+      },
+      autojump: {
+        validator: function(r) {
+          return "/outlink/gray" === r.pathname;
+        },
+        queryName: "url"
+      }
+    } ] ],
     soCom: b,
     sogouCom: j,
     sspaiCom: [ [ "\u5c11\u6570\u6d3e", "sspai.com", {
@@ -549,38 +561,38 @@
     return e(t) ? t === A : t.test(A);
   }));
   if (r(N)) {
-    var S = N[2], x = S.transform, T = S.rewriteWindowOpen, U = S.autojump;
+    var S = N[2], x = S.transform, T = S.rewriteWindowOpen, O = S.autojump;
     if (x) {
-      var O = x.selector, $ = x.queryName, R = x.separator, _ = void 0 === R ? "?target=" : R, I = x.customTransform, L = void 0 === I ? function(r) {
+      var U = x.selector, R = x.queryName, $ = x.separator, _ = void 0 === $ ? "?target=" : $, I = x.customTransform, L = void 0 === I ? function(r) {
         var t = "";
-        $ && (t = c(new URL(r.href).search, $));
+        R && (t = c(new URL(r.href).search, R));
         n(t) || (t = r.href.split(_)[1]), n(t = decodeURIComponent(t)) && (r.href = t);
       } : I;
       new MutationObserver((function() {
-        document.querySelectorAll(O).forEach(L);
+        document.querySelectorAll(U).forEach(L);
       })).observe(document.body, {
         childList: !0,
         subtree: !0
       });
     }
     if (T) {
-      var z = T.validationRule, E = T.getOriginalUrl, G = T.separator, Q = T.queryName, M = void 0 === Q ? "target" : Q, P = window.open;
+      var z = T.validationRule, E = T.getOriginalUrl, G = T.separator, Q = T.queryName, W = void 0 === Q ? "target" : Q, M = window.open;
       window.open = function(r, o, a) {
         if (e(r)) {
-          if (e(z) && !r.includes(z) || t(z) && !z(r)) return P.call(this, r, o, a);
+          if (e(z) && !r.includes(z) || t(z) && !z(r)) return M.call(this, r, o, a);
           if (t(E)) {
             var u = E(r);
             u && n(u) && (r = u);
           } else {
             var i, l = new URL(r).search;
-            r = decodeURIComponent(G ? null === (i = l.split(G)) || void 0 === i ? void 0 : i[1] : c(l, M));
+            r = decodeURIComponent(G ? null === (i = l.split(G)) || void 0 === i ? void 0 : i[1] : c(l, W));
           }
         }
-        return P.call(this, r, o, a);
+        return M.call(this, r, o, a);
       };
     }
-    U && function() {
-      var r = U.validator, e = U.getOriginalUrl, o = U.selector, a = U.separator, u = U.queryName, i = void 0 === u ? "target" : u;
+    O && function() {
+      var r = O.validator, e = O.getOriginalUrl, o = O.selector, a = O.separator, u = O.queryName, i = void 0 === u ? "target" : u;
       if (!r || r(location)) {
         if (o && document.querySelector(o)) return document.querySelector(o).click();
         var l;
