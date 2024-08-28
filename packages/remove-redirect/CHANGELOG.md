@@ -1,5 +1,11 @@
 # remove-redirect
 
+## 2.16.1
+
+### Patch Changes
+
+- e4b2a89: 优化 bing 搜索规则，适配更多二级域名
+
 ## 2.16.0
 
 ### Minor Changes
