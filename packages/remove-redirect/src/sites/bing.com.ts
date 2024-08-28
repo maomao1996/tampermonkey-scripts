@@ -11,7 +11,7 @@ const urlMap = new Map()
 const sites = [
   defineSite([
     'Bing 搜索',
-    /^(?:cn\.)?bing\.com$/,
+    /^(?:\w+\.)?bing\.com$/,
     {
       transform: {
         selector: '#b_results a[target="_blank"][href*="www.bing.com/ck/a"][href*="&u=a1"]',
