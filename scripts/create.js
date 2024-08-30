@@ -13,12 +13,13 @@ const { tampermonkeyName, packageName, needsCss } = await prompts([
     name: 'tampermonkeyName',
     type: 'text',
     message: '请输入脚本名 (tampermonkey name):',
-    onState: (state) => String(state.value).trim(),
+    format: (value) => value.trim(),
   },
   {
     name: 'packageName',
     type: 'text',
     message: '请输入包名 (package name):',
+    format: (value) => value.trim(),
     validate: (dir) =>
       isValidPackageName(dir)
         ? fs.existsSync(path.join(process.cwd(), 'packages', dir))
