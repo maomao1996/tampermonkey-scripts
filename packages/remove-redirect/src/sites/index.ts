@@ -1,5 +1,5 @@
 export { default as m_51CtoCom } from './51cto.com'
-export { default as afdianNet } from './afdian.net'
+export { default as afdianCom } from './afdian.com'
 export { default as baiduCom } from './baidu.com'
 export { default as bingCom } from './bing.com'
 export { default as bookmarkearthCn } from './bookmarkearth.cn'
