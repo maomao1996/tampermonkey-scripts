@@ -43,12 +43,17 @@ if (isArray(currentSite)) {
  ******************************************************************************/
 function handleTransform<T extends AllHTMLElementTypes>({
   selector,
+  attribute,
   queryName,
   separator = '?target=',
   customTransform = (node: T) => {
     let originUrl = ''
 
-    if (queryName) {
+    if (attribute) {
+      originUrl = node.getAttribute(attribute) || ''
+    }
+
+    if (!attribute && queryName) {
       const { search } = new URL((node as HTMLAnchorElement).href)
       originUrl = getSearchParamsValue(search, queryName)
     }
