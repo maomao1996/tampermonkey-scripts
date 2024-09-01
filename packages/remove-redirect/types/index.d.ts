@@ -3,29 +3,18 @@ type QueryName = string | string[]
 type Separator = string | RegExp
 type CustomTransform<T extends AllHTMLElementTypes = Element> = (node: T) => void
 
-interface TransformOptions<T extends AllHTMLElementTypes = Element> {
-  selector: string
-  queryName?: QueryName
-  separator?: Separator
-  customTransform?: CustomTransform<T>
-}
+type SiteName = string | undefined
+type Domain = `${string}.${string}` | RegExp
 
-interface SiteOptions<T extends AllHTMLElementTypes = Element> {
-  /** 链接转换 */
-  transform?: {
-    /** 链接选择器 */
+declare namespace Site {
+  export interface Transform<T extends AllHTMLElementTypes = Element> {
     selector: string
-    /** 获取 url 参数的键名 */
     queryName?: QueryName
-    /** 分隔符 */
     separator?: Separator
-
-    /** 自定义转换规则 */
     customTransform?: CustomTransform<T>
   }
 
-  /** 重写 window.open */
-  rewriteWindowOpen?: {
+  export interface RewriteWindowOpen {
     /** 重写前的验证规则 */
     validationRule: string | ((url: string) => boolean)
     /** 获取 url 参数的键名 */
@@ -37,8 +26,7 @@ interface SiteOptions<T extends AllHTMLElementTypes = Element> {
     getOriginalUrl?(url: string | URL): string | undefined
   }
 
-  /** 自动跳转 */
-  autojump?: {
+  export interface AutoJump {
     /** 点击跳转的选择器  */
     selector?: string
     /** 获取 url 参数的键名 */
@@ -53,11 +41,22 @@ interface SiteOptions<T extends AllHTMLElementTypes = Element> {
   }
 }
 
+interface SiteOptions<T extends AllHTMLElementTypes = Element> {
+  /** 链接转换 */
+  transform?: Site.Transform<T>
+
+  /** 重写 window.open */
+  rewriteWindowOpen?: Site.RewriteWindowOpen
+  /** 自动跳转 */
+  autojump?: Site.AutoJump
+}
+
+type Domain = `${string}.${string}` | RegExp
 type Site<T extends AllHTMLElementTypes = Element> = [
   /** 站点名称 */
-  string | undefined,
+  SiteName,
   /** 站点 url */
-  string | RegExp,
+  Domain,
   /** 站点配置项 */
   SiteOptions<T>,
 ]

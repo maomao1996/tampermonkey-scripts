@@ -1,15 +1,18 @@
+import { observeElementEnterViewport } from '@femm/shared-utils'
+import { GMCachedRequest } from '@femm/shared-utils/gm/'
+
 export function defineSite<T extends AllHTMLElementTypes = HTMLAnchorElement>(
   siteInfo: Site<T>,
 ): Site<T>
 export function defineSite<T extends AllHTMLElementTypes = HTMLAnchorElement>(
-  siteName: string | undefined,
-  domain: string | RegExp,
+  siteName: SiteName,
+  domain: Domain,
   options: SiteOptions<T>,
 ): Site<T>
 
 export function defineSite<T extends AllHTMLElementTypes = HTMLAnchorElement>(
-  siteInfo: string | undefined | Site<T>,
-  domain?: string | RegExp,
+  siteInfo: SiteName | Site<T>,
+  domain?: Domain,
   options?: SiteOptions<T>,
 ): Site<T> {
   if (Array.isArray(siteInfo)) {
