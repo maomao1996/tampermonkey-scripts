@@ -1,4 +1,3 @@
-import { validateUrl } from '@femm/shared-utils'
 import { defineSite } from 'src/utils'
 
 /******************************************************************************
@@ -14,12 +13,7 @@ const sites = [
     {
       transform: {
         selector: 'a[href*="so.com/link?"][data-mdurl]',
-        customTransform(node) {
-          const originUrl = node.getAttribute('data-mdurl')
-          if (validateUrl(originUrl)) {
-            node.setAttribute('href', originUrl!)
-          }
-        },
+        attribute: 'data-mdurl',
       },
     },
   ]),

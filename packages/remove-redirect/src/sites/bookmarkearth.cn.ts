@@ -1,4 +1,3 @@
-import { validateUrl } from '@femm/shared-utils'
 import { defineSite } from 'src/utils'
 
 /******************************************************************************
@@ -13,12 +12,7 @@ const sites = [
     {
       transform: {
         selector: 'a[href*="/view/"][data-ext]',
-        customTransform(node) {
-          const originUrl = decodeURIComponent(node.getAttribute('data-ext') || '')
-          if (validateUrl(originUrl)) {
-            node.href = originUrl
-          }
-        },
+        attribute: 'data-ext',
       },
       autojump: {
         validator: ({ pathname }) =>
