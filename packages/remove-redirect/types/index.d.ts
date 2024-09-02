@@ -18,6 +18,12 @@ declare namespace Site {
     separator?: Separator
 
     /**
+     * 需要进行兜底处理的链接元素的 CSS 选择器
+     * 用于处理 transform 规则无法处理的链接，通过 GM.xmlHttpRequest 请求获取原始链接，并替换为解析后的 URL
+     */
+    fallbackSelector?: `a${string}`
+
+    /**
      * 自定义转换规则函数
      * 用于定义如何处理 DOM 元素的逻辑，如果定义了该规则，将覆盖默认行为
      */

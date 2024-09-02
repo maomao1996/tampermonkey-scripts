@@ -1,4 +1,4 @@
-import { observeElementEnterViewport } from '@femm/shared-utils'
+import { observeElementEnterViewport } from '@femm/shared-utils/dom/'
 import { GMCachedRequest } from '@femm/shared-utils/gm/'
 
 export function defineSite<T extends AllHTMLElementTypes = HTMLAnchorElement>(
@@ -42,4 +42,14 @@ export function getSearchParamsValue(
   }
 
   return result || ''
+}
+
+export function requestOriginalLink(element: HTMLAnchorElement) {
+  observeElementEnterViewport(element, () => {
+    GMCachedRequest({ url: element.href }).then((res) => {
+      if (res.finalUrl) {
+        element.href = res.finalUrl
+      }
+    })
+  })
 }

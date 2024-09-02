@@ -8,7 +8,7 @@ import {
 } from '@femm/shared-utils'
 
 import * as sites from 'src/sites'
-import { getSearchParamsValue } from 'src/utils'
+import { getSearchParamsValue, requestOriginalLink } from 'src/utils'
 
 const hostname = formatHostname()
 const formatSites = Object.values(sites).flat()
@@ -46,6 +46,7 @@ function handleTransform<T extends AllHTMLElementTypes>({
   attribute,
   queryName,
   separator = '?target=',
+  fallbackSelector,
   customTransform = (node: T) => {
     let originUrl = ''
 
@@ -70,6 +71,10 @@ function handleTransform<T extends AllHTMLElementTypes>({
 }: Site.Transform<T>) {
   const observer = new MutationObserver(() => {
     document.querySelectorAll<T>(selector).forEach(customTransform)
+
+    if (fallbackSelector && document.querySelectorAll(fallbackSelector).length) {
+      document.querySelectorAll<HTMLAnchorElement>(fallbackSelector).forEach(requestOriginalLink)
+    }
   })
 
   document.body.setAttribute(FEMM_ATTR_KEY, 'remove-redirect')
