@@ -1,7 +1,7 @@
 import { validateUrl } from '@femm/shared-utils'
 import { defineSite } from 'src/utils'
 
-const BAIDU_RE = /^http:\/\/[^.]+\.[^.]+\.baidu\.com/
+const BAIDU_RE = /^(http:\/\/[^.]+\.[^.]+\.baidu\.com|https:\/\/baike\.baidu\.com)/
 
 const sites = [
   /******************************************************************************
@@ -17,6 +17,7 @@ const sites = [
     {
       transform: {
         selector: '#content_left > [mu]',
+        fallbackSelector: 'a[href*="baidu.com/link?url="]',
         customTransform(node) {
           const originUrl = node.getAttribute('mu')!
           /**
