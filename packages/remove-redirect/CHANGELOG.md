@@ -1,5 +1,20 @@
 # remove-redirect
 
+## 2.17.0
+
+### Minor Changes
+
+- b44fdc0: `transform` 支持 `fallbackSelector` 配置项
+- 44dbb1a: 重构主流程，拆分功能函数以提升可读性和类型安全
+- 02c2e48: `transform` 支持 `attribute` 配置项
+
+### Patch Changes
+
+- 79d3da7: 修复百度搜索链接转换不全 [#27](https://github.com/maomao1996/tampermonkey-scripts/issues/27)
+- 50c6fe1: 修复爱发电站点适配
+- d828c74: 更新脚本配置
+- dc9fa7a: 使用 `attribute` 配置项简化站点配置
+
 ## 2.16.1
 
 ### Patch Changes
