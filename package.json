@@ -28,7 +28,7 @@
     "create-site:remove-redirect": "pnpm --filter='remove-redirect' create-site",
     "create-package": "node scripts/create.js && pnpm install",
     "changeset": "changeset",
-    "packages-version": "changeset version",
+    "packages-version": "pnpm build && changeset version",
     "prepare": "husky install"
   },
   "packageManager": "pnpm@9.5.0",
