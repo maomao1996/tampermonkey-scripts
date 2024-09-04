@@ -91,9 +91,9 @@ function handleRewriteWindowOpen({
   queryName = 'target',
 }: Site.RewriteWindowOpen) {
   // 保存原始的 window.open 方法
-  const originalWindowOpen = window.open
+  const originalWindowOpen = unsafeWindow.open
 
-  window.open = function (url?: string | URL, target?: string, features?: string) {
+  unsafeWindow.open = function (url?: string | URL, target?: string, features?: string) {
     // 仅 url 为字符串时进行重写拦截
     if (isString(url)) {
       /* 验证器模块 */
