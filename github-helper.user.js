@@ -13,362 +13,368 @@
 // ==/UserScript==
 !function() {
   "use strict";
-  var e = "femm-helper";
-  function t(e, t) {
-    (null == t || t > e.length) && (t = e.length);
-    for (var o = 0, n = new Array(t); o < t; o++) n[o] = e[o];
-    return n;
+  var FEMM_ATTR_KEY = "femm-helper";
+  function _array_like_to_array(arr, len) {
+    (null == len || len > arr.length) && (len = arr.length);
+    for (var i = 0, arr2 = new Array(len); i < len; i++) arr2[i] = arr[i];
+    return arr2;
   }
-  function o(e, o) {
-    return function(e) {
-      if (Array.isArray(e)) return e;
-    }(e) || function(e, t) {
-      var o = null == e ? null : "undefined" != typeof Symbol && e[Symbol.iterator] || e["@@iterator"];
-      if (null != o) {
-        var n, r, i = [], d = !0, a = !1;
+  function _sliced_to_array(arr, i) {
+    return function(arr) {
+      if (Array.isArray(arr)) return arr;
+    }(arr) || function(arr, i) {
+      var _i = null == arr ? null : "undefined" != typeof Symbol && arr[Symbol.iterator] || arr["@@iterator"];
+      if (null != _i) {
+        var _s, _e, _arr = [], _n = !0, _d = !1;
         try {
-          for (o = o.call(e); !(d = (n = o.next()).done) && (i.push(n.value), !t || i.length !== t); d = !0) ;
-        } catch (e) {
-          a = !0, r = e;
+          for (_i = _i.call(arr); !(_n = (_s = _i.next()).done) && (_arr.push(_s.value), !i || _arr.length !== i); _n = !0) ;
+        } catch (err) {
+          _d = !0, _e = err;
         } finally {
           try {
-            d || null == o.return || o.return();
+            _n || null == _i.return || _i.return();
           } finally {
-            if (a) throw r;
+            if (_d) throw _e;
           }
         }
-        return i;
+        return _arr;
       }
-    }(e, o) || function(e, o) {
-      if (!e) return;
-      if ("string" == typeof e) return t(e, o);
-      var n = Object.prototype.toString.call(e).slice(8, -1);
-      "Object" === n && e.constructor && (n = e.constructor.name);
+    }(arr, i) || function(o, minLen) {
+      if (!o) return;
+      if ("string" == typeof o) return _array_like_to_array(o, minLen);
+      var n = Object.prototype.toString.call(o).slice(8, -1);
+      "Object" === n && o.constructor && (n = o.constructor.name);
       if ("Map" === n || "Set" === n) return Array.from(n);
-      if ("Arguments" === n || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return t(e, o);
-    }(e, o) || function() {
+      if ("Arguments" === n || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _array_like_to_array(o, minLen);
+    }(arr, i) || function() {
       throw new TypeError("Invalid attempt to destructure non-iterable instance.\\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.");
     }();
   }
-  var n = /^(\d{1,3}(,\d{3})*|\d+|\d{1,3},\d{3}\+)$/, r = {
-    COUNTER: 'span[class*="Counter"]:not(['.concat(e, "])"),
+  var COUNT_REGEX = /^(\d{1,3}(,\d{3})*|\d+|\d{1,3},\d{3}\+)$/, SELECTORS = {
+    COUNTER: 'span[class*="Counter"]:not(['.concat(FEMM_ATTR_KEY, "])"),
     REPO_SIDEBAR: "#repo-content-pjax-container .Layout-sidebar",
     WATCH: "#repo-notifications-counter",
     FORKS: "#repo-network-counter",
     STARS: '[id^="repo-stars-counter-"]'
-  }, i = [ [ 'a[href$="/watchers"] strong', r.WATCH ], [ 'a[href$="/forks"] strong', r.FORKS ], [ 'a[href$="/stargazers"] strong', r.STARS ] ];
-  function d(t, o) {
-    (function(t, o) {
-      return !t.getAttribute(e) && n.test(o) && t.innerText !== o;
-    })(t, o) && (function(e, t) {
-      e.innerText = t;
-    }(t, o), function(e, t, o) {
-      e.getAttribute(t) || e.setAttribute(t, o);
-    }(t, e, "update-count"));
+  }, REPO_COUNT_SELECTORS = [ [ 'a[href$="/watchers"] strong', SELECTORS.WATCH ], [ 'a[href$="/forks"] strong', SELECTORS.FORKS ], [ 'a[href$="/stargazers"] strong', SELECTORS.STARS ] ];
+  function updateNode(node, count) {
+    (function(node, count) {
+      return !node.getAttribute(FEMM_ATTR_KEY) && COUNT_REGEX.test(count) && node.innerText !== count;
+    })(node, count) && (function(node, count) {
+      node.innerText = count;
+    }(node, count), function(node, name, value) {
+      node.getAttribute(name) || node.setAttribute(name, value);
+    }(node, FEMM_ATTR_KEY, "update-count"));
   }
-  function a() {
-    var e;
-    document.querySelectorAll(r.COUNTER).forEach((function(e) {
-      var t = e.getAttribute("title") || "";
-      d(e, t);
-    })), document.querySelector("#repository-container-header:not([hidden])") && ((e = document.querySelector(r.REPO_SIDEBAR)) && i.forEach((function(t) {
-      var n, r = o(t, 2), i = r[0], a = r[1];
-      d(e.querySelector(i), (null === (n = document.querySelector(a)) || void 0 === n ? void 0 : n.getAttribute("title")) || "");
+  function updateCount() {
+    var repoSidebar;
+    document.querySelectorAll(SELECTORS.COUNTER).forEach((function(node) {
+      var count = node.getAttribute("title") || "";
+      updateNode(node, count);
+    })), document.querySelector("#repository-container-header:not([hidden])") && ((repoSidebar = document.querySelector(SELECTORS.REPO_SIDEBAR)) && REPO_COUNT_SELECTORS.forEach((function(param) {
+      var _document_querySelector, _param = _sliced_to_array(param, 2), target = _param[0], original = _param[1];
+      updateNode(repoSidebar.querySelector(target), (null === (_document_querySelector = document.querySelector(original)) || void 0 === _document_querySelector ? void 0 : _document_querySelector.getAttribute("title")) || "");
     })));
   }
-  /*! medium-zoom 1.1.0 | MIT License | https://github.com/francoischalifour/medium-zoom */  var m = Object.assign || function(e) {
-    for (var t = 1; t < arguments.length; t++) {
-      var o = arguments[t];
-      for (var n in o) Object.prototype.hasOwnProperty.call(o, n) && (e[n] = o[n]);
+  /*! medium-zoom 1.1.0 | MIT License | https://github.com/francoischalifour/medium-zoom */  var _extends = Object.assign || function(target) {
+    for (var i = 1; i < arguments.length; i++) {
+      var source = arguments[i];
+      for (var key in source) Object.prototype.hasOwnProperty.call(source, key) && (target[key] = source[key]);
     }
-    return e;
-  }, c = function(e) {
-    return "IMG" === e.tagName;
-  }, l = function(e) {
-    return e && 1 === e.nodeType;
-  }, u = function(e) {
-    return ".svg" === (e.currentSrc || e.src).substr(-4).toLowerCase();
-  }, s = function(e) {
+    return target;
+  }, isSupported = function(node) {
+    return "IMG" === node.tagName;
+  }, isNode = function(selector) {
+    return selector && 1 === selector.nodeType;
+  }, isSvg = function(image) {
+    return ".svg" === (image.currentSrc || image.src).substr(-4).toLowerCase();
+  }, getImagesFromSelector = function(selector) {
     try {
-      return Array.isArray(e) ? e.filter(c) : function(e) {
-        return NodeList.prototype.isPrototypeOf(e);
-      }(e) ? [].slice.call(e).filter(c) : l(e) ? [ e ].filter(c) : "string" == typeof e ? [].slice.call(document.querySelectorAll(e)).filter(c) : [];
-    } catch (e) {
+      return Array.isArray(selector) ? selector.filter(isSupported) : function(selector) {
+        return NodeList.prototype.isPrototypeOf(selector);
+      }(selector) ? [].slice.call(selector).filter(isSupported) : isNode(selector) ? [ selector ].filter(isSupported) : "string" == typeof selector ? [].slice.call(document.querySelectorAll(selector)).filter(isSupported) : [];
+    } catch (err) {
       throw new TypeError("The provided selector is invalid.\nExpects a CSS selector, a Node element, a NodeList or an array.\nSee: https://github.com/francoischalifour/medium-zoom");
     }
-  }, f = function(e, t) {
-    var o = m({
+  }, createCustomEvent = function(type, params) {
+    var eventParams = _extends({
       bubbles: !1,
       cancelable: !1,
       detail: void 0
-    }, t);
-    if ("function" == typeof window.CustomEvent) return new CustomEvent(e, o);
-    var n = document.createEvent("CustomEvent");
-    return n.initCustomEvent(e, o.bubbles, o.cancelable, o.detail), n;
+    }, params);
+    if ("function" == typeof window.CustomEvent) return new CustomEvent(type, eventParams);
+    var customEvent = document.createEvent("CustomEvent");
+    return customEvent.initCustomEvent(type, eventParams.bubbles, eventParams.cancelable, eventParams.detail), 
+    customEvent;
   };
-  !function(e, t) {
-    void 0 === t && (t = {});
-    var o = t.insertAt;
-    if (e && "undefined" != typeof document) {
-      var n = document.head || document.getElementsByTagName("head")[0], r = document.createElement("style");
-      r.type = "text/css", "top" === o && n.firstChild ? n.insertBefore(r, n.firstChild) : n.appendChild(r), 
-      r.styleSheet ? r.styleSheet.cssText = e : r.appendChild(document.createTextNode(e));
+  !function(css, ref) {
+    void 0 === ref && (ref = {});
+    var insertAt = ref.insertAt;
+    if (css && "undefined" != typeof document) {
+      var head = document.head || document.getElementsByTagName("head")[0], style = document.createElement("style");
+      style.type = "text/css", "top" === insertAt && head.firstChild ? head.insertBefore(style, head.firstChild) : head.appendChild(style), 
+      style.styleSheet ? style.styleSheet.cssText = css : style.appendChild(document.createTextNode(css));
     }
   }(".medium-zoom-overlay{position:fixed;top:0;right:0;bottom:0;left:0;opacity:0;transition:opacity .3s;will-change:opacity}.medium-zoom--opened .medium-zoom-overlay{cursor:pointer;cursor:zoom-out;opacity:1}.medium-zoom-image{cursor:pointer;cursor:zoom-in;transition:transform .3s cubic-bezier(.2,0,.2,1)!important}.medium-zoom-image--hidden{visibility:hidden}.medium-zoom-image--opened{position:relative;cursor:pointer;cursor:zoom-out;will-change:transform}");
-  var p = function e(t) {
-    var o = arguments.length > 1 && void 0 !== arguments[1] ? arguments[1] : {}, n = window.Promise || function(e) {
-      function t() {}
-      e(t, t);
-    }, r = function() {
-      for (var e = arguments.length, t = Array(e), o = 0; o < e; o++) t[o] = arguments[o];
-      var n = t.reduce((function(e, t) {
-        return [].concat(e, s(t));
+  var mediumZoom$1 = function mediumZoom(selector) {
+    var options = arguments.length > 1 && void 0 !== arguments[1] ? arguments[1] : {}, Promise = window.Promise || function(fn) {
+      function noop() {}
+      fn(noop, noop);
+    }, attach = function() {
+      for (var _len = arguments.length, selectors = Array(_len), _key = 0; _key < _len; _key++) selectors[_key] = arguments[_key];
+      var newImages = selectors.reduce((function(imagesAccumulator, currentSelector) {
+        return [].concat(imagesAccumulator, getImagesFromSelector(currentSelector));
       }), []);
-      return n.filter((function(e) {
-        return -1 === c.indexOf(e);
-      })).forEach((function(e) {
-        c.push(e), e.classList.add("medium-zoom-image");
-      })), p.forEach((function(e) {
-        var t = e.type, o = e.listener, r = e.options;
-        n.forEach((function(e) {
-          e.addEventListener(t, o, r);
+      return newImages.filter((function(newImage) {
+        return -1 === images.indexOf(newImage);
+      })).forEach((function(newImage) {
+        images.push(newImage), newImage.classList.add("medium-zoom-image");
+      })), eventListeners.forEach((function(_ref) {
+        var type = _ref.type, listener = _ref.listener, options = _ref.options;
+        newImages.forEach((function(image) {
+          image.addEventListener(type, listener, options);
         }));
-      })), b;
-    }, i = function() {
-      var e = (arguments.length > 0 && void 0 !== arguments[0] ? arguments[0] : {}).target, t = function() {
-        var e = {
+      })), zoom;
+    }, open = function() {
+      var target = (arguments.length > 0 && void 0 !== arguments[0] ? arguments[0] : {}).target, _animate = function() {
+        var container = {
           width: document.documentElement.clientWidth,
           height: document.documentElement.clientHeight,
           left: 0,
           top: 0,
           right: 0,
           bottom: 0
-        }, t = void 0, o = void 0;
-        if (h.container) if (h.container instanceof Object) t = (e = m({}, e, h.container)).width - e.left - e.right - 2 * h.margin, 
-        o = e.height - e.top - e.bottom - 2 * h.margin; else {
-          var n = (l(h.container) ? h.container : document.querySelector(h.container)).getBoundingClientRect(), r = n.width, i = n.height, d = n.left, a = n.top;
-          e = m({}, e, {
-            width: r,
-            height: i,
-            left: d,
-            top: a
+        }, viewportWidth = void 0, viewportHeight = void 0;
+        if (zoomOptions.container) if (zoomOptions.container instanceof Object) viewportWidth = (container = _extends({}, container, zoomOptions.container)).width - container.left - container.right - 2 * zoomOptions.margin, 
+        viewportHeight = container.height - container.top - container.bottom - 2 * zoomOptions.margin; else {
+          var _zoomContainer$getBou = (isNode(zoomOptions.container) ? zoomOptions.container : document.querySelector(zoomOptions.container)).getBoundingClientRect(), _width = _zoomContainer$getBou.width, _height = _zoomContainer$getBou.height, _left = _zoomContainer$getBou.left, _top = _zoomContainer$getBou.top;
+          container = _extends({}, container, {
+            width: _width,
+            height: _height,
+            left: _left,
+            top: _top
           });
         }
-        t = t || e.width - 2 * h.margin, o = o || e.height - 2 * h.margin;
-        var c = y.zoomedHd || y.original, s = u(c) ? t : c.naturalWidth || t, f = u(c) ? o : c.naturalHeight || o, p = c.getBoundingClientRect(), g = p.top, v = p.left, z = p.width, b = p.height, E = Math.min(Math.max(z, s), t) / z, w = Math.min(Math.max(b, f), o) / b, S = Math.min(E, w), A = "scale(" + S + ") translate3d(" + ((t - z) / 2 - v + h.margin + e.left) / S + "px, " + ((o - b) / 2 - g + h.margin + e.top) / S + "px, 0)";
-        y.zoomed.style.transform = A, y.zoomedHd && (y.zoomedHd.style.transform = A);
+        viewportWidth = viewportWidth || container.width - 2 * zoomOptions.margin, viewportHeight = viewportHeight || container.height - 2 * zoomOptions.margin;
+        var zoomTarget = active.zoomedHd || active.original, naturalWidth = isSvg(zoomTarget) ? viewportWidth : zoomTarget.naturalWidth || viewportWidth, naturalHeight = isSvg(zoomTarget) ? viewportHeight : zoomTarget.naturalHeight || viewportHeight, _zoomTarget$getBoundi = zoomTarget.getBoundingClientRect(), top = _zoomTarget$getBoundi.top, left = _zoomTarget$getBoundi.left, width = _zoomTarget$getBoundi.width, height = _zoomTarget$getBoundi.height, scaleX = Math.min(Math.max(width, naturalWidth), viewportWidth) / width, scaleY = Math.min(Math.max(height, naturalHeight), viewportHeight) / height, scale = Math.min(scaleX, scaleY), transform = "scale(" + scale + ") translate3d(" + ((viewportWidth - width) / 2 - left + zoomOptions.margin + container.left) / scale + "px, " + ((viewportHeight - height) / 2 - top + zoomOptions.margin + container.top) / scale + "px, 0)";
+        active.zoomed.style.transform = transform, active.zoomedHd && (active.zoomedHd.style.transform = transform);
       };
-      return new n((function(o) {
-        if (e && -1 === c.indexOf(e)) o(b); else {
-          if (y.zoomed) o(b); else {
-            if (e) y.original = e; else {
-              if (!(c.length > 0)) return void o(b);
-              var n = c;
-              y.original = n[0];
+      return new Promise((function(resolve) {
+        if (target && -1 === images.indexOf(target)) resolve(zoom); else {
+          if (active.zoomed) resolve(zoom); else {
+            if (target) active.original = target; else {
+              if (!(images.length > 0)) return void resolve(zoom);
+              var _images = images;
+              active.original = _images[0];
             }
-            if (y.original.dispatchEvent(f("medium-zoom:open", {
+            if (active.original.dispatchEvent(createCustomEvent("medium-zoom:open", {
               detail: {
-                zoom: b
+                zoom: zoom
               }
-            })), v = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop || 0, 
-            g = !0, y.zoomed = function(e) {
-              var t = e.getBoundingClientRect(), o = t.top, n = t.left, r = t.width, i = t.height, d = e.cloneNode(), a = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop || 0, m = window.pageXOffset || document.documentElement.scrollLeft || document.body.scrollLeft || 0;
-              return d.removeAttribute("id"), d.style.position = "absolute", d.style.top = o + a + "px", 
-              d.style.left = n + m + "px", d.style.width = r + "px", d.style.height = i + "px", 
-              d.style.transform = "", d;
-            }(y.original), document.body.appendChild(z), h.template) {
-              var r = l(h.template) ? h.template : document.querySelector(h.template);
-              y.template = document.createElement("div"), y.template.appendChild(r.content.cloneNode(!0)), 
-              document.body.appendChild(y.template);
+            })), scrollTop = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop || 0, 
+            isAnimating = !0, active.zoomed = function(template) {
+              var _template$getBounding = template.getBoundingClientRect(), top = _template$getBounding.top, left = _template$getBounding.left, width = _template$getBounding.width, height = _template$getBounding.height, clone = template.cloneNode(), scrollTop = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop || 0, scrollLeft = window.pageXOffset || document.documentElement.scrollLeft || document.body.scrollLeft || 0;
+              return clone.removeAttribute("id"), clone.style.position = "absolute", clone.style.top = top + scrollTop + "px", 
+              clone.style.left = left + scrollLeft + "px", clone.style.width = width + "px", clone.style.height = height + "px", 
+              clone.style.transform = "", clone;
+            }(active.original), document.body.appendChild(overlay), zoomOptions.template) {
+              var template = isNode(zoomOptions.template) ? zoomOptions.template : document.querySelector(zoomOptions.template);
+              active.template = document.createElement("div"), active.template.appendChild(template.content.cloneNode(!0)), 
+              document.body.appendChild(active.template);
             }
-            if (y.original.parentElement && "PICTURE" === y.original.parentElement.tagName && y.original.currentSrc && (y.zoomed.src = y.original.currentSrc), 
-            document.body.appendChild(y.zoomed), window.requestAnimationFrame((function() {
+            if (active.original.parentElement && "PICTURE" === active.original.parentElement.tagName && active.original.currentSrc && (active.zoomed.src = active.original.currentSrc), 
+            document.body.appendChild(active.zoomed), window.requestAnimationFrame((function() {
               document.body.classList.add("medium-zoom--opened");
-            })), y.original.classList.add("medium-zoom-image--hidden"), y.zoomed.classList.add("medium-zoom-image--opened"), 
-            y.zoomed.addEventListener("click", d), y.zoomed.addEventListener("transitionend", (function e() {
-              g = !1, y.zoomed.removeEventListener("transitionend", e), y.original.dispatchEvent(f("medium-zoom:opened", {
+            })), active.original.classList.add("medium-zoom-image--hidden"), active.zoomed.classList.add("medium-zoom-image--opened"), 
+            active.zoomed.addEventListener("click", close), active.zoomed.addEventListener("transitionend", (function _handleOpenEnd() {
+              isAnimating = !1, active.zoomed.removeEventListener("transitionend", _handleOpenEnd), 
+              active.original.dispatchEvent(createCustomEvent("medium-zoom:opened", {
                 detail: {
-                  zoom: b
+                  zoom: zoom
                 }
-              })), o(b);
-            })), y.original.getAttribute("data-zoom-src")) {
-              y.zoomedHd = y.zoomed.cloneNode(), y.zoomedHd.removeAttribute("srcset"), y.zoomedHd.removeAttribute("sizes"), 
-              y.zoomedHd.removeAttribute("loading"), y.zoomedHd.src = y.zoomed.getAttribute("data-zoom-src"), 
-              y.zoomedHd.onerror = function() {
-                clearInterval(i), console.warn("Unable to reach the zoom image target " + y.zoomedHd.src), 
-                y.zoomedHd = null, t();
+              })), resolve(zoom);
+            })), active.original.getAttribute("data-zoom-src")) {
+              active.zoomedHd = active.zoomed.cloneNode(), active.zoomedHd.removeAttribute("srcset"), 
+              active.zoomedHd.removeAttribute("sizes"), active.zoomedHd.removeAttribute("loading"), 
+              active.zoomedHd.src = active.zoomed.getAttribute("data-zoom-src"), active.zoomedHd.onerror = function() {
+                clearInterval(getZoomTargetSize), console.warn("Unable to reach the zoom image target " + active.zoomedHd.src), 
+                active.zoomedHd = null, _animate();
               };
-              var i = setInterval((function() {
-                y.zoomedHd.complete && (clearInterval(i), y.zoomedHd.classList.add("medium-zoom-image--opened"), 
-                y.zoomedHd.addEventListener("click", d), document.body.appendChild(y.zoomedHd), 
-                t());
+              var getZoomTargetSize = setInterval((function() {
+                active.zoomedHd.complete && (clearInterval(getZoomTargetSize), active.zoomedHd.classList.add("medium-zoom-image--opened"), 
+                active.zoomedHd.addEventListener("click", close), document.body.appendChild(active.zoomedHd), 
+                _animate());
               }), 10);
-            } else if (y.original.hasAttribute("srcset")) {
-              y.zoomedHd = y.zoomed.cloneNode(), y.zoomedHd.removeAttribute("sizes"), y.zoomedHd.removeAttribute("loading");
-              var a = y.zoomedHd.addEventListener("load", (function() {
-                y.zoomedHd.removeEventListener("load", a), y.zoomedHd.classList.add("medium-zoom-image--opened"), 
-                y.zoomedHd.addEventListener("click", d), document.body.appendChild(y.zoomedHd), 
-                t();
+            } else if (active.original.hasAttribute("srcset")) {
+              active.zoomedHd = active.zoomed.cloneNode(), active.zoomedHd.removeAttribute("sizes"), 
+              active.zoomedHd.removeAttribute("loading");
+              var loadEventListener = active.zoomedHd.addEventListener("load", (function() {
+                active.zoomedHd.removeEventListener("load", loadEventListener), active.zoomedHd.classList.add("medium-zoom-image--opened"), 
+                active.zoomedHd.addEventListener("click", close), document.body.appendChild(active.zoomedHd), 
+                _animate();
               }));
-            } else t();
+            } else _animate();
           }
         }
       }));
-    }, d = function() {
-      return new n((function(e) {
-        if (!g && y.original) {
-          g = !0, document.body.classList.remove("medium-zoom--opened"), y.zoomed.style.transform = "", 
-          y.zoomedHd && (y.zoomedHd.style.transform = ""), y.template && (y.template.style.transition = "opacity 150ms", 
-          y.template.style.opacity = 0), y.original.dispatchEvent(f("medium-zoom:close", {
+    }, close = function() {
+      return new Promise((function(resolve) {
+        if (!isAnimating && active.original) {
+          isAnimating = !0, document.body.classList.remove("medium-zoom--opened"), active.zoomed.style.transform = "", 
+          active.zoomedHd && (active.zoomedHd.style.transform = ""), active.template && (active.template.style.transition = "opacity 150ms", 
+          active.template.style.opacity = 0), active.original.dispatchEvent(createCustomEvent("medium-zoom:close", {
             detail: {
-              zoom: b
+              zoom: zoom
             }
-          })), y.zoomed.addEventListener("transitionend", (function t() {
-            y.original.classList.remove("medium-zoom-image--hidden"), document.body.removeChild(y.zoomed), 
-            y.zoomedHd && document.body.removeChild(y.zoomedHd), document.body.removeChild(z), 
-            y.zoomed.classList.remove("medium-zoom-image--opened"), y.template && document.body.removeChild(y.template), 
-            g = !1, y.zoomed.removeEventListener("transitionend", t), y.original.dispatchEvent(f("medium-zoom:closed", {
+          })), active.zoomed.addEventListener("transitionend", (function _handleCloseEnd() {
+            active.original.classList.remove("medium-zoom-image--hidden"), document.body.removeChild(active.zoomed), 
+            active.zoomedHd && document.body.removeChild(active.zoomedHd), document.body.removeChild(overlay), 
+            active.zoomed.classList.remove("medium-zoom-image--opened"), active.template && document.body.removeChild(active.template), 
+            isAnimating = !1, active.zoomed.removeEventListener("transitionend", _handleCloseEnd), 
+            active.original.dispatchEvent(createCustomEvent("medium-zoom:closed", {
               detail: {
-                zoom: b
+                zoom: zoom
               }
-            })), y.original = null, y.zoomed = null, y.zoomedHd = null, y.template = null, e(b);
+            })), active.original = null, active.zoomed = null, active.zoomedHd = null, active.template = null, 
+            resolve(zoom);
           }));
-        } else e(b);
+        } else resolve(zoom);
       }));
-    }, a = function() {
-      var e = (arguments.length > 0 && void 0 !== arguments[0] ? arguments[0] : {}).target;
-      return y.original ? d() : i({
-        target: e
+    }, toggle = function() {
+      var target = (arguments.length > 0 && void 0 !== arguments[0] ? arguments[0] : {}).target;
+      return active.original ? close() : open({
+        target: target
       });
-    }, c = [], p = [], g = !1, v = 0, h = o, y = {
+    }, images = [], eventListeners = [], isAnimating = !1, scrollTop = 0, zoomOptions = options, active = {
       original: null,
       zoomed: null,
       zoomedHd: null,
       template: null
     };
-    "[object Object]" === Object.prototype.toString.call(t) ? h = t : (t || "string" == typeof t) && r(t);
-    var z = function(e) {
-      var t = document.createElement("div");
-      return t.classList.add("medium-zoom-overlay"), t.style.background = e, t;
-    }((h = m({
+    "[object Object]" === Object.prototype.toString.call(selector) ? zoomOptions = selector : (selector || "string" == typeof selector) && attach(selector);
+    var overlay = function(background) {
+      var overlay = document.createElement("div");
+      return overlay.classList.add("medium-zoom-overlay"), overlay.style.background = background, 
+      overlay;
+    }((zoomOptions = _extends({
       margin: 0,
       background: "#fff",
       scrollOffset: 40,
       container: null,
       template: null
-    }, h)).background);
-    document.addEventListener("click", (function(e) {
-      var t = e.target;
-      t !== z ? -1 !== c.indexOf(t) && a({
-        target: t
-      }) : d();
-    })), document.addEventListener("keyup", (function(e) {
-      var t = e.key || e.keyCode;
-      "Escape" !== t && "Esc" !== t && 27 !== t || d();
+    }, zoomOptions)).background);
+    document.addEventListener("click", (function(event) {
+      var target = event.target;
+      target !== overlay ? -1 !== images.indexOf(target) && toggle({
+        target: target
+      }) : close();
+    })), document.addEventListener("keyup", (function(event) {
+      var key = event.key || event.keyCode;
+      "Escape" !== key && "Esc" !== key && 27 !== key || close();
     })), document.addEventListener("scroll", (function() {
-      if (!g && y.original) {
-        var e = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop || 0;
-        Math.abs(v - e) > h.scrollOffset && setTimeout(d, 150);
+      if (!isAnimating && active.original) {
+        var currentScroll = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop || 0;
+        Math.abs(scrollTop - currentScroll) > zoomOptions.scrollOffset && setTimeout(close, 150);
       }
-    })), window.addEventListener("resize", d);
-    var b = {
-      open: i,
-      close: d,
-      toggle: a,
+    })), window.addEventListener("resize", close);
+    var zoom = {
+      open: open,
+      close: close,
+      toggle: toggle,
       update: function() {
-        var e = arguments.length > 0 && void 0 !== arguments[0] ? arguments[0] : {}, t = e;
-        if (e.background && (z.style.background = e.background), e.container && e.container instanceof Object && (t.container = m({}, h.container, e.container)), 
-        e.template) {
-          var o = l(e.template) ? e.template : document.querySelector(e.template);
-          t.template = o;
+        var options = arguments.length > 0 && void 0 !== arguments[0] ? arguments[0] : {}, newOptions = options;
+        if (options.background && (overlay.style.background = options.background), options.container && options.container instanceof Object && (newOptions.container = _extends({}, zoomOptions.container, options.container)), 
+        options.template) {
+          var template = isNode(options.template) ? options.template : document.querySelector(options.template);
+          newOptions.template = template;
         }
-        return h = m({}, h, t), c.forEach((function(e) {
-          e.dispatchEvent(f("medium-zoom:update", {
+        return zoomOptions = _extends({}, zoomOptions, newOptions), images.forEach((function(image) {
+          image.dispatchEvent(createCustomEvent("medium-zoom:update", {
             detail: {
-              zoom: b
+              zoom: zoom
             }
           }));
-        })), b;
+        })), zoom;
       },
       clone: function() {
-        return e(m({}, h, arguments.length > 0 && void 0 !== arguments[0] ? arguments[0] : {}));
+        return mediumZoom(_extends({}, zoomOptions, arguments.length > 0 && void 0 !== arguments[0] ? arguments[0] : {}));
       },
-      attach: r,
+      attach: attach,
       detach: function() {
-        for (var e = arguments.length, t = Array(e), o = 0; o < e; o++) t[o] = arguments[o];
-        y.zoomed && d();
-        var n = t.length > 0 ? t.reduce((function(e, t) {
-          return [].concat(e, s(t));
-        }), []) : c;
-        return n.forEach((function(e) {
-          e.classList.remove("medium-zoom-image"), e.dispatchEvent(f("medium-zoom:detach", {
+        for (var _len2 = arguments.length, selectors = Array(_len2), _key2 = 0; _key2 < _len2; _key2++) selectors[_key2] = arguments[_key2];
+        active.zoomed && close();
+        var imagesToDetach = selectors.length > 0 ? selectors.reduce((function(imagesAccumulator, currentSelector) {
+          return [].concat(imagesAccumulator, getImagesFromSelector(currentSelector));
+        }), []) : images;
+        return imagesToDetach.forEach((function(image) {
+          image.classList.remove("medium-zoom-image"), image.dispatchEvent(createCustomEvent("medium-zoom:detach", {
             detail: {
-              zoom: b
+              zoom: zoom
             }
           }));
-        })), c = c.filter((function(e) {
-          return -1 === n.indexOf(e);
-        })), b;
+        })), images = images.filter((function(image) {
+          return -1 === imagesToDetach.indexOf(image);
+        })), zoom;
       },
-      on: function(e, t) {
-        var o = arguments.length > 2 && void 0 !== arguments[2] ? arguments[2] : {};
-        return c.forEach((function(n) {
-          n.addEventListener("medium-zoom:" + e, t, o);
-        })), p.push({
-          type: "medium-zoom:" + e,
-          listener: t,
-          options: o
-        }), b;
+      on: function(type, listener) {
+        var options = arguments.length > 2 && void 0 !== arguments[2] ? arguments[2] : {};
+        return images.forEach((function(image) {
+          image.addEventListener("medium-zoom:" + type, listener, options);
+        })), eventListeners.push({
+          type: "medium-zoom:" + type,
+          listener: listener,
+          options: options
+        }), zoom;
       },
-      off: function(e, t) {
-        var o = arguments.length > 2 && void 0 !== arguments[2] ? arguments[2] : {};
-        return c.forEach((function(n) {
-          n.removeEventListener("medium-zoom:" + e, t, o);
-        })), p = p.filter((function(o) {
-          return !(o.type === "medium-zoom:" + e && o.listener.toString() === t.toString());
-        })), b;
+      off: function(type, listener) {
+        var options = arguments.length > 2 && void 0 !== arguments[2] ? arguments[2] : {};
+        return images.forEach((function(image) {
+          image.removeEventListener("medium-zoom:" + type, listener, options);
+        })), eventListeners = eventListeners.filter((function(eventListener) {
+          return !(eventListener.type === "medium-zoom:" + type && eventListener.listener.toString() === listener.toString());
+        })), zoom;
       },
       getOptions: function() {
-        return h;
+        return zoomOptions;
       },
       getImages: function() {
-        return c;
+        return images;
       },
       getZoomedImage: function() {
-        return y.original;
+        return active.original;
       }
     };
-    return b;
-  }, g = ".markdown-body img:not(.medium-zoom-image)", v = p();
-  function h() {
+    return zoom;
+  }, DEFAULT_SELECTOR = ".markdown-body img:not(.medium-zoom-image)", zoom = mediumZoom$1();
+  function zoomImage() {
     !function() {
-      var e = arguments.length > 0 && void 0 !== arguments[0] ? arguments[0] : g;
-      v.detach(), v.attach(e);
+      var selector = arguments.length > 0 && void 0 !== arguments[0] ? arguments[0] : DEFAULT_SELECTOR;
+      zoom.detach(), zoom.attach(selector);
     }();
   }
-  document.addEventListener("click", (function(e) {
-    var t, o = e.target;
-    "IMG" === (null == o ? void 0 : o.tagName) && (null === (t = document.querySelector(".markdown-body")) || void 0 === t ? void 0 : t.contains(o)) && (e.preventDefault(), 
-    e.stopPropagation());
+  document.addEventListener("click", (function(event) {
+    var _document_querySelector, targetElement = event.target;
+    "IMG" === (null == targetElement ? void 0 : targetElement.tagName) && (null === (_document_querySelector = document.querySelector(".markdown-body")) || void 0 === _document_querySelector ? void 0 : _document_querySelector.contains(targetElement)) && (event.preventDefault(), 
+    event.stopPropagation());
   }));
-  var y = ".medium-zoom-overlay{background-color:#fff!important;z-index:1996}.medium-zoom-image--opened{z-index:1997}@media (prefers-color-scheme:dark){.medium-zoom-overlay{background-color:#000!important}}";
-  !function(e, t) {
-    void 0 === t && (t = {});
-    var o = t.insertAt;
-    if (e && "undefined" != typeof document) {
-      var n = document.head || document.getElementsByTagName("head")[0], r = document.createElement("style");
-      r.type = "text/css", "top" === o && n.firstChild ? n.insertBefore(r, n.firstChild) : n.appendChild(r), 
-      r.styleSheet ? r.styleSheet.cssText = e : r.appendChild(document.createTextNode(e));
+  var css_248z = ".medium-zoom-overlay{background-color:#fff!important;z-index:1996}.medium-zoom-image--opened{z-index:1997}@media (prefers-color-scheme:dark){.medium-zoom-overlay{background-color:#000!important}}";
+  !function(css, ref) {
+    void 0 === ref && (ref = {});
+    var insertAt = ref.insertAt;
+    if (css && "undefined" != typeof document) {
+      var head = document.head || document.getElementsByTagName("head")[0], style = document.createElement("style");
+      style.type = "text/css", "top" === insertAt && head.firstChild ? head.insertBefore(style, head.firstChild) : head.appendChild(style), 
+      style.styleSheet ? style.styleSheet.cssText = css : style.appendChild(document.createTextNode(css));
     }
-  }(y), GM_addStyle(y);
-  var z = function() {
-    a(), h();
-  }, b = document.querySelector("main");
-  null != b && new MutationObserver((function() {
-    return z();
-  })).observe(b, {
+  }(css_248z), GM_addStyle(css_248z);
+  var init = function() {
+    updateCount(), zoomImage();
+  }, main = document.querySelector("main");
+  null != main && new MutationObserver((function() {
+    return init();
+  })).observe(main, {
     childList: !0,
     subtree: !0
   });
-  z();
+  init();
 }();
