@@ -33,6 +33,7 @@ export function createRollupConfig({
         },
       }
     : {
+        mangle: false,
         format: {
           ascii_only: true,
           beautify: true,
