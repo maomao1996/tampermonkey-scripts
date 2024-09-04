@@ -1,5 +1,12 @@
 # remove-redirect
 
+## 2.17.1
+
+### Patch Changes
+
+- bf00c61: 修复 `rewriteWindowOpen` 拦截失效
+- 3c48c1d: 51CTO 博客文章页支持直接跳转
+
 ## 2.17.0
 
 ### Minor Changes
