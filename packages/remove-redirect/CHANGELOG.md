@@ -1,5 +1,12 @@
 # remove-redirect
 
+## 2.17.2
+
+### Patch Changes
+
+- e1a17d0: 修复 `requestOriginalLink` 方法
+- a692bb8: 简化 Google 站点配置
+
 ## 2.17.1
 
 ### Patch Changes
