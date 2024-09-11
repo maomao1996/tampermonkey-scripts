@@ -76,7 +76,6 @@ interface SiteOptions<T extends AllHTMLElementTypes = Element> {
   autojump?: Site.AutoJump
 }
 
-type Domain = `${string}.${string}` | RegExp
 type Site<T extends AllHTMLElementTypes = Element> = [
   /** 站点名称 */
   SiteName,
