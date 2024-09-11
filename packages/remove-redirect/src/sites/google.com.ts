@@ -6,10 +6,15 @@ const sites = [
    ** Google 搜索
    **   - https://www.google.com/search?q=mmPlayer
    **   - https://www.google.com/search?q=茂茂物语
+   **
+   ** Google 重定向页
+   **   - https://www.google.com/url?q=https%3A%2F%2Fgithub.com%2Fmaomao1996%2Ftampermonkey-scripts&sa=D&source=docs
+   **   - https://www.google.com.hk/url?q=https%3A%2F%2Fgithub.com%2Fmaomao1996%2Ftampermonkey-scripts&sa=D&source=docs
+   **   - https://www.google.co.jp/url?q=https%3A%2F%2Fgithub.com%2Fmaomao1996%2Ftampermonkey-scripts&sa=D&source=docs
    ******************************************************************************/
   defineSite([
-    'Google 搜索',
-    /^google\.com/,
+    'Google 搜索、Google 重定向页',
+    /^google\.(com|com?\.[a-z]{2}|[a-z]{2})$/,
     {
       transform: {
         // selector: 'a[href^="/url?"][href*="url="]',
@@ -28,18 +33,6 @@ const sites = [
           }
         },
       },
-    },
-  ]),
-  /******************************************************************************
-   ** Google 重定向页
-   **   - https://www.google.com/url?q=https%3A%2F%2Fgithub.com%2Fmaomao1996%2Ftampermonkey-scripts&sa=D&source=docs
-   **   - https://www.google.com.hk/url?q=https%3A%2F%2Fgithub.com%2Fmaomao1996%2Ftampermonkey-scripts&sa=D&source=docs
-   **   - https://www.google.co.jp/url?q=https%3A%2F%2Fgithub.com%2Fmaomao1996%2Ftampermonkey-scripts&sa=D&source=docs
-   ******************************************************************************/
-  defineSite([
-    'Google 重定向页',
-    /^google\.(com|com?\.[a-z]{2}|[a-z]{2})$/,
-    {
       autojump: {
         validator: ({ pathname }) => pathname === '/url',
         queryName: 'q',
