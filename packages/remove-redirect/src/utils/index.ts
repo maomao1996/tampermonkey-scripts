@@ -46,8 +46,8 @@ export function getSearchParamsValue(
 
 export function requestOriginalLink(element: HTMLAnchorElement) {
   observeElementEnterViewport(element, () => {
-    GMCachedRequest({ url: element.href }).then((res) => {
-      if (res.finalUrl) {
+    GMCachedRequest({ method: 'GET', url: element.href, anonymous: true }).then((res) => {
+      if (res.finalUrl && res.finalUrl !== element.href) {
         element.href = res.finalUrl
       }
     })
