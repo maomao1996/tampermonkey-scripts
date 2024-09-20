@@ -1,8 +1,8 @@
 // ==UserScript==
 // @name        跳转链接修复（移除重定向外链直达）
-// @description 提升用户体验：修复跳转链接为站外直链（移除重定向直接跳转），免去拦截页面点击步骤可直达站外；拦截页面自动跳转（无须额外操作）；已适配爱发电、百度搜索、百度贴吧、Bing 搜索、书签地球、酷安、CSDN、豆瓣、Facebook、码云、Google 搜索、Google 重定向页、花瓣网、InfoQ、Instagram、简书、掘金、金山文档、链滴、力扣（Leetcode）、51CTO 博客、NGA 玩家社区、牛客网、开源中国、pixiv、微信、微信开放社区、QQ 邮箱、PC 版 QQ、腾讯文档、腾讯兔小巢、石墨文档、360 搜索、搜狗搜索、少数派、腾讯云开发者社区、推特（Twitter）、微博、YouTube、语雀、知乎、知乎专栏
+// @description 提升用户体验：修复跳转链接为站外直链（移除重定向直接跳转），免去拦截页面点击步骤可直达站外；拦截页面自动跳转（无须额外操作）；已适配ACG盒子、爱发电、百度搜索、百度贴吧、Bing 搜索、书签地球、酷安、CSDN、豆瓣、Facebook、码云、Google 搜索、Google 重定向页、花瓣网、InfoQ、Instagram、简书、掘金、金山文档、链滴、力扣（Leetcode）、51CTO 博客、NGA 玩家社区、牛客网、开源中国、pixiv、微信、微信开放社区、QQ 邮箱、PC 版 QQ、腾讯文档、腾讯兔小巢、石墨文档、360 搜索、搜狗搜索、少数派、腾讯云开发者社区、推特（Twitter）、微博、YouTube、语雀、知乎、知乎专栏
 // @namespace   maomao1996.remove-redirect
-// @version     2.17.2
+// @version     2.18.0
 // @author      maomao1996
 // @homepage    https://github.com/maomao1996/tampermonkey-scripts
 // @supportURL  https://github.com/maomao1996/tampermonkey-scripts/issues
@@ -163,7 +163,23 @@
       }));
     }));
   }
-  var BAIDU_RE = /^(http:\/\/[^.]+\.[^.]+\.baidu\.com|https:\/\/baike\.baidu\.com)/, sites$w = [ defineSite([ "\u767e\u5ea6\u641c\u7d22", "baidu.com", {
+  var sites$y = [ defineSite([ "ACG\u76d2\u5b50", "acgbox.link", {
+    transform: {
+      selector: 'a[href*="/go/?url"]',
+      customTransform: function(node) {
+        var originUrl = decodeURIComponent(node.href.split("?url=")[1]);
+        try {
+          validateUrl(originUrl = atob(originUrl)) && (node.href = originUrl);
+        } catch (e) {}
+      }
+    },
+    autojump: {
+      validator: function(param) {
+        return "/go/" === param.pathname;
+      },
+      selector: "a.loading-btn"
+    }
+  } ]) ], BAIDU_RE = /^(http:\/\/[^.]+\.[^.]+\.baidu\.com|https:\/\/baike\.baidu\.com)/, sites$w = [ defineSite([ "\u767e\u5ea6\u641c\u7d22", "baidu.com", {
     transform: {
       selector: "#content_left > [mu]",
       fallbackSelector: 'a[href*="baidu.com/link?url="]',
@@ -340,6 +356,7 @@
     }
   } ]) ], sites = Object.freeze({
     __proto__: null,
+    acgboxLink: sites$y,
     afdianCom: [ [ "\u7231\u53d1\u7535", "afdian.com", {
       transform: {
         selector: '[href*="afdian.com/link?target="]'
