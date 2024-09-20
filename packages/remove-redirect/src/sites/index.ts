@@ -1,4 +1,5 @@
 export { default as m_51CtoCom } from './51cto.com'
+export { default as acgboxLink } from './acgbox.link'
 export { default as afdianCom } from './afdian.com'
 export { default as baiduCom } from './baidu.com'
 export { default as bingCom } from './bing.com'
