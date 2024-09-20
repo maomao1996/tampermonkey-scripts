@@ -1,5 +1,11 @@
 # remove-redirect
 
+## 2.18.0
+
+### Minor Changes
+
+- 261b4a3: 适配 ACG 盒子
+
 ## 2.17.2
 
 ### Patch Changes
