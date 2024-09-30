@@ -1,5 +1,11 @@
 # remove-redirect
 
+## 2.19.0
+
+### Minor Changes
+
+- 92e7abb: 适配哔哩哔哩游戏 WIKI
+
 ## 2.18.0
 
 ### Minor Changes
