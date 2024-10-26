@@ -1,5 +1,11 @@
 # remove-redirect
 
+## 2.19.1
+
+### Patch Changes
+
+- 32d228d: 修复 Facebook [#29](https://github.com/maomao1996/tampermonkey-scripts/issues/29)
+
 ## 2.19.0
 
 ### Minor Changes
