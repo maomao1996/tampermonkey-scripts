@@ -8,12 +8,14 @@ const sites: SiteModule = [
     'Facebook',
     /^(?:l\.)?facebook\.com$/,
     {
-      // transform: {
-      //   selector: 'a[target="_blank"]',
-      //   customTransform(node) {
-      //     node.addEventListener('click', (e: Event) => e.stopPropagation())
-      //   },
-      // },
+      transform: {
+        selector: 'a[target="_blank"]',
+        customTransform(node) {
+          node.addEventListener('click', (e: Event) => e.stopPropagation(), {
+            capture: true,
+          })
+        },
+      },
       autojump: {
         validator: ({ search }) => search.includes('u='),
         queryName: 'u',
