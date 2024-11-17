@@ -7,8 +7,9 @@ const sites: SiteModule = [
     '力扣（Leetcode）',
     'leetcode.cn',
     {
-      transform: {
-        selector: '[href*="/link/?target="]',
+      autojump: {
+        validator: ({ pathname }) => pathname === '/link/',
+        queryName: 'target',
       },
     },
   ],
