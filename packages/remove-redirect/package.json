@@ -7,6 +7,7 @@
     "create-site": "node ./scripts/create-site.js",
     "update-description": "tsx ./scripts/update-description.ts && prettier --write ./metablock.json",
     "build": "rollup -c",
-    "dev": "rollup --environment BUILD:development -c --watch"
+    "dev": "rollup --environment BUILD:development -c --watch",
+    "e2e": "pnpm run build && playwright test"
   }
 }

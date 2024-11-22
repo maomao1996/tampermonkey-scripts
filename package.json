@@ -60,6 +60,7 @@
     "rollup": "^3.29.4",
     "tsx": "^4.7.2",
     "turbo": "^1.13.2",
-    "typescript": "^5.4.5"
+    "typescript": "^5.4.5",
+    "@playwright/test": "^1.48.2"
   }
 }
