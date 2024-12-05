@@ -1,5 +1,16 @@
 # remove-redirect
 
+## 2.20.0
+
+### Minor Changes
+
+- 1ff61bd: 适配力扣（Leetcode）重定向页
+
+### Patch Changes
+
+- ef5012f: 优化 PC 版 QQ 自动跳转验证规则
+- 3271560: 修复 Google 搜索赞助商广告链接转换
+
 ## 2.19.1
 
 ### Patch Changes
