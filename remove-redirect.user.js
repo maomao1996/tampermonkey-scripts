@@ -2,7 +2,7 @@
 // @name        跳转链接修复（移除重定向外链直达）
 // @description 修复跳转链接为站外直链（移除重定向直接跳转），免去拦截页面点击步骤可直达站外；拦截页面自动跳转（无须额外操作）；已适配ACG盒子、爱发电、百度搜索、百度贴吧、哔哩哔哩游戏WIKI、Bing 搜索、书签地球、酷安、CSDN、豆瓣、Facebook、码云、Google 搜索、Google 重定向页、花瓣网、InfoQ、Instagram、简书、掘金、金山文档、链滴、力扣（Leetcode）、51CTO 博客、NGA 玩家社区、牛客网、开源中国、pixiv、微信、微信开放社区、QQ 邮箱、PC 版 QQ、腾讯文档、腾讯兔小巢、石墨文档、360 搜索、搜狗搜索、少数派、腾讯云开发者社区、推特（Twitter）、微博、YouTube、语雀、知乎、知乎专栏
 // @namespace   maomao1996.remove-redirect
-// @version     2.19.1
+// @version     2.20.0
 // @author      maomao1996
 // @homepage    https://github.com/maomao1996/tampermonkey-scripts
 // @supportURL  https://github.com/maomao1996/tampermonkey-scripts/issues
@@ -235,9 +235,9 @@
     }
   } ]) ], sites$o = [ defineSite([ "Google \u641c\u7d22\u3001Google \u91cd\u5b9a\u5411\u9875", /^google\.(com|com?\.[a-z]{2}|[a-z]{2})$/, {
     transform: {
-      selector: [ "a[jsname][href][data-jsarwt]", "a[jsname][href][ping]" ].join(","),
+      selector: [ "a[jsname][href][data-jsarwt]", "a[jsname][href][ping]", "[data-rw][data-al]" ].join(","),
       customTransform: function(node) {
-        node.setAttribute("data-jrwt", "1"), node.removeAttribute("ping");
+        node.setAttribute("data-jrwt", "1"), node.removeAttribute("ping"), node.removeAttribute("data-rw");
         var match = (node.getAttribute("href") || "").match(/\?(.*)/);
         if (match) {
           var url = new URLSearchParams(match[1]).get("url");
@@ -300,7 +300,7 @@
     autojump: {
       validator: function(param) {
         var pathname = param.pathname;
-        return /^\/(middleb|middlem|pc|ios|android)\.html$/.test(pathname);
+        return /^\/[a-z]+\.html$/.test(pathname);
       },
       queryName: [ "pfurl", "url" ]
     }
@@ -498,6 +498,12 @@
     leetcodeCn: [ [ "\u529b\u6263\uff08Leetcode\uff09", "leetcode.cn", {
       transform: {
         selector: '[href*="/link/?target="]'
+      },
+      autojump: {
+        validator: function(param) {
+          return "/link/" === param.pathname;
+        },
+        queryName: "target"
       }
     } ] ],
     m_51CtoCom: [ [ "51CTO \u535a\u5ba2", "blog.51cto.com", {
