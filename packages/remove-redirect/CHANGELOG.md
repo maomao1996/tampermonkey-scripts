@@ -1,5 +1,11 @@
 # remove-redirect
 
+## 2.21.0
+
+### Minor Changes
+
+- 695a886: 适配 Steam 社区
+
 ## 2.20.0
 
 ### Minor Changes
