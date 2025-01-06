@@ -1,5 +1,11 @@
 # kill-watermark
 
+## 0.11.0
+
+### Minor Changes
+
+- ccebc7d: 适配金山文档
+
 ## 0.10.1
 
 ### Patch Changes
