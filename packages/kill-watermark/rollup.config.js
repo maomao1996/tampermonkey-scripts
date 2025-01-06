@@ -15,7 +15,11 @@ export default createRollupConfig({
         const exportSites = []
         const source = files.reduce((str, file) => {
           if (statSync(`./src/sites/${file}`).isDirectory()) {
-            const moduleName = camelCase(file)
+            let moduleName = camelCase(file)
+            if (/^\d/.test(moduleName)) {
+              moduleName = `m_${moduleName}`
+            }
+
             str += `export { default as ${moduleName} } from './${file}'\n`
             exportSites.push(`${moduleName}`)
           }

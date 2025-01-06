@@ -1,3 +1,4 @@
+export { default as m_365KdocsCn } from './365.kdocs.cn'
 export { default as chat360Com } from './chat.360.com'
 export { default as docsQqCom } from './docs.qq.com'
 export { default as feishuCn } from './feishu.cn'
