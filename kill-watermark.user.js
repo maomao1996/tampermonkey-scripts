@@ -1,8 +1,8 @@
 // ==UserScript==
 // @name        杀死水印（Kill Watermark）
-// @description 杀死水印（移除烦人的水印，还你一个干净清爽的页面）；已适配360 智脑、腾讯文档、飞书、FreeBuf 网络安全行业门户、爱奇艺播放页（右上角 logo、暂停时的广告）、腾讯课堂播放页漂浮水印、哔哩哔哩直播左上角 logo、CSDN C 知道、腾讯视频播放页（右上角 logo、暂停时的弹窗广告）、优酷视频播放页（右上角 logo、暂停时的弹窗广告）、语雀
+// @description 杀死水印（移除烦人的水印，还你一个干净清爽的页面）；已适配360 智脑、腾讯文档、飞书、FreeBuf 网络安全行业门户、爱奇艺播放页（右上角 logo、暂停时的广告）、腾讯课堂播放页漂浮水印、哔哩哔哩直播左上角 logo、金山文档、CSDN C 知道、腾讯视频播放页（右上角 logo、暂停时的弹窗广告）、优酷视频播放页（右上角 logo、暂停时的弹窗广告）、语雀
 // @namespace   maomao1996.kill-watermark
-// @version     0.10.1
+// @version     0.11.0
 // @author      maomao1996
 // @homepage    https://github.com/maomao1996/tampermonkey-scripts
 // @supportURL  https://github.com/maomao1996/tampermonkey-scripts/issues
@@ -18,6 +18,7 @@
 // @match       *://*.feishu.cn/*
 // @match       *://*.freebuf.com/*
 // @match       *://chat.360.com/*
+// @match       *://365.kdocs.cn/*
 // @grant       GM_addStyle
 // ==/UserScript==
 !function() {
@@ -32,7 +33,11 @@
       style.styleSheet ? style.styleSheet.cssText = css : style.appendChild(document.createTextNode(css));
     }
   }
-  var css_248z$9 = '#nworld-app-container div>div[style*=pointer-events][style*="data:image/"]{display:none!important}';
+  var css_248z$a = ".uikit-watermark-container{display:none!important}";
+  styleInject(css_248z$a);
+  var site$b = [ "\u91d1\u5c71\u6587\u6863", "365.kdocs.cn", {
+    style: css_248z$a
+  } ], css_248z$9 = '#nworld-app-container div>div[style*=pointer-events][style*="data:image/"]{display:none!important}';
   styleInject(css_248z$9);
   var site$a = [ "360 \u667a\u8111", "chat.360.com", {
     style: css_248z$9
@@ -88,6 +93,7 @@
     iqiyiCom: site$6,
     keQqCom: site$5,
     liveBilibiliCom: site$4,
+    m_365KdocsCn: site$b,
     soCsdnNet: site$3,
     vQqCom: site$2,
     vYoukuCom: site$1,
