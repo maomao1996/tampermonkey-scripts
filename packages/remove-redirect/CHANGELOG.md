@@ -1,5 +1,11 @@
 # remove-redirect
 
+## 2.22.0
+
+### Minor Changes
+
+- 1190a16: 适配微信开放社区文章页
+
 ## 2.21.0
 
 ### Minor Changes
