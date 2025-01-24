@@ -29,6 +29,10 @@ const sites: SiteModule = [
     '微信开放社区',
     'developers.weixin.qq.com',
     {
+      rewriteWindowOpen: {
+        validationRule: '/community/middlepage/href?href=',
+        queryName: 'href',
+      },
       autojump: {
         validator: ({ pathname }) => pathname === '/community/middlepage/href',
         queryName: 'href',
