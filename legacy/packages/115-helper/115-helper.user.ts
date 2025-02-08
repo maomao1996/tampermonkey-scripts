@@ -2,8 +2,8 @@
 // ==UserScript==
 // @name          115小助手
 // @namespace     https://github.com/maomao1996/tampermonkey-scripts
-// @version       1.8.2
-// @description   网盘顶部菜单栏添加链接任务和云下载、SHA1 快速查重（新页面打开）、SHA1 自动查重、删除空文件夹、一键搜（快捷搜索）、SHA1 查重列表支持选中第一个元素和悬浮菜单展示、搜索列表支持悬浮菜单展示、列表显示文件 SHA1 信息、关闭侧边栏、悬浮菜单移除图标、悬浮菜单支持新标签页打开文件夹、加速转码
+// @version       1.8.3
+// @description   网盘顶部菜单栏添加链接任务和云下载、SHA1 快速查重（新页面打开）、SHA1 自动查重、删除空文件夹、一键搜（快捷搜索）、SHA1 查重列表支持选中第一个元素和悬浮菜单展示、搜索列表支持悬浮菜单展示、列表显示文件 SHA1 信息、关闭网盘侧边栏、悬浮菜单移除图标、悬浮菜单支持新标签页打开文件夹、加速转码
 // @icon      	  https://115.com/favicon.ico
 // @author        maomao1996
 // @include       *://115.com/*
@@ -67,8 +67,14 @@
         default: 400,
         line: 'end',
       },
-      'layout.hideSidebar': {
+      'layout.addSidebarBtn': {
         section: ['', '界面布局相关设置'],
+        label: '侧边栏增加网盘侧边栏控制按钮',
+        labelPos: 'right',
+        type: 'checkbox',
+        default: true,
+      },
+      'layout.hideSidebar': {
         label: '默认关闭网盘侧边栏',
         labelPos: 'right',
         type: 'checkbox',
@@ -922,11 +928,7 @@
   const initMainLayout = () => {
     const SIDEBAR_SELECTOR = '[mm-layout="sidebar"]'
     const HELPER_SETTING_SELECTOR = '[mm-layout="helper-setting"]'
-    const $mainSidebar = top.$('#js-main_leftUI .top-side .navigation-ceiling ul')
-
-    if (G.get('layout.hideSidebar')) {
-      top.$('.wrap-hflow .sub-hflow').hide(0)
-    }
+    const $mainSidebar = top.$('#js-main_leftUI .bottom-side .navigation-ceiling ul').eq(0)
 
     const initSidebar = () => {
       if (top.$(SIDEBAR_SELECTOR).length) {
@@ -934,8 +936,8 @@
       }
 
       $mainSidebar
-        .append(
-          /*html*/ `<li mm-layout="sidebar"><a href="javascript:;" style="width: auto"><span id="mm-sidebar">${
+        .prepend(
+          /*html*/ `<li mm-layout="sidebar"><a href="javascript:;" style="height: auto"><span id="mm-sidebar">${
             top.$('.wrap-hflow .sub-hflow').is(':visible') ? '关闭' : '打开'
           }</span><span>侧边栏</span></a></li>`,
         )
@@ -957,15 +959,19 @@
       }
 
       $mainSidebar
-        .append(
-          /*html*/ `<li mm-layout="helper-setting"><a href="javascript:;" style="width: auto"><span>小助手</span><span>设置</span></a></li>`,
+        .prepend(
+          /*html*/ `<li mm-layout="helper-setting"><a href="javascript:;" style="height: auto"><span>小助手</span><span>设置</span></a></li>`,
         )
         .find(HELPER_SETTING_SELECTOR)
         .on('click', () => (G.isOpen ? G.close() : G.open()))
     }
 
-    initSidebar()
     G.get('layout.addSettingBtn') && initSetting()
+    G.get('layout.addSidebarBtn') && initSidebar()
+
+    if (G.get('layout.hideSidebar')) {
+      top.$('[btn="left_hide_btn"]').trigger('click')
+    }
   }
 
   // 初始化
