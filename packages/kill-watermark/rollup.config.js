@@ -6,7 +6,10 @@ import pkg from './package.json' assert { type: 'json' }
 
 export default createRollupConfig({
   pkg,
-  postcss: { minimize: true, inject: false },
+  postcss: () => ({
+    inject: false,
+    minimize: true,
+  }),
   plugins: [
     {
       name: 'write-site-default-export-module',
