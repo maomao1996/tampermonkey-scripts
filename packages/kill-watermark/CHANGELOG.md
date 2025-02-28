@@ -1,5 +1,12 @@
 # kill-watermark
 
+## 0.11.1
+
+### Patch Changes
+
+- d1338ff: 优化 `postcss` 配置减少打包体积
+- 555cc18: 适配金山文档主域名
+
 ## 0.11.0
 
 ### Minor Changes
