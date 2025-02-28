@@ -24,7 +24,7 @@
     "*://*.feishu.cn/*",
     "*://*.freebuf.com/*",
     "*://chat.360.com/*",
-    "*://365.kdocs.cn/*"
+    "*://*.kdocs.cn/*"
   ],
   "grant": ["GM_addStyle"]
 }
