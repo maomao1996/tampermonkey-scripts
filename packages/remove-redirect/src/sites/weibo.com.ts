@@ -25,6 +25,20 @@ const sites: SiteModule = [
       },
     },
   ],
+  /******************************************************************************
+   ** 微博短链接
+   **   - https://t.cn/A61RceZD
+   ******************************************************************************/
+  [
+    '微博短链接',
+    't.cn',
+    {
+      autojump: {
+        getOriginalUrl: () => document.querySelector<HTMLSpanElement>('#textline')?.innerText,
+        selector: '.open-url a',
+      },
+    },
+  ],
 ]
 
 export default sites
