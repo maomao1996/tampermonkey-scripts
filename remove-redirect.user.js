@@ -1,8 +1,8 @@
 // ==UserScript==
 // @name        跳转链接修复（移除重定向外链直达）
-// @description 修复跳转链接为站外直链（移除重定向直接跳转），免去拦截页面点击步骤可直达站外；拦截页面自动跳转（无须额外操作）；已适配ACG盒子、爱发电、百度搜索、百度贴吧、哔哩哔哩游戏WIKI、Bing 搜索、书签地球、酷安、CSDN、豆瓣、Facebook、码云、Google 搜索、Google 重定向页、花瓣网、InfoQ、Instagram、简书、掘金、金山文档、链滴、力扣（Leetcode）、51CTO 博客、NGA 玩家社区、牛客网、开源中国、pixiv、微信、微信开放社区、QQ 邮箱、PC 版 QQ、腾讯文档、腾讯兔小巢、石墨文档、360 搜索、搜狗搜索、少数派、Steam 社区、腾讯云开发者社区、推特（Twitter）、微博、YouTube、语雀、知乎、知乎专栏
+// @description 提升用户体验：修复跳转链接为站外直链（移除重定向直接跳转），免去拦截页面点击步骤可直达站外；拦截页面自动跳转（无须额外操作）；已适配ACG盒子、爱发电、百度搜索、百度贴吧、哔哩哔哩游戏WIKI、Bing 搜索、书签地球、酷安、CSDN、豆瓣、Facebook、码云、Google 搜索、Google 重定向页、花瓣网、InfoQ、Instagram、简书、掘金、金山文档、链滴、力扣（Leetcode）、51CTO 博客、NGA 玩家社区、牛客网、开源中国、pixiv、微信、微信开放社区、QQ 邮箱、PC 版 QQ、腾讯文档、腾讯兔小巢、石墨文档、360 搜索、搜狗搜索、少数派、Steam 社区、腾讯云开发者社区、推特（Twitter）、微博、微博短链接、YouTube、语雀、知乎、知乎专栏
 // @namespace   maomao1996.remove-redirect
-// @version     2.22.0
+// @version     2.23.0
 // @author      maomao1996
 // @homepage    https://github.com/maomao1996/tampermonkey-scripts
 // @supportURL  https://github.com/maomao1996/tampermonkey-scripts/issues
@@ -27,10 +27,10 @@
     return "string" == typeof val;
   }, isBrowser = "undefined" != typeof window;
   function validateUrl(url) {
-    if (!isString("string")) return !1;
+    if (!isString(url)) return !1;
     try {
       return new URL(url), !0;
-    } catch (err) {
+    } catch (e) {
       return !1;
     }
   }
@@ -358,7 +358,27 @@
         validateUrl(originUrl) && node.setAttribute("href", originUrl);
       }
     }
-  } ]) ], sites = Object.freeze({
+  } ]) ], sites$4 = [ [ "\u5fae\u535a", "weibo.com", {
+    transform: {
+      selector: '[href*="weibo.cn/sinaurl?u="]',
+      queryName: "u"
+    }
+  } ], [ , "weibo.cn", {
+    autojump: {
+      validator: function(param) {
+        return "/sinaurl" === param.pathname;
+      },
+      queryName: "u"
+    }
+  } ], [ "\u5fae\u535a\u77ed\u94fe\u63a5", "t.cn", {
+    autojump: {
+      getOriginalUrl: function() {
+        var _document_querySelector;
+        return null === (_document_querySelector = document.querySelector("#textline")) || void 0 === _document_querySelector ? void 0 : _document_querySelector.innerText;
+      },
+      selector: ".open-url a"
+    }
+  } ] ], sites = Object.freeze({
     __proto__: null,
     acgboxLink: sites$A,
     afdianCom: [ [ "\u7231\u53d1\u7535", "afdian.com", {
@@ -595,19 +615,7 @@
       }
     } ] ],
     twitterCom: sites$5,
-    weiboCom: [ [ "\u5fae\u535a", "weibo.com", {
-      transform: {
-        selector: '[href*="weibo.cn/sinaurl?u="]',
-        queryName: "u"
-      }
-    } ], [ , "weibo.cn", {
-      autojump: {
-        validator: function(param) {
-          return "/sinaurl" === param.pathname;
-        },
-        queryName: "u"
-      }
-    } ] ],
+    weiboCom: sites$4,
     youtubeCom: [ [ "YouTube", "youtube.com", {
       transform: {
         selector: '[href*="youtube.com/redirect?event="]',
