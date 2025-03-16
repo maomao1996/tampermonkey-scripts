@@ -1,14 +1,14 @@
 import { isString } from './is'
 
 /** 简单验证 url 是否为合法  */
-export function validateUrl(url: any): boolean {
-  if (!isString('string')) {
+export function validateUrl(url: unknown): boolean {
+  if (!isString(url)) {
     return false
   }
   try {
     new URL(url)
     return true
-  } catch (err) {
+  } catch {
     return false
   }
 }
