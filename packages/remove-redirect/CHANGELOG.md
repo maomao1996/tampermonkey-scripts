@@ -1,5 +1,11 @@
 # remove-redirect
 
+## 2.23.0
+
+### Minor Changes
+
+- 6a2e4c9: 适配微博短链接 [#36](https://github.com/maomao1996/tampermonkey-scripts/issues/36)
+
 ## 2.22.0
 
 ### Minor Changes
