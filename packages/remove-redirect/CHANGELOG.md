@@ -1,5 +1,11 @@
 # remove-redirect
 
+## 2.24.0
+
+### Minor Changes
+
+- d461fc9: 适配 Instagram 链接转换
+
 ## 2.23.0
 
 ### Minor Changes
