@@ -1,3 +1,6 @@
-.web-player-icon-roomStatus {
+/* 左上角 logo */
+.web-player-icon-roomStatus,
+/* 马赛克模块 */
+#web-player-module-area-mask-panel {
   opacity: 0 !important;
 }
