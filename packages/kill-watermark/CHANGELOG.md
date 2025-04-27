@@ -1,5 +1,11 @@
 # kill-watermark
 
+## 0.12.0
+
+### Minor Changes
+
+- b70ab57: 适配哔哩哔哩直播页马赛克模块 [#38](https://github.com/maomao1996/tampermonkey-scripts/issues/38)
+
 ## 0.11.1
 
 ### Patch Changes
