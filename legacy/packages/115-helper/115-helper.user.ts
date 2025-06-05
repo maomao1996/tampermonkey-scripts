@@ -2,7 +2,7 @@
 // ==UserScript==
 // @name          115小助手
 // @namespace     https://github.com/maomao1996/tampermonkey-scripts
-// @version       1.8.3
+// @version       1.8.4
 // @description   网盘顶部菜单栏添加链接任务和云下载、SHA1 快速查重（新页面打开）、SHA1 自动查重、删除空文件夹、一键搜（快捷搜索）、SHA1 查重列表支持选中第一个元素和悬浮菜单展示、搜索列表支持悬浮菜单展示、列表显示文件 SHA1 信息、关闭网盘侧边栏、悬浮菜单移除图标、悬浮菜单支持新标签页打开文件夹、加速转码
 // @icon      	  https://115.com/favicon.ico
 // @author        maomao1996
@@ -319,6 +319,21 @@
   }
 
   /**
+   * 工具方法 - 生成随机 rgba 颜色
+   * 生成类似 rgba(199, 237, 204, 0.7) 的随机颜色
+   * 保持绿色为主色调，其他颜色适当随机
+   */
+  const getRandomRgba = (): string => {
+    // 保持绿色为主色调
+    const g = random(220, 255)
+    // 红色和蓝色适当随机
+    const r = random(120, 240)
+    const b = random(120, 240)
+
+    return `rgba(${r}, ${g}, ${b}, 0.39)`
+  }
+
+  /**
    * 工具方法 - 获取样式
    */
   const getStyles = (styles: string, key: GetKey | GetKey[]) => {
@@ -356,7 +371,7 @@
      * 小助手相关样式
      */
     /*css*/ `.mm-quick-operation{margin-left: 12px;padding: 0 4px;white-space: nowrap;}`,
-    /*css*/ `.list-contents .active::before, .list-thumb .active{background: rgba(199, 237, 204, 0.7)!important;}`,
+    /*css*/ `.list-contents .active::before, .list-thumb .active{background: var(--repeat-color, rgba(199, 237, 204, 0.7))!important;}`,
     // 链接任务
     /*css*/ `.left-tvf .btn-upload{z-index: 1;}`,
     // 列表显示文件SHA1信息
@@ -764,10 +779,10 @@
             $li.each(function () {
               const sha1 = $(this).attr('sha1')
               if (!SHA1_MAP[sha1]) {
-                SHA1_MAP[sha1] = 1
+                SHA1_MAP[sha1] = getRandomRgba()
               } else {
                 repeatCount++
-                $(this).addClass('active')
+                $(this).addClass('active')[0].style.setProperty('--repeat-color', SHA1_MAP[sha1])
                 if (isSelected) {
                   $(this).find('.checkbox').trigger('click')
                 }
