@@ -2,7 +2,7 @@
 // ==UserScript==
 // @name          115小助手
 // @namespace     https://github.com/maomao1996/tampermonkey-scripts
-// @version       1.8.3
+// @version       1.8.4
 // @description   网盘顶部菜单栏添加链接任务和云下载、SHA1 快速查重（新页面打开）、SHA1 自动查重、删除空文件夹、一键搜（快捷搜索）、SHA1 查重列表支持选中第一个元素和悬浮菜单展示、搜索列表支持悬浮菜单展示、列表显示文件 SHA1 信息、关闭网盘侧边栏、悬浮菜单移除图标、悬浮菜单支持新标签页打开文件夹、加速转码
 // @icon      	  https://115.com/favicon.ico
 // @author        maomao1996
@@ -310,6 +310,12 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         console.log('等待 :', timeout, 'ms');
         return new Promise(function (resolve) { return setTimeout(resolve, timeout); });
     };
+    var getRandomRgba = function () {
+        var g = random(220, 255);
+        var r = random(120, 240);
+        var b = random(120, 240);
+        return "rgba(".concat(r, ", ").concat(g, ", ").concat(b, ", 0.39)");
+    };
     var getStyles = function (styles, key) {
         if (!Array.isArray(key)) {
             key = [key];
@@ -332,7 +338,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     var randomDelayIndex = [3, 5];
     var styles = [
         ".mm-quick-operation{margin-left: 12px;padding: 0 4px;white-space: nowrap;}",
-        ".list-contents .active::before, .list-thumb .active{background: rgba(199, 237, 204, 0.7)!important;}",
+        ".list-contents .active::before, .list-thumb .active{background: var(--repeat-color, rgba(199, 237, 204, 0.7))!important;}",
         ".left-tvf .btn-upload{z-index: 1;}",
         "[show-sha1]{line-height: 1;color: #999;}",
         ".page-center .lstc-search .list-contents [file_type=\"1\"] .file-name.h-auto,.list-cell:not(.lstc-search) .list-contents [file_type=\"1\"] .file-name.h-auto{flex:1;padding-bottom: 20px;height:auto;}",
@@ -653,11 +659,11 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
                         $li.each(function () {
                             var sha1 = $(this).attr('sha1');
                             if (!SHA1_MAP[sha1]) {
-                                SHA1_MAP[sha1] = 1;
+                                SHA1_MAP[sha1] = getRandomRgba();
                             }
                             else {
                                 repeatCount++;
-                                $(this).addClass('active');
+                                $(this).addClass('active')[0].style.setProperty('--repeat-color', SHA1_MAP[sha1]);
                                 if (isSelected) {
                                     $(this).find('.checkbox').trigger('click');
                                 }
