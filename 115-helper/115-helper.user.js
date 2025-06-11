@@ -2,7 +2,7 @@
 // ==UserScript==
 // @name          115小助手
 // @namespace     https://github.com/maomao1996/tampermonkey-scripts
-// @version       1.8.4
+// @version       1.8.5
 // @description   网盘顶部菜单栏添加链接任务和云下载、SHA1 快速查重（新页面打开）、SHA1 自动查重、删除空文件夹、一键搜（快捷搜索）、SHA1 查重列表支持选中第一个元素和悬浮菜单展示、搜索列表支持悬浮菜单展示、列表显示文件 SHA1 信息、关闭网盘侧边栏、悬浮菜单移除图标、悬浮菜单支持新标签页打开文件夹、加速转码
 // @icon      	  https://115.com/favicon.ico
 // @author        maomao1996
@@ -11,7 +11,7 @@
 // @grant         GM_addStyle
 // @grant         GM_openInTab
 // @grant         unsafeWindow
-// @require       https://greasyfork.org/scripts/447340-gm-config-zh/code/GM_config_zh.js
+// @require       https://tampermonkey-scripts.pages.dev/greasyfork/GM_config_zh.js
 // @run-at        document-end
 // ==/UserScript==
 */
