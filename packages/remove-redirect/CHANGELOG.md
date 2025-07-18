@@ -1,5 +1,11 @@
 # remove-redirect
 
+## 2.24.1
+
+### Patch Changes
+
+- 4a1f034: 优化 QQ 邮箱匹配规则
+
 ## 2.24.0
 
 ### Minor Changes
