@@ -47,7 +47,7 @@ const sites: SiteModule = [
    ******************************************************************************/
   [
     'QQ 邮箱',
-    'mail.qq.com',
+    /mail\.qq\.com$/,
     {
       rewriteWindowOpen: {
         validationRule: 'url=',
