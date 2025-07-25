@@ -6,7 +6,7 @@
  **   - https://civitai.com/models/43331/majicmix-realistic
  ******************************************************************************/
 
-const SELECTOR = '.mantine-Stack-root > button.mantine-UnstyledButton-root.mantine-Button-root'
+const SELECTOR = 'div.pointer-events-none.absolute.left-1\\/2.top-1\\/2.z-20.flex.flex-col.items-center.gap-2.text-white > button > span > span'
 
 const ob = new IntersectionObserver((entries) => {
   for (const entry of entries) {
