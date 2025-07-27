@@ -1,5 +1,11 @@
 # remove-redirect
 
+## 2.25.0
+
+### Minor Changes
+
+- ae53f4f: 适配 NodeSeek [#40](https://github.com/maomao1996/tampermonkey-scripts/issues/40)
+
 ## 2.24.1
 
 ### Patch Changes
