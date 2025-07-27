@@ -1,8 +1,8 @@
 // ==UserScript==
 // @name        跳转链接修复（移除重定向外链直达）
-// @description 提升用户体验：修复跳转链接为站外直链（移除重定向直接跳转），免去拦截页面点击步骤可直达站外；拦截页面自动跳转（无须额外操作）；已适配ACG盒子、爱发电、百度搜索、百度贴吧、哔哩哔哩游戏WIKI、Bing 搜索、书签地球、酷安、CSDN、豆瓣、Facebook、码云、Google 搜索、Google 重定向页、花瓣网、InfoQ、Instagram、简书、掘金、金山文档、链滴、力扣（Leetcode）、51CTO 博客、NGA 玩家社区、牛客网、开源中国、pixiv、微信、微信开放社区、QQ 邮箱、PC 版 QQ、腾讯文档、腾讯兔小巢、石墨文档、360 搜索、搜狗搜索、少数派、Steam 社区、腾讯云开发者社区、推特（Twitter）、微博、微博短链接、YouTube、语雀、知乎、知乎专栏
+// @description 提升用户体验：修复跳转链接为站外直链（移除重定向直接跳转），免去拦截页面点击步骤可直达站外；拦截页面自动跳转（无须额外操作）；已适配ACG盒子、爱发电、百度搜索、百度贴吧、哔哩哔哩游戏WIKI、Bing 搜索、书签地球、酷安、CSDN、豆瓣、Facebook、码云、Google 搜索、Google 重定向页、花瓣网、InfoQ、Instagram、简书、掘金、金山文档、链滴、力扣（Leetcode）、51CTO 博客、NGA 玩家社区、NodeSeek、牛客网、开源中国、pixiv、微信、微信开放社区、QQ 邮箱、PC 版 QQ、腾讯文档、腾讯兔小巢、石墨文档、360 搜索、搜狗搜索、少数派、Steam 社区、腾讯云开发者社区、推特（Twitter）、微博、微博短链接、YouTube、语雀、知乎、知乎专栏
 // @namespace   maomao1996.remove-redirect
-// @version     2.24.1
+// @version     2.25.0
 // @author      maomao1996
 // @homepage    https://github.com/maomao1996/tampermonkey-scripts
 // @supportURL  https://github.com/maomao1996/tampermonkey-scripts/issues
@@ -163,7 +163,7 @@
       }));
     }));
   }
-  var sites$A = [ defineSite([ "ACG\u76d2\u5b50", "acgbox.link", {
+  var sites$B = [ defineSite([ "ACG\u76d2\u5b50", "acgbox.link", {
     transform: {
       selector: 'a[href*="/go/?url"]',
       customTransform: function(node) {
@@ -179,7 +179,7 @@
       },
       selector: "a.loading-btn"
     }
-  } ]) ], BAIDU_RE = /^(http:\/\/[^.]+\.[^.]+\.baidu\.com|https:\/\/baike\.baidu\.com)/, sites$y = [ defineSite([ "\u767e\u5ea6\u641c\u7d22", "baidu.com", {
+  } ]) ], BAIDU_RE = /^(http:\/\/[^.]+\.[^.]+\.baidu\.com|https:\/\/baike\.baidu\.com)/, sites$z = [ defineSite([ "\u767e\u5ea6\u641c\u7d22", "baidu.com", {
     transform: {
       selector: "#content_left > [mu]",
       fallbackSelector: 'a[href*="baidu.com/link?url="]',
@@ -206,7 +206,7 @@
       queryName: "url",
       selector: ".btns span.j_next"
     }
-  } ]) ], urlMap = new Map, sites$w = [ defineSite([ "Bing \u641c\u7d22", /^(?:\w+\.)?bing\.com$/, {
+  } ]) ], urlMap = new Map, sites$x = [ defineSite([ "Bing \u641c\u7d22", /^(?:\w+\.)?bing\.com$/, {
     transform: {
       selector: '#b_results a[target="_blank"][href*="www.bing.com/ck/a"][href*="&u=a1"]',
       customTransform: function(node) {
@@ -219,7 +219,7 @@
         }
       }
     }
-  } ]) ], sites$v = [ defineSite([ "\u4e66\u7b7e\u5730\u7403", "bookmarkearth.cn", {
+  } ]) ], sites$w = [ defineSite([ "\u4e66\u7b7e\u5730\u7403", "bookmarkearth.cn", {
     transform: {
       selector: 'a[href*="/view/"][data-ext]',
       attribute: "data-ext"
@@ -233,7 +233,7 @@
         return document.querySelector(".jump-target-url").getAttribute("data-url");
       }
     }
-  } ]) ], sites$p = [ defineSite([ "Google \u641c\u7d22\u3001Google \u91cd\u5b9a\u5411\u9875", /^google\.(com|com?\.[a-z]{2}|[a-z]{2})$/, {
+  } ]) ], sites$q = [ defineSite([ "Google \u641c\u7d22\u3001Google \u91cd\u5b9a\u5411\u9875", /^google\.(com|com?\.[a-z]{2}|[a-z]{2})$/, {
     transform: {
       selector: [ "a[jsname][href][data-jsarwt]", "a[jsname][href][ping]", "[data-rw][data-al]" ].join(","),
       customTransform: function(node) {
@@ -251,7 +251,7 @@
       },
       queryName: "q"
     }
-  } ]) ], REMOVE_ATTRS = [ "onclick", "onmouseover", "onmouseout" ], sites$g = [ defineSite([ "NGA \u73a9\u5bb6\u793e\u533a", /^(bbs\.nga\.cn|ngabbs\.com|g\.nga\.cn)$/, {
+  } ]) ], REMOVE_ATTRS = [ "onclick", "onmouseover", "onmouseout" ], sites$h = [ defineSite([ "NGA \u73a9\u5bb6\u793e\u533a", /^(bbs\.nga\.cn|ngabbs\.com|g\.nga\.cn)$/, {
     transform: {
       selector: 'a[target="_blank"][onclick*="showUrlAlert"]',
       customTransform: function(node) {
@@ -380,7 +380,7 @@
     }
   } ] ], sites = Object.freeze({
     __proto__: null,
-    acgboxLink: sites$A,
+    acgboxLink: sites$B,
     afdianCom: [ [ "\u7231\u53d1\u7535", "afdian.com", {
       transform: {
         selector: '[href*="afdian.com/link?target="]'
@@ -391,7 +391,7 @@
         }
       }
     } ] ],
-    baiduCom: sites$y,
+    baiduCom: sites$z,
     bilibiliCom: [ [ "\u54d4\u54e9\u54d4\u54e9\u6e38\u620fWIKI", "game.bilibili.com", {
       autojump: {
         validator: function(param) {
@@ -400,8 +400,8 @@
         queryName: "url"
       }
     } ] ],
-    bingCom: sites$w,
-    bookmarkearthCn: sites$v,
+    bingCom: sites$x,
+    bookmarkearthCn: sites$w,
     coolapkCom: [ [ "\u9177\u5b89", "coolapk.com", {
       autojump: {
         validator: function(param) {
@@ -453,7 +453,7 @@
         }
       }
     } ] ],
-    googleCom: sites$p,
+    googleCom: sites$q,
     huabanCom: [ [ "\u82b1\u74e3\u7f51", "huaban.com", {
       autojump: {
         validator: function(param) {
@@ -550,7 +550,19 @@
         separator: "?"
       }
     } ] ],
-    ngaCn: sites$g,
+    ngaCn: sites$h,
+    nodeseekCom: [ [ "NodeSeek", "nodeseek.com", {
+      transform: {
+        selector: 'a[href^="/jump?to="]',
+        queryName: "to"
+      },
+      autojump: {
+        validator: function(param) {
+          return "/jump" === param.pathname;
+        },
+        queryName: "to"
+      }
+    } ] ],
     nowcoderCom: sites$f,
     oschinaNet: [ [ "\u5f00\u6e90\u4e2d\u56fd", /^(?:my\.)?oschina\.net$/, {
       transform: {
