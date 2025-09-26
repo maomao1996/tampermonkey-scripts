@@ -1,5 +1,11 @@
 # kill-watermark
 
+## 0.13.0
+
+### Minor Changes
+
+- 26035fa: 适配爱奇艺国际版 [#43](https://github.com/maomao1996/tampermonkey-scripts/issues/43)
+
 ## 0.12.0
 
 ### Minor Changes
