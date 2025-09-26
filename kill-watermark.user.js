@@ -2,7 +2,7 @@
 // @name        杀死水印（Kill Watermark）
 // @description 杀死水印（移除烦人的水印，还你一个干净清爽的页面）；已适配360 智脑、腾讯文档、飞书、FreeBuf 网络安全行业门户、爱奇艺国际版播放页右上角 logo、爱奇艺播放页（右上角 logo、暂停时的广告）、金山文档、腾讯课堂播放页漂浮水印、哔哩哔哩直播（左上角 logo、马赛克模块）、CSDN C 知道、腾讯视频播放页（右上角 logo、暂停时的弹窗广告）、优酷视频播放页（右上角 logo、暂停时的弹窗广告）、语雀
 // @namespace   maomao1996.kill-watermark
-// @version     0.13.0
+// @version     0.13.1
 // @author      maomao1996
 // @homepage    https://github.com/maomao1996/tampermonkey-scripts
 // @supportURL  https://github.com/maomao1996/tampermonkey-scripts/issues
@@ -41,7 +41,7 @@
   } ], site$8 = [ "\u7231\u5947\u827a\u56fd\u9645\u7248\u64ad\u653e\u9875\u53f3\u4e0a\u89d2 logo", "iq.com", {
     style: ".iqp-logo-bottom,.iqp-logo-box,.iqp-logo-top{display:none!important}"
   } ], site$7 = [ "\u7231\u5947\u827a\u64ad\u653e\u9875\uff08\u53f3\u4e0a\u89d2 logo\u3001\u6682\u505c\u65f6\u7684\u5e7f\u544a\uff09", /^(?:[^.]+\.)?iqiyi\.com$/, {
-    style: ".iqp-logo-bottom,.iqp-logo-box,.iqp-logo-top,.zpc-watermark,iqpdiv.flash-max{display:none!important}iqpdiv.iqp-player-videolayer{height:100%!important;left:auto!important;top:auto!important;width:100%!important}"
+    style: '#video div[style*="pointer-events: none"] img[src*="/media/watermark"],.iqp-logo-bottom,.iqp-logo-box,.iqp-logo-top,.zpc-watermark,iqpdiv.flash-max{display:none!important}iqpdiv.iqp-player-videolayer{height:100%!important;left:auto!important;top:auto!important;width:100%!important}'
   } ], site$6 = [ "\u91d1\u5c71\u6587\u6863", "kdocs.cn", {
     style: ".uikit-watermark-container,.wo-public-watermark{display:none!important}"
   } ], site$5 = [ "\u817e\u8baf\u8bfe\u5802\u64ad\u653e\u9875\u6f02\u6d6e\u6c34\u5370", "ke.qq.com", {
