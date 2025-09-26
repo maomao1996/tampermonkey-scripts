@@ -1,0 +1,6 @@
+/* 播放页右上角 logo */
+.iqp-logo-box,
+.iqp-logo-top,
+.iqp-logo-bottom {
+  display: none !important;
+}
