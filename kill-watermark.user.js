@@ -1,14 +1,15 @@
 // ==UserScript==
 // @name        杀死水印（Kill Watermark）
-// @description 杀死水印（移除烦人的水印，还你一个干净清爽的页面）；已适配360 智脑、腾讯文档、飞书、FreeBuf 网络安全行业门户、爱奇艺播放页（右上角 logo、暂停时的广告）、金山文档、腾讯课堂播放页漂浮水印、哔哩哔哩直播（左上角 logo、马赛克模块）、CSDN C 知道、腾讯视频播放页（右上角 logo、暂停时的弹窗广告）、优酷视频播放页（右上角 logo、暂停时的弹窗广告）、语雀
+// @description 杀死水印（移除烦人的水印，还你一个干净清爽的页面）；已适配360 智脑、腾讯文档、飞书、FreeBuf 网络安全行业门户、爱奇艺国际版播放页右上角 logo、爱奇艺播放页（右上角 logo、暂停时的广告）、金山文档、腾讯课堂播放页漂浮水印、哔哩哔哩直播（左上角 logo、马赛克模块）、CSDN C 知道、腾讯视频播放页（右上角 logo、暂停时的弹窗广告）、优酷视频播放页（右上角 logo、暂停时的弹窗广告）、语雀
 // @namespace   maomao1996.kill-watermark
-// @version     0.12.0
+// @version     0.13.0
 // @author      maomao1996
 // @homepage    https://github.com/maomao1996/tampermonkey-scripts
 // @supportURL  https://github.com/maomao1996/tampermonkey-scripts/issues
 // @license     MIT
 // @match       *://v.qq.com/x/cover/*
 // @match       *://*.iqiyi.com/*
+// @match       *://*.iq.com/*
 // @match       *://v.youku.com/*
 // @match       *://live.bilibili.com/*
 // @match       *://ke.qq.com/course/*
@@ -24,19 +25,21 @@
 !function() {
   "use strict";
   var isBrowser = "undefined" != typeof window;
-  var site$b = [ "360 \u667a\u8111", "chat.360.com", {
+  var site$c = [ "360 \u667a\u8111", "chat.360.com", {
     style: '#nworld-app-container div>div[style*=pointer-events][style*="data:image/"]{display:none!important}'
-  } ], site$a = [ "\u817e\u8baf\u6587\u6863", "docs.qq.com", {
+  } ], site$b = [ "\u817e\u8baf\u6587\u6863", "docs.qq.com", {
     style: ".watermark-bg-wrapper{display:none!important}"
-  } ], site$9 = [ "\u98de\u4e66", "feishu.cn", {
+  } ], site$a = [ "\u98de\u4e66", "feishu.cn", {
     style: ".print-watermark[style],.ssrWaterMark[style],.suite-clear[style]{display:none!important;height:0!important;width:0!important}"
-  } ], site$8 = [ "FreeBuf \u7f51\u7edc\u5b89\u5168\u884c\u4e1a\u95e8\u6237", "freebuf.com", {
+  } ], site$9 = [ "FreeBuf \u7f51\u7edc\u5b89\u5168\u884c\u4e1a\u95e8\u6237", "freebuf.com", {
     script: function() {
       document.querySelectorAll("img[large]").forEach((function(img) {
         var large = img.getAttribute("large");
         large && img.src !== large && (img.src = large);
       }));
     }
+  } ], site$8 = [ "\u7231\u5947\u827a\u56fd\u9645\u7248\u64ad\u653e\u9875\u53f3\u4e0a\u89d2 logo", "iq.com", {
+    style: ".iqp-logo-bottom,.iqp-logo-box,.iqp-logo-top{display:none!important}"
   } ], site$7 = [ "\u7231\u5947\u827a\u64ad\u653e\u9875\uff08\u53f3\u4e0a\u89d2 logo\u3001\u6682\u505c\u65f6\u7684\u5e7f\u544a\uff09", /^(?:[^.]+\.)?iqiyi\.com$/, {
     style: ".iqp-logo-bottom,.iqp-logo-box,.iqp-logo-top,.zpc-watermark,iqpdiv.flash-max{display:none!important}iqpdiv.iqp-player-videolayer{height:100%!important;left:auto!important;top:auto!important;width:100%!important}"
   } ], site$6 = [ "\u91d1\u5c71\u6587\u6863", "kdocs.cn", {
@@ -55,10 +58,11 @@
     style: "#main>div.wm{display:none!important}"
   } ], sites = Object.freeze({
     __proto__: null,
-    chat360Com: site$b,
-    docsQqCom: site$a,
-    feishuCn: site$9,
-    freebufCom: site$8,
+    chat360Com: site$c,
+    docsQqCom: site$b,
+    feishuCn: site$a,
+    freebufCom: site$9,
+    iqCom: site$8,
     iqiyiCom: site$7,
     kdocsCn: site$6,
     keQqCom: site$5,
