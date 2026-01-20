@@ -1,5 +1,11 @@
 # remove-redirect
 
+## 2.26.0
+
+### Minor Changes
+
+- 2dac5d2: 适配 GitCode [#49](https://github.com/maomao1996/tampermonkey-scripts/issues/49)
+
 ## 2.25.0
 
 ### Minor Changes
