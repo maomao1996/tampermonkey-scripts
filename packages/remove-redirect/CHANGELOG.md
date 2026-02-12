@@ -1,5 +1,11 @@
 # remove-redirect
 
+## 2.27.0
+
+### Minor Changes
+
+- efba4d0: 适配 LINUX DO [#48](https://github.com/maomao1996/tampermonkey-scripts/issues/48)
+
 ## 2.26.0
 
 ### Minor Changes
