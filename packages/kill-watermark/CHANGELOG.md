@@ -1,5 +1,11 @@
 # kill-watermark
 
+## 0.13.2
+
+### Patch Changes
+
+- 66e34a7: 修复爱奇艺动态水印移除 [#51](https://github.com/maomao1996/tampermonkey-scripts/issues/51)
+
 ## 0.13.1
 
 ### Patch Changes
