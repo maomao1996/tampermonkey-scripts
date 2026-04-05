@@ -3,8 +3,7 @@
 .iqp-logo-top,
 .iqp-logo-bottom,
 #video #videoCoverComp div[style*='pointer-events: none'] img[src*='/media/watermark'],
-#video #videoCoverComp div[style*='pointer-events: none'] img[src*='data:image/']
-
+#video #videoCoverComp div[style*='pointer-events: none'] img[src*='data:image/'],
 /* 直播右上角 log */
 .zpc-watermark,
 
