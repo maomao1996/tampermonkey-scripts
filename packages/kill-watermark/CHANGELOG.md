@@ -1,5 +1,11 @@
 # kill-watermark
 
+## 0.13.3
+
+### Patch Changes
+
+- 7f0d6c3: 修复爱奇艺动态水印移除
+
 ## 0.13.2
 
 ### Patch Changes
