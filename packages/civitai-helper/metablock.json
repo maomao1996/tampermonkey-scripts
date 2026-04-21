@@ -11,7 +11,7 @@
   "updateURL": "",
   "downloadURL": "",
   "license": "",
-  "match": ["*://civitai.com/*"],
+  "match": ["*://civitai.com/*", "*://civitai.red/*"],
   "exclude": [],
   "require": [],
   "connect": [],
