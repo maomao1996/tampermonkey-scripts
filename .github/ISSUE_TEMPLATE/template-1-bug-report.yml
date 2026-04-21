@@ -21,6 +21,14 @@ body:
         - 其他
     validations:
       required: true
+  - type: input
+    id: url
+    attributes:
+      label: URL
+      description: 出现问题的页面链接？
+      placeholder: 如：https://github.com/maomao1996/tampermonkey-scripts
+    validations:
+      required: true
   - type: textarea
     id: reproduce-steps
     attributes:
