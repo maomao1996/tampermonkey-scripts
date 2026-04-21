@@ -2,12 +2,13 @@
 // @name        Civitai 小助手
 // @description 提升 Civitai 使用体验的小助手；自动移除分级遮罩直接展示图片
 // @namespace   maomao1996.civitai-helper
-// @version     1.0.0
+// @version     1.0.1
 // @author      maomao1996
 // @homepage    https://github.com/maomao1996/tampermonkey-scripts
 // @supportURL  https://github.com/maomao1996/tampermonkey-scripts/issues
 // @license     MIT
 // @match       *://civitai.com/*
+// @match       *://civitai.red/*
 // @grant       none
 // ==/UserScript==
 !function() {
