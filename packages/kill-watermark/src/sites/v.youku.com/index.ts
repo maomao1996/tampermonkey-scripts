@@ -7,7 +7,7 @@ import style from './index.css'
 
 const site: SiteModule = [
   '优酷视频播放页（右上角 logo、暂停时的弹窗广告）',
-  'v.youku.com',
+  /^v(-wb)?\.youku\.com$/,
   {
     style,
   },
